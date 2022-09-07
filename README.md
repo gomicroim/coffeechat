@@ -1,4 +1,4 @@
-# CoffeeChat
+# gomicroim
 
 opensource im with server(go) and client(flutter+swift)
 
@@ -6,11 +6,6 @@ opensource im with server(go) and client(flutter+swift)
 > 持续开发中，仅适合学习使用。
 
 ## News
-
-有网友在Issues询问后续更新一事，这里回复一下：
-> 今年事情比较多，所以进展十分缓慢，会不会放弃这个项目我也不能肯定，主要是作者精力有限，请大家原谅。发起这个项目的初衷，是为了更深入的学习IM服务端开发，如果有更好的开源go语言实现的im项目，我可能会考虑作为Contributor参与其中。
-
-最后，放出最近的一些动态以感谢大家的关心。
 
 最新动态：
 - 至今: 生命不息，探索不止💪💪
@@ -21,7 +16,7 @@ opensource im with server(go) and client(flutter+swift)
 - 2021/02: 使用sketch设计win+mac客户端界面。
 
 总结：
-- `2022`: 再出发，学习android + kratos + k8s，实现go服务端v2版本重构
+- `2022`: 再出发，[CoffeeChat](https://github.com/xmcy0011/CoffeeChat)正式更名gomicroim，学习android + kratos + k8s，实现go服务端v2版本重构
 - `2021`: 主要精力在探索百万级的架构，C++跨平台SDK，QT，Go微服务，Docker，Etcd等等，coffeechat几乎没有更新
 - `2020`: 这一年coffeechat不断完善，作者主要在学习ios开发，实现简单ios app
 - `2019/08`: coffeechat诞生，学习flutter，实现简单flutter客户端，后续因为flutter聊天界面下拉感觉效果不理想放弃
