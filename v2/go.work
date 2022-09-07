@@ -1,0 +1,9 @@
+go 1.18
+
+use (
+	./api/apiuser
+	./api/apichat
+	./rpc/user
+	./rpc/chat
+	./pkg
+)

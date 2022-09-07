@@ -1,51 +1,53 @@
-# Kratos Project Template
+# GoMicroIM
 
-## Install Kratos
-```
-go install github.com/go-kratos/kratos/cmd/kratos/v2@latest
-```
-## Create a service
-```
-# Create a template project
-kratos new server
+based on:
 
-cd server
-# Add a proto template
-kratos proto add api/server/server.proto
-# Generate the proto code
-kratos proto client api/server/server.proto
-# Generate the source code of service by proto file
-kratos proto server api/server/server.proto -t internal/service
+- [kratos v2](https://github.com/go-kratos/kratos)
+- [kratos-layout](https://github.com/go-kratos/kratos-layout)
+- [kratos-cli](https://go-kratos.dev/docs/getting-started/usage)
 
-go generate ./...
-go build -o ./bin/ ./...
-./bin/server -conf ./configs
-```
-## Generate other auxiliary files by Makefile
-```
-# Download and update dependencies
-make init
-# Generate API files (include: pb.go, http, grpc, validate, swagger) by proto file
-make api
-# Generate all files
-make all
-```
-## Automated Initialization (wire)
-```
-# install wire
-go get github.com/google/wire/cmd/wire
+## intro
 
-# generate wire
-cd cmd/server
-wire
+api(BFF层):
+
+- apiuser: user相关api接口
+
+rpc(Service层):
+
+- user: user相关rpc接口，对外只提供基础CRUD接口，无服务依赖
+
+## API
+
+### swagger ui
+
+use kratos [swagger plugin](https://go-kratos.dev/docs/guide/openapi)
+
+浏览器中访问服务的/api/swagger-ui/路径即可打开Swagger UI。如apiuser：
+
+```shell
+http://127.0.0.1:8000/api/swagger-ui/
 ```
 
-## Docker
-```bash
-# build
-docker build -t <your-docker-image-name> .
+### swagger.json
 
-# run
-docker run --rm -p 8000:8000 -p 9000:9000 -v </path/to/your/configs>:/data/conf <your-docker-image-name>
+example user rpc:
+
+```shell
+$ protoc --proto_path=. \
+        --proto_path=./third_party \
+        --openapiv2_out . \
+        --openapiv2_opt logtostderr=true \
+        --openapiv2_opt json_names_for_fields=false \
+        rpc/user/api/auth/auth.proto
 ```
 
+## orm
+
+### ent
+
+example user rpc:
+
+```shell
+$ cd rpc/user/internal/data
+$ ent generate ./schema --target=ent
+```
