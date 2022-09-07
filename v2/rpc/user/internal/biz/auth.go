@@ -4,20 +4,15 @@ import (
 	"CoffeeChat/jwt"
 	"context"
 	"user/internal/conf"
+	"user/internal/data/cache"
 )
 
 type AuthUseCase struct {
-	authRepo AuthTokenRepo
+	authRepo cache.AuthTokenRepo
 	jwt      *jwt.TokenGenerate
 }
 
-type AuthTokenRepo interface {
-	CreateAuth(ctx context.Context, userid int64, details jwt.TokenDetails) error
-	DeleteAuth(ctx context.Context, givenUuid string) (userId int64, err error)
-	FetchAuth(ctx context.Context, tokenUuid string) (userId int64, err error)
-}
-
-func NewAuthUseCase(jwtConf *conf.Server_JWT, repo AuthTokenRepo) *AuthUseCase {
+func NewAuthUseCase(jwtConf *conf.Server_JWT, repo cache.AuthTokenRepo) *AuthUseCase {
 	return &AuthUseCase{
 		jwt:      jwt.NewTokenGenerate(jwtConf.AccessSecret, jwtConf.RefreshSecret),
 		authRepo: repo,

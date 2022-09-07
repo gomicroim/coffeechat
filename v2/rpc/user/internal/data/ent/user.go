@@ -18,9 +18,9 @@ type User struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int64 `json:"id,omitempty"`
-	// Created holds the value of the "created" field.
+	// 创建时间
 	Created time.Time `json:"created,omitempty"`
-	// Updated holds the value of the "updated" field.
+	// 更新时间
 	Updated time.Time `json:"updated,omitempty"`
 	// NickName holds the value of the "nick_name" field.
 	NickName string `json:"nick_name,omitempty"`

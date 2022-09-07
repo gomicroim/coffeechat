@@ -16,9 +16,9 @@ type Device struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int32 `json:"id,omitempty"`
-	// Created holds the value of the "created" field.
+	// 创建时间
 	Created time.Time `json:"created,omitempty"`
-	// Updated holds the value of the "updated" field.
+	// 更新时间
 	Updated time.Time `json:"updated,omitempty"`
 	// DeviceID holds the value of the "device_id" field.
 	DeviceID string `json:"device_id,omitempty"`

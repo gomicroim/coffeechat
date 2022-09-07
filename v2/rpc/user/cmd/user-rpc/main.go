@@ -5,8 +5,6 @@ import (
 	"flag"
 	"github.com/go-kratos/kratos/contrib/registry/etcd/v2"
 	"github.com/go-kratos/kratos/v2"
-	"github.com/go-kratos/kratos/v2/config"
-	"github.com/go-kratos/kratos/v2/config/file"
 	kratoslog "github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	clientv3 "go.etcd.io/etcd/client/v3"
@@ -47,21 +45,7 @@ func main() {
 	logger := log.MustNewLogger(id, Name, Version, true, 0)
 	log.SetGlobalLogger(logger)
 
-	c := config.New(
-		config.WithSource(
-			file.NewSource(flagConf),
-		),
-	)
-	defer c.Close()
-
-	if err := c.Load(); err != nil {
-		panic(err)
-	}
-
-	var bc conf.Bootstrap
-	if err := c.Scan(&bc); err != nil {
-		panic(err)
-	}
+	bc := conf.Load(flagConf)
 
 	// register etcd
 	etcdClient, err := clientv3.New(clientv3.Config{

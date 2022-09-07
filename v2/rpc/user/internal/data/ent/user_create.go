@@ -187,11 +187,11 @@ func (uc *UserCreate) ExecX(ctx context.Context) {
 // defaults sets the default values of the builder before save.
 func (uc *UserCreate) defaults() {
 	if _, ok := uc.mutation.Created(); !ok {
-		v := user.DefaultCreated
+		v := user.DefaultCreated()
 		uc.mutation.SetCreated(v)
 	}
 	if _, ok := uc.mutation.Updated(); !ok {
-		v := user.DefaultUpdated
+		v := user.DefaultUpdated()
 		uc.mutation.SetUpdated(v)
 	}
 }

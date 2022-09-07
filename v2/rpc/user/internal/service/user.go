@@ -6,6 +6,7 @@ import (
 	"github.com/go-kratos/kratos/v2/errors"
 	"user/api/user"
 	"user/internal/biz"
+	"user/internal/data"
 )
 
 var (
@@ -33,7 +34,7 @@ func NewAuthService(dc *biz.DeviceUseCase, uc *biz.UserUseCase, ac *biz.AuthUseC
 }
 
 func (s *UserService) Register(ctx context.Context, req *user.RegisterRequest) (*user.RegisterReply, error) {
-	_, err := s.dc.Register(ctx, &biz.Device{
+	_, err := s.dc.Register(ctx, &data.Device{
 		DeviceID:   req.DeviceId,
 		AppVersion: req.AppVersion,
 		OsVersion:  req.OsVersion,

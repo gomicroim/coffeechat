@@ -47,9 +47,9 @@ func ValidColumn(column string) bool {
 
 var (
 	// DefaultCreated holds the default value on creation for the "created" field.
-	DefaultCreated time.Time
+	DefaultCreated func() time.Time
 	// DefaultUpdated holds the default value on creation for the "updated" field.
-	DefaultUpdated time.Time
+	DefaultUpdated func() time.Time
 	// UpdateDefaultUpdated holds the default value on update for the "updated" field.
 	UpdateDefaultUpdated func() time.Time
 )

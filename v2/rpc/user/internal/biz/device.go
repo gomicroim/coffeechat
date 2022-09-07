@@ -3,34 +3,20 @@ package biz
 import (
 	"CoffeeChat/log"
 	"context"
+	"user/internal/data"
 	"user/internal/data/ent"
 )
 
-type Device struct {
-	ID         int32
-	DeviceID   string
-	AppVersion int32
-	OsVersion  string
-}
-
-type DeviceRepo interface {
-	Create(context.Context, *Device) (*Device, error)
-	UpdateByDevice(ctx context.Context, deviceId string, newDevice *Device) error
-	FindByID(context.Context, int32) (*Device, error)
-	FindByDeviceId(ctx context.Context, deviceId string) (*Device, error)
-	ListAll(context.Context) ([]*Device, error)
-}
-
 type DeviceUseCase struct {
-	repo DeviceRepo
+	repo data.DeviceRepo
 	log  *log.Logger
 }
 
-func NewDeviceUseCase(deviceRepo DeviceRepo, logger *log.Logger) *DeviceUseCase {
+func NewDeviceUseCase(deviceRepo data.DeviceRepo, logger *log.Logger) *DeviceUseCase {
 	return &DeviceUseCase{repo: deviceRepo, log: logger}
 }
 
-func (d *DeviceUseCase) Register(ctx context.Context, device *Device) (*Device, error) {
+func (d *DeviceUseCase) Register(ctx context.Context, device *data.Device) (*data.Device, error) {
 	po, err := d.repo.FindByDeviceId(ctx, device.DeviceID)
 	if err != nil {
 		if ent.IsNotFound(err) {

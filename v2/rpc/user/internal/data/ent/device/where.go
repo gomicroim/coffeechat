@@ -136,12 +136,6 @@ func CreatedIn(vs ...time.Time) predicate.Device {
 		v[i] = vs[i]
 	}
 	return predicate.Device(func(s *sql.Selector) {
-		// if not arguments were provided, append the FALSE constants,
-		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
-			s.Where(sql.False())
-			return
-		}
 		s.Where(sql.In(s.C(FieldCreated), v...))
 	})
 }
@@ -153,12 +147,6 @@ func CreatedNotIn(vs ...time.Time) predicate.Device {
 		v[i] = vs[i]
 	}
 	return predicate.Device(func(s *sql.Selector) {
-		// if not arguments were provided, append the FALSE constants,
-		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
-			s.Where(sql.False())
-			return
-		}
 		s.Where(sql.NotIn(s.C(FieldCreated), v...))
 	})
 }
@@ -212,12 +200,6 @@ func UpdatedIn(vs ...time.Time) predicate.Device {
 		v[i] = vs[i]
 	}
 	return predicate.Device(func(s *sql.Selector) {
-		// if not arguments were provided, append the FALSE constants,
-		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
-			s.Where(sql.False())
-			return
-		}
 		s.Where(sql.In(s.C(FieldUpdated), v...))
 	})
 }
@@ -229,12 +211,6 @@ func UpdatedNotIn(vs ...time.Time) predicate.Device {
 		v[i] = vs[i]
 	}
 	return predicate.Device(func(s *sql.Selector) {
-		// if not arguments were provided, append the FALSE constants,
-		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
-			s.Where(sql.False())
-			return
-		}
 		s.Where(sql.NotIn(s.C(FieldUpdated), v...))
 	})
 }
@@ -288,12 +264,6 @@ func DeviceIDIn(vs ...string) predicate.Device {
 		v[i] = vs[i]
 	}
 	return predicate.Device(func(s *sql.Selector) {
-		// if not arguments were provided, append the FALSE constants,
-		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
-			s.Where(sql.False())
-			return
-		}
 		s.Where(sql.In(s.C(FieldDeviceID), v...))
 	})
 }
@@ -305,12 +275,6 @@ func DeviceIDNotIn(vs ...string) predicate.Device {
 		v[i] = vs[i]
 	}
 	return predicate.Device(func(s *sql.Selector) {
-		// if not arguments were provided, append the FALSE constants,
-		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
-			s.Where(sql.False())
-			return
-		}
 		s.Where(sql.NotIn(s.C(FieldDeviceID), v...))
 	})
 }
@@ -399,12 +363,6 @@ func AppVersionIn(vs ...int32) predicate.Device {
 		v[i] = vs[i]
 	}
 	return predicate.Device(func(s *sql.Selector) {
-		// if not arguments were provided, append the FALSE constants,
-		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
-			s.Where(sql.False())
-			return
-		}
 		s.Where(sql.In(s.C(FieldAppVersion), v...))
 	})
 }
@@ -416,12 +374,6 @@ func AppVersionNotIn(vs ...int32) predicate.Device {
 		v[i] = vs[i]
 	}
 	return predicate.Device(func(s *sql.Selector) {
-		// if not arguments were provided, append the FALSE constants,
-		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
-			s.Where(sql.False())
-			return
-		}
 		s.Where(sql.NotIn(s.C(FieldAppVersion), v...))
 	})
 }
@@ -475,12 +427,6 @@ func OsVersionIn(vs ...string) predicate.Device {
 		v[i] = vs[i]
 	}
 	return predicate.Device(func(s *sql.Selector) {
-		// if not arguments were provided, append the FALSE constants,
-		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
-			s.Where(sql.False())
-			return
-		}
 		s.Where(sql.In(s.C(FieldOsVersion), v...))
 	})
 }
@@ -492,12 +438,6 @@ func OsVersionNotIn(vs ...string) predicate.Device {
 		v[i] = vs[i]
 	}
 	return predicate.Device(func(s *sql.Selector) {
-		// if not arguments were provided, append the FALSE constants,
-		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
-			s.Where(sql.False())
-			return
-		}
 		s.Where(sql.NotIn(s.C(FieldOsVersion), v...))
 	})
 }

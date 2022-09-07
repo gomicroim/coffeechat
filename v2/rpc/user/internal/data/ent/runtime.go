@@ -21,11 +21,11 @@ func init() {
 	// deviceDescCreated is the schema descriptor for created field.
 	deviceDescCreated := deviceMixinFields0[0].Descriptor()
 	// device.DefaultCreated holds the default value on creation for the created field.
-	device.DefaultCreated = deviceDescCreated.Default.(time.Time)
+	device.DefaultCreated = deviceDescCreated.Default.(func() time.Time)
 	// deviceDescUpdated is the schema descriptor for updated field.
 	deviceDescUpdated := deviceMixinFields0[1].Descriptor()
 	// device.DefaultUpdated holds the default value on creation for the updated field.
-	device.DefaultUpdated = deviceDescUpdated.Default.(time.Time)
+	device.DefaultUpdated = deviceDescUpdated.Default.(func() time.Time)
 	// device.UpdateDefaultUpdated holds the default value on update for the updated field.
 	device.UpdateDefaultUpdated = deviceDescUpdated.UpdateDefault.(func() time.Time)
 	userMixin := schema.User{}.Mixin()
@@ -36,11 +36,11 @@ func init() {
 	// userDescCreated is the schema descriptor for created field.
 	userDescCreated := userMixinFields0[0].Descriptor()
 	// user.DefaultCreated holds the default value on creation for the created field.
-	user.DefaultCreated = userDescCreated.Default.(time.Time)
+	user.DefaultCreated = userDescCreated.Default.(func() time.Time)
 	// userDescUpdated is the schema descriptor for updated field.
 	userDescUpdated := userMixinFields0[1].Descriptor()
 	// user.DefaultUpdated holds the default value on creation for the updated field.
-	user.DefaultUpdated = userDescUpdated.Default.(time.Time)
+	user.DefaultUpdated = userDescUpdated.Default.(func() time.Time)
 	// user.UpdateDefaultUpdated holds the default value on update for the updated field.
 	user.UpdateDefaultUpdated = userDescUpdated.UpdateDefault.(func() time.Time)
 	// userDescNickName is the schema descriptor for nick_name field.

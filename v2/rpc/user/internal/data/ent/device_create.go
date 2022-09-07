@@ -150,11 +150,11 @@ func (dc *DeviceCreate) ExecX(ctx context.Context) {
 // defaults sets the default values of the builder before save.
 func (dc *DeviceCreate) defaults() {
 	if _, ok := dc.mutation.Created(); !ok {
-		v := device.DefaultCreated
+		v := device.DefaultCreated()
 		dc.mutation.SetCreated(v)
 	}
 	if _, ok := dc.mutation.Updated(); !ok {
-		v := device.DefaultUpdated
+		v := device.DefaultUpdated()
 		dc.mutation.SetUpdated(v)
 	}
 }
