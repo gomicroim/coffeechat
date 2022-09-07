@@ -29,8 +29,8 @@ func NewMessageUseCase(repo data.MessageRepo, seq cache.MsgSeq, sessionRepo data
 	}
 }
 
-func (m *MessageUseCase) Send(ctx context.Context, from int64, sessionType int, to string, clientMsgID string,
-	msgType int8, msgData string, createTime int64) (*data.Message, error) {
+func (m *MessageUseCase) Send(ctx context.Context, from int64, to string, sessionType int, clientMsgID string,
+	msgType int8, msgData string) (*data.Message, error) {
 	// 幂等，如果由于网络等问题，ack客户端没有收到，则下次重发不必再插入数据库
 	msg, err := m.msgRepo.FindByClientMsgId(ctx, clientMsgID)
 	if err != nil && !ent.IsNotFound(err) {
@@ -38,16 +38,20 @@ func (m *MessageUseCase) Send(ctx context.Context, from int64, sessionType int, 
 	}
 
 	if sessionType == int(pb.IMSessionType_kCIM_SESSION_TYPE_SINGLE) {
-		return m.send(ctx, from, to, clientMsgID, msgType, msgData, createTime)
+		return m.send(ctx, from, to, clientMsgID, msgType, msgData)
 	} else if sessionType == int(pb.IMSessionType_kCIM_SESSION_TYPE_GROUP) {
-		return m.sendGroup(ctx, from, to, clientMsgID, msgType, msgData, createTime)
+		return m.sendGroup(ctx, from, to, clientMsgID, msgType, msgData)
 	} else {
 		return nil, errors.New("invalid sessionType")
 	}
 }
 
+func (m *MessageUseCase) GetSessionList(ctx context.Context, userId uint64) ([]*data.Session, error) {
+	return m.sessionRepo.ListAll(ctx, strconv.FormatUint(userId, 10))
+}
+
 func (m *MessageUseCase) send(ctx context.Context, from int64, to string, clientMsgID string,
-	msgType int8, msgData string, createTime int64) (*data.Message, error) {
+	msgType int8, msgData string) (*data.Message, error) {
 
 	sessionType := pb.IMSessionType_kCIM_SESSION_TYPE_SINGLE
 	fromStr := strconv.FormatInt(from, 10)
@@ -104,7 +108,7 @@ func (m *MessageUseCase) send(ctx context.Context, from int64, to string, client
 }
 
 func (m *MessageUseCase) sendGroup(ctx context.Context, from int64, groupId string,
-	clientMsgID string, msgType int8, msgData string, createTime int64) (*data.Message, error) {
+	clientMsgID string, msgType int8, msgData string) (*data.Message, error) {
 	sessionType := pb.IMSessionType_kCIM_SESSION_TYPE_GROUP
 	fromStr := strconv.FormatInt(from, 10)
 

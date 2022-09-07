@@ -6,12 +6,12 @@ import (
 	"chat/internal/data"
 	"chat/internal/data/cache"
 	"context"
+	"github.com/go-redis/redis/v8"
 	"github.com/stretchr/testify/assert"
 	"testing"
-	"time"
 )
 
-func setupMessageUseCase() *MessageUseCase {
+func setupBiz() (*data.Data, *redis.Client) {
 	bc := conf.MustLoad("../../configs/config.yaml")
 
 	entClient, err := data.NewEntClient(bc.Data)
@@ -25,21 +25,21 @@ func setupMessageUseCase() *MessageUseCase {
 	}
 
 	dat, _, err := data.NewData(log.L, entClient, redisClient)
-	return NewMessageUseCase(data.NewMessageRepo(dat, log.L), cache.NewMsgSeq(redisClient), data.NewSessionRepo(dat, log.L))
+	return dat, redisClient
 }
 
 func TestMessageUseCase_Send(t *testing.T) {
-	uc := setupMessageUseCase()
-	msg, err := uc.send(context.Background(), 1, "2", "ddddd-ffff-eeee-cccc", 1, "hello",
-		time.Now().Unix())
+	dat, redisClient := setupBiz()
+	uc := NewMessageUseCase(data.NewMessageRepo(dat, log.L), cache.NewMsgSeq(redisClient), data.NewSessionRepo(dat, log.L))
+	msg, err := uc.send(context.Background(), 1, "2", "ddddd-ffff-eeee-cccc", 1, "hello")
 	assert.NoError(t, err)
 	t.Log(msg)
 }
 
 func TestMessageUseCase_SendGroup(t *testing.T) {
-	uc := setupMessageUseCase()
-	msg, err := uc.sendGroup(context.Background(), 1, "22", "ddddd-ffff-eeee-cccc", 1, "hello group msg",
-		time.Now().Unix())
+	dat, redisClient := setupBiz()
+	uc := NewMessageUseCase(data.NewMessageRepo(dat, log.L), cache.NewMsgSeq(redisClient), data.NewSessionRepo(dat, log.L))
+	msg, err := uc.sendGroup(context.Background(), 1, "22", "ddddd-ffff-eeee-cccc", 1, "hello group msg")
 	assert.NoError(t, err)
 	t.Log(msg)
 }

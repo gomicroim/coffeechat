@@ -7,6 +7,7 @@ import (
 	"chat/internal/data/ent"
 	"chat/internal/data/ent/session"
 	"context"
+	"fmt"
 	"time"
 )
 
@@ -20,11 +21,16 @@ type Session struct {
 	SessionStatus pb.IMSessionStatusType // 会话状态，0：正常，1：被删除
 }
 
+func (s Session) String() string {
+	return fmt.Sprintf("UserId:%s,PeerId:%s,SessionType:%d,SessionStatus:%d", s.UserId, s.PeerId, s.SessionType, s.SessionStatus)
+}
+
 type SessionRepo interface {
 	Create(ctx context.Context, session *Session) error
 	FindOne(ctx context.Context, userId, peerId string, sessionType pb.IMSessionType) (*Session, error)
 	FindSingleSession(ctx context.Context, userId, peerId string, sessionType pb.IMSessionType) ([]*Session, error)
 	UpdateUpdated(ctx context.Context, sessionId int32, updated time.Time, sessionStatus pb.IMSessionStatusType) (int, error)
+	ListAll(ctx context.Context, userId string) ([]*Session, error)
 }
 
 type sessionRepo struct {
@@ -114,4 +120,17 @@ func (s *sessionRepo) FindSingleSession(ctx context.Context, userId, peerId stri
 func (s *sessionRepo) UpdateUpdated(ctx context.Context, sessionId int32, updated time.Time, sessionStatus pb.IMSessionStatusType) (int, error) {
 	return s.client.Session.Update().Where(session.ID(sessionId)).
 		SetSessionStatus(int8(sessionStatus)).SetUpdated(updated).Save(ctx)
+}
+
+func (s *sessionRepo) ListAll(ctx context.Context, userId string) ([]*Session, error) {
+	result, err := s.client.Session.Query().Where(session.UserID(userId)).All(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	sessions := make([]*Session, len(result))
+	for k, v := range result {
+		sessions[k] = s.ent2Model(v)
+	}
+	return sessions, nil
 }
