@@ -2,6 +2,9 @@
 
 opensource im with server(go) and client(flutter+swift)
 
+> ⚠️⚠️Warnning⚠️⚠️
+> 持续开发中，仅适合学习使用。
+
 ## News
 
 有网友在Issues询问后续更新一事，这里回复一下：
@@ -11,16 +14,32 @@ opensource im with server(go) and client(flutter+swift)
 
 最新动态：
 - 至今: 生命不息，探索不止💪💪
-- 2022/04/10：制定Monthly Release计划，每个月至少要保证一次Release
+- 2022/07/01: 目前正在开发v2架构（基于kratos v2框架），总体设计由pb+tcp变更为http+json接口方式，降低上手成本。考虑到自由度和方便体验，目前正在开发android app。
+- ~~2022/04/10：制定Monthly Release计划，每个月至少要保证一次Release~~
 - 2021/08: 作者最近在考虑跳槽，故精力主要放在研究[OpenIM](https://github.com/OpenIMSDK/Open-IM-Server)，学习Kafka，微服务，收件箱，Etcd，Docker，K8S等使用，提升技术深度。
 - 2021/03 - 07: 开发QT客户端和C++跨平台SDK，受限于精力进展缓慢。
 - 2021/02: 使用sketch设计win+mac客户端界面。
 
 总结：
-- `2022`: 再出发
+- `2022`: 再出发，学习android + kratos + k8s，实现go服务端v2版本重构
 - `2021`: 主要精力在探索百万级的架构，C++跨平台SDK，QT，Go微服务，Docker，Etcd等等，coffeechat几乎没有更新
 - `2020`: 这一年coffeechat不断完善，作者主要在学习ios开发，实现简单ios app
 - `2019/08`: coffeechat诞生，学习flutter，实现简单flutter客户端，后续因为flutter聊天界面下拉感觉效果不理想放弃
+
+## Client
+
+支持的客户端有：
+
+- 开发中（V2）
+  - [Android](https://github.com/gomicroim/client-android): 基于android 7.0 + java实现，目前正在开发中（2022年8月），适用于 `V2版本` 服务端。
+
+- 暂停中（V1）
+  - [iOS](https://github.com/xmcy0011/CoffeeChat-iOS)：基于swift5实现，目前主要维护的客户端，推荐使用。适用于 `V1版本` 服务端。
+  - [Flutter](https://github.com/xmcy0011/CoffeeChat-Flutter)：基于flutter2和dart实现，目前已不再维护，仅供学习。
+  - [Windows](https://github.com/xmcy0011/CoffeeChat-Win)：基于c++和网易duilib实现，目前只实现了登录功能。
+  - [Mac](https://github.com/xmcy0011/CoffeeChat-Desktop)：基于c++和Qt6实现，目前只实现了登录功能。
+
+请点击对应的链接查看详情。
 
 ## Preview
 
@@ -167,20 +186,6 @@ $ docker-compose down -v
 - [gim](https://github.com/alberliu/gim)：一个简单的写扩散项目，可以更深入理解写扩散的架构和原理。
 
 更多开源im，请移步：[史上最全开源IM盘点](https://blog.csdn.net/xmcy001122/article/details/110679978)
-
-## Client
-
-支持的客户端有：
-
-- 开发中
-  - [iOS](https://github.com/xmcy0011/CoffeeChat-iOS)：基于swift5实现，目前主要维护的客户端，推荐使用。
-
-- 暂停中
-  - [Flutter](https://github.com/xmcy0011/CoffeeChat-Flutter)：基于flutter2和dart实现，目前已不再维护，仅供学习。
-  - [Windows](https://github.com/xmcy0011/CoffeeChat-Win)：基于c++和网易duilib实现，目前只实现了登录功能。
-  - [Mac](https://github.com/xmcy0011/CoffeeChat-Desktop)：基于c++和Qt6实现，目前只实现了登录功能。
-
-请点击对应的链接查看详情。
 
 ## Contact
 
