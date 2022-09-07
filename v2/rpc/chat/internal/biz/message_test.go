@@ -30,7 +30,15 @@ func setupMessageUseCase() *MessageUseCase {
 
 func TestMessageUseCase_Send(t *testing.T) {
 	uc := setupMessageUseCase()
-	msg, err := uc.Send(context.Background(), 1, "2", "ddddd-ffff-eeee-cccc", 1, "hello",
+	msg, err := uc.send(context.Background(), 1, "2", "ddddd-ffff-eeee-cccc", 1, "hello",
+		time.Now().Unix())
+	assert.NoError(t, err)
+	t.Log(msg)
+}
+
+func TestMessageUseCase_SendGroup(t *testing.T) {
+	uc := setupMessageUseCase()
+	msg, err := uc.sendGroup(context.Background(), 1, "22", "ddddd-ffff-eeee-cccc", 1, "hello group msg",
 		time.Now().Unix())
 	assert.NoError(t, err)
 	t.Log(msg)

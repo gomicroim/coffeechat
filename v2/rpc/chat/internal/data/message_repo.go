@@ -26,7 +26,6 @@ type Message struct {
 	MsgResCode   int
 	MsgFeature   int
 	MsgStatus    int
-	CreateTime   int64
 }
 
 type MessageRepo interface {
@@ -61,8 +60,7 @@ func (m *messageRepo) Create(ctx context.Context, msg *Message) (*Message, error
 		SetSessionKey(sessionKey).SetFrom(msg.From).SetTo(msg.To).SetSessionType(int8(msg.SessionType)).
 		SetClientMsgID(msg.ClientMsgID).SetServerMsgSeq(msg.ServerMsgSeq).
 		SetMsgType(int8(msg.MsgType)).SetMsgData(msg.MsgData).
-		SetMsgResCode(int8(msg.MsgResCode)).SetMsgStatus(int8(msg.MsgStatus)).SetMsgFeature(int8(msg.MsgFeature)).
-		SetCreateTime(msg.CreateTime).Save(ctx)
+		SetMsgResCode(int8(msg.MsgResCode)).SetMsgStatus(int8(msg.MsgStatus)).SetMsgFeature(int8(msg.MsgFeature)).Save(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -90,7 +88,6 @@ func (m *messageRepo) ent2model(old *ent.Message, err error) (*Message, error) {
 		MsgResCode:   int(old.MsgResCode),
 		MsgFeature:   int(old.MsgFeature),
 		MsgStatus:    int(old.MsgStatus),
-		CreateTime:   old.CreateTime,
 	}, nil
 }
 

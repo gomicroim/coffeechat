@@ -114,12 +114,6 @@ func (mc *MessageCreate) SetMsgStatus(i int8) *MessageCreate {
 	return mc
 }
 
-// SetCreateTime sets the "create_time" field.
-func (mc *MessageCreate) SetCreateTime(i int64) *MessageCreate {
-	mc.mutation.SetCreateTime(i)
-	return mc
-}
-
 // SetID sets the "id" field.
 func (mc *MessageCreate) SetID(i int64) *MessageCreate {
 	mc.mutation.SetID(i)
@@ -204,11 +198,11 @@ func (mc *MessageCreate) ExecX(ctx context.Context) {
 // defaults sets the default values of the builder before save.
 func (mc *MessageCreate) defaults() {
 	if _, ok := mc.mutation.Created(); !ok {
-		v := message.DefaultCreated
+		v := message.DefaultCreated()
 		mc.mutation.SetCreated(v)
 	}
 	if _, ok := mc.mutation.Updated(); !ok {
-		v := message.DefaultUpdated
+		v := message.DefaultUpdated()
 		mc.mutation.SetUpdated(v)
 	}
 }
@@ -273,9 +267,6 @@ func (mc *MessageCreate) check() error {
 	}
 	if _, ok := mc.mutation.MsgStatus(); !ok {
 		return &ValidationError{Name: "msg_status", err: errors.New(`ent: missing required field "Message.msg_status"`)}
-	}
-	if _, ok := mc.mutation.CreateTime(); !ok {
-		return &ValidationError{Name: "create_time", err: errors.New(`ent: missing required field "Message.create_time"`)}
 	}
 	return nil
 }
@@ -413,14 +404,6 @@ func (mc *MessageCreate) createSpec() (*Message, *sqlgraph.CreateSpec) {
 			Column: message.FieldMsgStatus,
 		})
 		_node.MsgStatus = value
-	}
-	if value, ok := mc.mutation.CreateTime(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: message.FieldCreateTime,
-		})
-		_node.CreateTime = value
 	}
 	return _node, _spec
 }

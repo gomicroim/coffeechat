@@ -21,11 +21,11 @@ func init() {
 	// messageDescCreated is the schema descriptor for created field.
 	messageDescCreated := messageMixinFields0[0].Descriptor()
 	// message.DefaultCreated holds the default value on creation for the created field.
-	message.DefaultCreated = messageDescCreated.Default.(time.Time)
+	message.DefaultCreated = messageDescCreated.Default.(func() time.Time)
 	// messageDescUpdated is the schema descriptor for updated field.
 	messageDescUpdated := messageMixinFields0[1].Descriptor()
 	// message.DefaultUpdated holds the default value on creation for the updated field.
-	message.DefaultUpdated = messageDescUpdated.Default.(time.Time)
+	message.DefaultUpdated = messageDescUpdated.Default.(func() time.Time)
 	// message.UpdateDefaultUpdated holds the default value on update for the updated field.
 	message.UpdateDefaultUpdated = messageDescUpdated.UpdateDefault.(func() time.Time)
 	// messageDescSessionKey is the schema descriptor for sessionKey field.
@@ -52,11 +52,11 @@ func init() {
 	// sessionDescCreated is the schema descriptor for created field.
 	sessionDescCreated := sessionMixinFields0[0].Descriptor()
 	// session.DefaultCreated holds the default value on creation for the created field.
-	session.DefaultCreated = sessionDescCreated.Default.(time.Time)
+	session.DefaultCreated = sessionDescCreated.Default.(func() time.Time)
 	// sessionDescUpdated is the schema descriptor for updated field.
 	sessionDescUpdated := sessionMixinFields0[1].Descriptor()
 	// session.DefaultUpdated holds the default value on creation for the updated field.
-	session.DefaultUpdated = sessionDescUpdated.Default.(time.Time)
+	session.DefaultUpdated = sessionDescUpdated.Default.(func() time.Time)
 	// session.UpdateDefaultUpdated holds the default value on update for the updated field.
 	session.UpdateDefaultUpdated = sessionDescUpdated.UpdateDefault.(func() time.Time)
 	// sessionDescUserID is the schema descriptor for user_id field.

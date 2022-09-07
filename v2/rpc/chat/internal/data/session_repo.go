@@ -24,7 +24,7 @@ type SessionRepo interface {
 	Create(ctx context.Context, session *Session) error
 	FindOne(ctx context.Context, userId, peerId string, sessionType pb.IMSessionType) (*Session, error)
 	FindSingleSession(ctx context.Context, userId, peerId string, sessionType pb.IMSessionType) ([]*Session, error)
-	UpdateStatus(ctx context.Context, sessionId int32, sessionStatus pb.IMSessionStatusType) (int, error)
+	UpdateUpdated(ctx context.Context, sessionId int32, updated time.Time, sessionStatus pb.IMSessionStatusType) (int, error)
 }
 
 type sessionRepo struct {
@@ -63,7 +63,6 @@ func (s *sessionRepo) Create(ctx context.Context, session *Session) error {
 		})
 	}
 
-	// 创建双向会话
 	r, err := s.client.Session.Create().SetSessionType(int8(session.SessionType)).
 		SetSessionStatus(int8(session.SessionStatus)).
 		SetUserID(session.UserId).SetPeerID(session.PeerId).Save(ctx)
@@ -112,6 +111,7 @@ func (s *sessionRepo) FindSingleSession(ctx context.Context, userId, peerId stri
 	return sessions, nil
 }
 
-func (s *sessionRepo) UpdateStatus(ctx context.Context, sessionId int32, sessionStatus pb.IMSessionStatusType) (int, error) {
-	return s.client.Session.Update().Where(session.ID(sessionId)).SetSessionStatus(int8(sessionStatus)).Save(ctx)
+func (s *sessionRepo) UpdateUpdated(ctx context.Context, sessionId int32, updated time.Time, sessionStatus pb.IMSessionStatusType) (int, error) {
+	return s.client.Session.Update().Where(session.ID(sessionId)).
+		SetSessionStatus(int8(sessionStatus)).SetUpdated(updated).Save(ctx)
 }

@@ -24,7 +24,6 @@ var (
 		{Name: "msg_res_code", Type: field.TypeInt8},
 		{Name: "msg_feature", Type: field.TypeInt8},
 		{Name: "msg_status", Type: field.TypeInt8},
-		{Name: "create_time", Type: field.TypeInt64},
 	}
 	// MessagesTable holds the schema information for the "messages" table.
 	MessagesTable = &schema.Table{

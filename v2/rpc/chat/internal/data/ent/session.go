@@ -15,18 +15,19 @@ import (
 type Session struct {
 	config `json:"-"`
 	// ID of the ent.
+	// 自增ID
 	ID int32 `json:"id,omitempty"`
-	// Created holds the value of the "created" field.
+	// 创建时间
 	Created time.Time `json:"created,omitempty"`
-	// Updated holds the value of the "updated" field.
+	// 更新时间
 	Updated time.Time `json:"updated,omitempty"`
-	// UserID holds the value of the "user_id" field.
+	// 用户ID
 	UserID string `json:"user_id,omitempty"`
-	// PeerID holds the value of the "peer_id" field.
+	// 对方ID
 	PeerID string `json:"peer_id,omitempty"`
-	// SessionType holds the value of the "session_type" field.
+	// 会话类型，1:单聊，2:群聊
 	SessionType int8 `json:"session_type,omitempty"`
-	// SessionStatus holds the value of the "session_status" field.
+	// 会话状态，0:未知，1:正常，2:删除
 	SessionStatus int8 `json:"session_status,omitempty"`
 }
 

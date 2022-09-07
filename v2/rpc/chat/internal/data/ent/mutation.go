@@ -54,8 +54,6 @@ type MessageMutation struct {
 	addmsg_feature    *int8
 	msg_status        *int8
 	addmsg_status     *int8
-	create_time       *int64
-	addcreate_time    *int64
 	clearedFields     map[string]struct{}
 	done              bool
 	oldValue          func(context.Context) (*Message, error)
@@ -774,62 +772,6 @@ func (m *MessageMutation) ResetMsgStatus() {
 	m.addmsg_status = nil
 }
 
-// SetCreateTime sets the "create_time" field.
-func (m *MessageMutation) SetCreateTime(i int64) {
-	m.create_time = &i
-	m.addcreate_time = nil
-}
-
-// CreateTime returns the value of the "create_time" field in the mutation.
-func (m *MessageMutation) CreateTime() (r int64, exists bool) {
-	v := m.create_time
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCreateTime returns the old "create_time" field's value of the Message entity.
-// If the Message object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *MessageMutation) OldCreateTime(ctx context.Context) (v int64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCreateTime is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCreateTime requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCreateTime: %w", err)
-	}
-	return oldValue.CreateTime, nil
-}
-
-// AddCreateTime adds i to the "create_time" field.
-func (m *MessageMutation) AddCreateTime(i int64) {
-	if m.addcreate_time != nil {
-		*m.addcreate_time += i
-	} else {
-		m.addcreate_time = &i
-	}
-}
-
-// AddedCreateTime returns the value that was added to the "create_time" field in this mutation.
-func (m *MessageMutation) AddedCreateTime() (r int64, exists bool) {
-	v := m.addcreate_time
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetCreateTime resets all changes to the "create_time" field.
-func (m *MessageMutation) ResetCreateTime() {
-	m.create_time = nil
-	m.addcreate_time = nil
-}
-
 // Where appends a list predicates to the MessageMutation builder.
 func (m *MessageMutation) Where(ps ...predicate.Message) {
 	m.predicates = append(m.predicates, ps...)
@@ -849,7 +791,7 @@ func (m *MessageMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *MessageMutation) Fields() []string {
-	fields := make([]string, 0, 14)
+	fields := make([]string, 0, 13)
 	if m.created != nil {
 		fields = append(fields, message.FieldCreated)
 	}
@@ -889,9 +831,6 @@ func (m *MessageMutation) Fields() []string {
 	if m.msg_status != nil {
 		fields = append(fields, message.FieldMsgStatus)
 	}
-	if m.create_time != nil {
-		fields = append(fields, message.FieldCreateTime)
-	}
 	return fields
 }
 
@@ -926,8 +865,6 @@ func (m *MessageMutation) Field(name string) (ent.Value, bool) {
 		return m.MsgFeature()
 	case message.FieldMsgStatus:
 		return m.MsgStatus()
-	case message.FieldCreateTime:
-		return m.CreateTime()
 	}
 	return nil, false
 }
@@ -963,8 +900,6 @@ func (m *MessageMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldMsgFeature(ctx)
 	case message.FieldMsgStatus:
 		return m.OldMsgStatus(ctx)
-	case message.FieldCreateTime:
-		return m.OldCreateTime(ctx)
 	}
 	return nil, fmt.Errorf("unknown Message field %s", name)
 }
@@ -1065,13 +1000,6 @@ func (m *MessageMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetMsgStatus(v)
 		return nil
-	case message.FieldCreateTime:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCreateTime(v)
-		return nil
 	}
 	return fmt.Errorf("unknown Message field %s", name)
 }
@@ -1101,9 +1029,6 @@ func (m *MessageMutation) AddedFields() []string {
 	if m.addmsg_status != nil {
 		fields = append(fields, message.FieldMsgStatus)
 	}
-	if m.addcreate_time != nil {
-		fields = append(fields, message.FieldCreateTime)
-	}
 	return fields
 }
 
@@ -1126,8 +1051,6 @@ func (m *MessageMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedMsgFeature()
 	case message.FieldMsgStatus:
 		return m.AddedMsgStatus()
-	case message.FieldCreateTime:
-		return m.AddedCreateTime()
 	}
 	return nil, false
 }
@@ -1185,13 +1108,6 @@ func (m *MessageMutation) AddField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddMsgStatus(v)
-		return nil
-	case message.FieldCreateTime:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddCreateTime(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Message numeric field %s", name)
@@ -1258,9 +1174,6 @@ func (m *MessageMutation) ResetField(name string) error {
 		return nil
 	case message.FieldMsgStatus:
 		m.ResetMsgStatus()
-		return nil
-	case message.FieldCreateTime:
-		m.ResetCreateTime()
 		return nil
 	}
 	return fmt.Errorf("unknown Message field %s", name)

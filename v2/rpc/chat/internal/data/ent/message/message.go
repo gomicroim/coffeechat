@@ -37,8 +37,6 @@ const (
 	FieldMsgFeature = "msg_feature"
 	// FieldMsgStatus holds the string denoting the msg_status field in the database.
 	FieldMsgStatus = "msg_status"
-	// FieldCreateTime holds the string denoting the create_time field in the database.
-	FieldCreateTime = "create_time"
 	// Table holds the table name of the message in the database.
 	Table = "messages"
 )
@@ -59,7 +57,6 @@ var Columns = []string{
 	FieldMsgResCode,
 	FieldMsgFeature,
 	FieldMsgStatus,
-	FieldCreateTime,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -74,9 +71,9 @@ func ValidColumn(column string) bool {
 
 var (
 	// DefaultCreated holds the default value on creation for the "created" field.
-	DefaultCreated time.Time
+	DefaultCreated func() time.Time
 	// DefaultUpdated holds the default value on creation for the "updated" field.
-	DefaultUpdated time.Time
+	DefaultUpdated func() time.Time
 	// UpdateDefaultUpdated holds the default value on update for the "updated" field.
 	UpdateDefaultUpdated func() time.Time
 	// SessionKeyValidator is a validator for the "sessionKey" field. It is called by the builders before save.

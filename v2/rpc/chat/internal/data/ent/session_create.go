@@ -156,11 +156,11 @@ func (sc *SessionCreate) ExecX(ctx context.Context) {
 // defaults sets the default values of the builder before save.
 func (sc *SessionCreate) defaults() {
 	if _, ok := sc.mutation.Created(); !ok {
-		v := session.DefaultCreated
+		v := session.DefaultCreated()
 		sc.mutation.SetCreated(v)
 	}
 	if _, ok := sc.mutation.Updated(); !ok {
-		v := session.DefaultUpdated
+		v := session.DefaultUpdated()
 		sc.mutation.SetUpdated(v)
 	}
 }

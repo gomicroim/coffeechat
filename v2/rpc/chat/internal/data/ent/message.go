@@ -15,35 +15,34 @@ import (
 type Message struct {
 	config `json:"-"`
 	// ID of the ent.
+	// 自增ID
 	ID int64 `json:"id,omitempty"`
-	// Created holds the value of the "created" field.
+	// 创建时间
 	Created time.Time `json:"created,omitempty"`
-	// Updated holds the value of the "updated" field.
+	// 更新时间
 	Updated time.Time `json:"updated,omitempty"`
-	// SessionKey holds the value of the "sessionKey" field.
+	// session唯一标志
 	SessionKey string `json:"sessionKey,omitempty"`
-	// From holds the value of the "from" field.
+	// 发送人Id
 	From int64 `json:"from,omitempty"`
-	// To holds the value of the "to" field.
+	// 接收目标ID
 	To string `json:"to,omitempty"`
-	// SessionType holds the value of the "session_type" field.
+	// 会话类型，0:未知 1:单聊 2:群聊
 	SessionType int8 `json:"session_type,omitempty"`
-	// ClientMsgID holds the value of the "client_msg_id" field.
+	// 客户端生成的消息UUID(去重)
 	ClientMsgID string `json:"client_msg_id,omitempty"`
-	// ServerMsgSeq holds the value of the "server_msg_seq" field.
+	// 服务端生成的消息序号(乱序处理)
 	ServerMsgSeq int64 `json:"server_msg_seq,omitempty"`
-	// MsgType holds the value of the "msg_type" field.
+	// 消息类型
 	MsgType int8 `json:"msg_type,omitempty"`
-	// MsgData holds the value of the "msg_data" field.
+	// 消息内容
 	MsgData string `json:"msg_data,omitempty"`
-	// MsgResCode holds the value of the "msg_res_code" field.
+	// 消息错误码
 	MsgResCode int8 `json:"msg_res_code,omitempty"`
-	// MsgFeature holds the value of the "msg_feature" field.
+	// 消息属性
 	MsgFeature int8 `json:"msg_feature,omitempty"`
-	// MsgStatus holds the value of the "msg_status" field.
+	// 消息状态
 	MsgStatus int8 `json:"msg_status,omitempty"`
-	// CreateTime holds the value of the "create_time" field.
-	CreateTime int64 `json:"create_time,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -51,7 +50,7 @@ func (*Message) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case message.FieldID, message.FieldFrom, message.FieldSessionType, message.FieldServerMsgSeq, message.FieldMsgType, message.FieldMsgResCode, message.FieldMsgFeature, message.FieldMsgStatus, message.FieldCreateTime:
+		case message.FieldID, message.FieldFrom, message.FieldSessionType, message.FieldServerMsgSeq, message.FieldMsgType, message.FieldMsgResCode, message.FieldMsgFeature, message.FieldMsgStatus:
 			values[i] = new(sql.NullInt64)
 		case message.FieldSessionKey, message.FieldTo, message.FieldClientMsgID, message.FieldMsgData:
 			values[i] = new(sql.NullString)
@@ -156,12 +155,6 @@ func (m *Message) assignValues(columns []string, values []interface{}) error {
 			} else if value.Valid {
 				m.MsgStatus = int8(value.Int64)
 			}
-		case message.FieldCreateTime:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field create_time", values[i])
-			} else if value.Valid {
-				m.CreateTime = value.Int64
-			}
 		}
 	}
 	return nil
@@ -228,9 +221,6 @@ func (m *Message) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("msg_status=")
 	builder.WriteString(fmt.Sprintf("%v", m.MsgStatus))
-	builder.WriteString(", ")
-	builder.WriteString("create_time=")
-	builder.WriteString(fmt.Sprintf("%v", m.CreateTime))
 	builder.WriteByte(')')
 	return builder.String()
 }

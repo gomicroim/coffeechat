@@ -149,19 +149,6 @@ func (mu *MessageUpdate) AddMsgStatus(i int8) *MessageUpdate {
 	return mu
 }
 
-// SetCreateTime sets the "create_time" field.
-func (mu *MessageUpdate) SetCreateTime(i int64) *MessageUpdate {
-	mu.mutation.ResetCreateTime()
-	mu.mutation.SetCreateTime(i)
-	return mu
-}
-
-// AddCreateTime adds i to the "create_time" field.
-func (mu *MessageUpdate) AddCreateTime(i int64) *MessageUpdate {
-	mu.mutation.AddCreateTime(i)
-	return mu
-}
-
 // Mutation returns the MessageMutation object of the builder.
 func (mu *MessageUpdate) Mutation() *MessageMutation {
 	return mu.mutation
@@ -412,20 +399,6 @@ func (mu *MessageUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: message.FieldMsgStatus,
 		})
 	}
-	if value, ok := mu.mutation.CreateTime(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: message.FieldCreateTime,
-		})
-	}
-	if value, ok := mu.mutation.AddedCreateTime(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: message.FieldCreateTime,
-		})
-	}
 	if n, err = sqlgraph.UpdateNodes(ctx, mu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{message.Label}
@@ -563,19 +536,6 @@ func (muo *MessageUpdateOne) SetMsgStatus(i int8) *MessageUpdateOne {
 // AddMsgStatus adds i to the "msg_status" field.
 func (muo *MessageUpdateOne) AddMsgStatus(i int8) *MessageUpdateOne {
 	muo.mutation.AddMsgStatus(i)
-	return muo
-}
-
-// SetCreateTime sets the "create_time" field.
-func (muo *MessageUpdateOne) SetCreateTime(i int64) *MessageUpdateOne {
-	muo.mutation.ResetCreateTime()
-	muo.mutation.SetCreateTime(i)
-	return muo
-}
-
-// AddCreateTime adds i to the "create_time" field.
-func (muo *MessageUpdateOne) AddCreateTime(i int64) *MessageUpdateOne {
-	muo.mutation.AddCreateTime(i)
 	return muo
 }
 
@@ -857,20 +817,6 @@ func (muo *MessageUpdateOne) sqlSave(ctx context.Context) (_node *Message, err e
 			Type:   field.TypeInt8,
 			Value:  value,
 			Column: message.FieldMsgStatus,
-		})
-	}
-	if value, ok := muo.mutation.CreateTime(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: message.FieldCreateTime,
-		})
-	}
-	if value, ok := muo.mutation.AddedCreateTime(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: message.FieldCreateTime,
 		})
 	}
 	_node = &Message{config: muo.config}
