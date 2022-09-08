@@ -14,6 +14,7 @@ import (
 	"chat/internal/data/cache"
 	"chat/internal/server"
 	"chat/internal/service"
+	"github.com/go-kratos/kratos/contrib/registry/etcd/v2"
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
 )
@@ -21,7 +22,7 @@ import (
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(confServer *conf.Server, confData *conf.Data, logger log.Logger, logLogger *log2.Logger) (*kratos.App, func(), error) {
+func wireApp(confServer *conf.Server, confData *conf.Data, logger log.Logger, logLogger *log2.Logger, registry *etcd.Registry) (*kratos.App, func(), error) {
 	client, err := data.NewEntClient(confData)
 	if err != nil {
 		return nil, nil, err
@@ -41,7 +42,7 @@ func wireApp(confServer *conf.Server, confData *conf.Data, logger log.Logger, lo
 	recentSessionUseCase := biz.NewRecentSessionUseCase(sessionRepo)
 	chatService := service.NewChatService(messageUseCase, recentSessionUseCase)
 	grpcServer := server.NewGRPCServer(confServer, chatService, logger)
-	app := newApp(logger, grpcServer)
+	app := newApp(logger, grpcServer, registry)
 	return app, func() {
 		cleanup()
 	}, nil

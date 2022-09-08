@@ -3,6 +3,9 @@ package main
 import (
 	"CoffeeChat/log"
 	"flag"
+	"github.com/go-kratos/kratos/contrib/registry/etcd/v2"
+	clientv3 "go.etcd.io/etcd/client/v3"
+	"go.uber.org/zap"
 	"os"
 
 	"chat/internal/conf"
@@ -24,7 +27,7 @@ func init() {
 	flag.StringVar(&flagConf, "conf", "../../configs/config.example.yaml", "config path, eg: -conf config.yaml")
 }
 
-func newApp(logger kratoslog.Logger, gs *grpc.Server) *kratos.App {
+func newApp(logger kratoslog.Logger, gs *grpc.Server, registry *etcd.Registry) *kratos.App {
 	return kratos.New(
 		kratos.ID(id),
 		kratos.Name(Name),
@@ -34,6 +37,7 @@ func newApp(logger kratoslog.Logger, gs *grpc.Server) *kratos.App {
 		kratos.Server(
 			gs,
 		),
+		kratos.Registrar(registry),
 	)
 }
 
@@ -46,7 +50,18 @@ func main() {
 	bc := conf.MustLoad(flagConf)
 	Name = bc.Registry.Etcd.RegisterServerName
 
-	app, cleanup, err := wireApp(bc.Server, bc.Data, logger, logger)
+	// register etcd
+	etcdClient, err := clientv3.New(clientv3.Config{
+		Endpoints: bc.Registry.Etcd.Endpoints,
+	})
+	if err != nil {
+		panic(err)
+	}
+	log.L.Info("register etcd",
+		zap.Strings("endpoints", bc.Registry.Etcd.Endpoints))
+	reg := etcd.New(etcdClient)
+
+	app, cleanup, err := wireApp(bc.Server, bc.Data, logger, logger, reg)
 	if err != nil {
 		panic(err)
 	}
