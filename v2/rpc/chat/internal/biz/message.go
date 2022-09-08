@@ -46,8 +46,14 @@ func (m *MessageUseCase) Send(ctx context.Context, from int64, to string, sessio
 	}
 }
 
-func (m *MessageUseCase) GetSessionList(ctx context.Context, userId uint64) ([]*data.Session, error) {
-	return m.sessionRepo.ListAll(ctx, strconv.FormatUint(userId, 10))
+func (m *MessageUseCase) GetMessageList(ctx context.Context, userId int64, peerId string,
+	sessionType pb.IMSessionType, isForward bool, msgSeq int64, limit int) ([]*data.Message, error) {
+	if isForward {
+		endMsgSeq := msgSeq
+		return m.msgRepo.ListByEndMsgSeq(ctx, m.msgRepo.GetSessionKey(userId, peerId, sessionType), endMsgSeq, limit)
+	}
+	startMsgSeq := msgSeq
+	return m.msgRepo.ListByStartMsgSeq(ctx, m.msgRepo.GetSessionKey(userId, peerId, sessionType), startMsgSeq, limit)
 }
 
 func (m *MessageUseCase) send(ctx context.Context, from int64, to string, clientMsgID string,
@@ -96,6 +102,7 @@ func (m *MessageUseCase) send(ctx context.Context, from int64, to string, client
 	return m.msgRepo.Create(ctx, &data.Message{
 		From:         from,
 		To:           to,
+		SessionKey:   m.msgRepo.GetSessionKey(from, to, sessionType),
 		SessionType:  int(sessionType),
 		ClientMsgID:  clientMsgID,
 		ServerMsgSeq: msgSeq,
@@ -103,7 +110,7 @@ func (m *MessageUseCase) send(ctx context.Context, from int64, to string, client
 		MsgData:      msgData,
 		MsgResCode:   int(pb.IMResCode_kCIM_RES_CODE_OK),
 		MsgFeature:   int(pb.IMMsgFeature_kCIM_MSG_FEATURE_ROAM_MSG),
-		MsgStatus:    int(pb.CIMMsgStatus_kCIM_MSG_STATUS_NONE),
+		MsgStatus:    int(pb.IMMsgStatus_kCIM_MSG_STATUS_NONE),
 	})
 }
 
@@ -150,6 +157,6 @@ func (m *MessageUseCase) sendGroup(ctx context.Context, from int64, groupId stri
 		MsgData:      msgData,
 		MsgResCode:   int(pb.IMResCode_kCIM_RES_CODE_OK),
 		MsgFeature:   int(pb.IMMsgFeature_kCIM_MSG_FEATURE_ROAM_MSG),
-		MsgStatus:    int(pb.CIMMsgStatus_kCIM_MSG_STATUS_NONE),
+		MsgStatus:    int(pb.IMMsgStatus_kCIM_MSG_STATUS_NONE),
 	})
 }

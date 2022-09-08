@@ -40,7 +40,7 @@ enum IMMsgType {
 }
 
 // 消息状态
-enum CIMMsgStatus {
+enum IMMsgStatus {
   kCIM_MSG_STATUS_NONE = 0;       // 默认，不能当查询条件，意义太多
   kCIM_MSG_STATUS_UNREAD = 1;     // 收到消息，未读
   kCIM_MSG_STATUS_READ = 2;       // 收到消息，已读

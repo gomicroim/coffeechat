@@ -6,7 +6,6 @@ import (
 	"chat/internal/data/ent"
 	"chat/internal/data/ent/message"
 	"context"
-	"errors"
 	"fmt"
 	"strconv"
 	"time"
@@ -18,6 +17,7 @@ type Message struct {
 	Updated      time.Time // 更新时间
 	From         int64
 	To           string
+	SessionKey   string // 会话标志，用来查询历史聊天消息。私聊是smallId:bigId,群聊是groupId
 	SessionType  int
 	ClientMsgID  string
 	ServerMsgSeq int64
@@ -28,9 +28,18 @@ type Message struct {
 	MsgStatus    int
 }
 
+func (m Message) String() string {
+	return fmt.Sprintf("from:%d,to:%s,sessionType:%d,clientMsgId:%s,msgSeq:%d,msgType:%d,msgData:%s",
+		m.From, m.To, m.SessionType, m.ClientMsgID, m.ServerMsgSeq, m.MsgType, m.MsgData)
+}
+
 type MessageRepo interface {
+	// GetSessionKey 根据 from&to 生产一个唯一key，以方便查询历史聊天消息
+	GetSessionKey(from int64, to string, sessionType pb.IMSessionType) string
 	Create(context.Context, *Message) (*Message, error)
 	FindByClientMsgId(ctx context.Context, clientMsgId string) (*Message, error)
+	ListByStartMsgSeq(ctx context.Context, sessionKey string, startMsgSeq int64, limit int) ([]*Message, error)
+	ListByEndMsgSeq(ctx context.Context, sessionKey string, endMsgSeq int64, limit int) ([]*Message, error)
 }
 
 type messageRepo struct {
@@ -46,18 +55,8 @@ func NewMessageRepo(data *Data, logger *log.Logger) MessageRepo {
 }
 
 func (m *messageRepo) Create(ctx context.Context, msg *Message) (*Message, error) {
-	// 根据 from&to 生产一个唯一key，以方便查询私聊消息，群直接根据groupId查即可
-	sessionKey := ""
-	if msg.SessionType == int(pb.IMSessionType_kCIM_SESSION_TYPE_GROUP) {
-		sessionKey = msg.To
-	} else if msg.SessionType == int(pb.IMSessionType_kCIM_SESSION_TYPE_SINGLE) {
-		sessionKey = m.getSingleSessionId(strconv.FormatInt(msg.From, 10), msg.To)
-	} else {
-		return nil, errors.New("not support sessionType")
-	}
-
 	result, err := m.client.Message.Create().
-		SetSessionKey(sessionKey).SetFrom(msg.From).SetTo(msg.To).SetSessionType(int8(msg.SessionType)).
+		SetSessionKey(msg.SessionKey).SetFrom(msg.From).SetTo(msg.To).SetSessionType(int8(msg.SessionType)).
 		SetClientMsgID(msg.ClientMsgID).SetServerMsgSeq(msg.ServerMsgSeq).
 		SetMsgType(int8(msg.MsgType)).SetMsgData(msg.MsgData).
 		SetMsgResCode(int8(msg.MsgResCode)).SetMsgStatus(int8(msg.MsgStatus)).SetMsgFeature(int8(msg.MsgFeature)).Save(ctx)
@@ -70,10 +69,7 @@ func (m *messageRepo) Create(ctx context.Context, msg *Message) (*Message, error
 	return msg, nil
 }
 
-func (m *messageRepo) ent2model(old *ent.Message, err error) (*Message, error) {
-	if err != nil {
-		return nil, err
-	}
+func (m *messageRepo) ent2model(old *ent.Message) *Message {
 	return &Message{
 		ID:           old.ID,
 		Created:      old.Created,
@@ -88,17 +84,56 @@ func (m *messageRepo) ent2model(old *ent.Message, err error) (*Message, error) {
 		MsgResCode:   int(old.MsgResCode),
 		MsgFeature:   int(old.MsgFeature),
 		MsgStatus:    int(old.MsgStatus),
-	}, nil
+	}
 }
 
 func (m *messageRepo) FindByClientMsgId(ctx context.Context, clientMsgId string) (*Message, error) {
-	return m.ent2model(m.client.Message.Query().Where(message.ClientMsgID(clientMsgId)).Only(ctx))
+	result, err := m.client.Message.Query().Where(message.ClientMsgID(clientMsgId)).Only(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return m.ent2model(result), nil
 }
 
-func (m messageRepo) getSingleSessionId(from string, to string) string {
-	small, big := from, to
-	if from > to {
-		small, big = to, from
+func (m *messageRepo) ListByStartMsgSeq(ctx context.Context, sessionKey string, startMsgSeq int64, limit int) ([]*Message, error) {
+	arr, err := m.client.Message.Query().
+		Where(message.SessionKey(sessionKey), message.ServerMsgSeqGT(startMsgSeq)).
+		Order(ent.Asc(message.FieldServerMsgSeq)).
+		Limit(limit).All(ctx)
+	if err != nil {
+		return nil, err
 	}
-	return fmt.Sprintf("single:%s:%s", small, big)
+	messages := make([]*Message, len(arr))
+	for k, v := range arr {
+		messages[k] = m.ent2model(v)
+	}
+	return messages, nil
+}
+
+func (m *messageRepo) ListByEndMsgSeq(ctx context.Context, sessionKey string, endMsgSeq int64, limit int) ([]*Message, error) {
+	arr, err := m.client.Message.Query().
+		Where(message.SessionKey(sessionKey), message.ServerMsgSeqLT(endMsgSeq)).
+		Order(ent.Desc(message.FieldServerMsgSeq)).
+		Limit(limit).All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	messages := make([]*Message, len(arr))
+	for k, v := range arr {
+		messages[k] = m.ent2model(v)
+	}
+	return messages, nil
+}
+
+func (m *messageRepo) GetSessionKey(from int64, to string, sessionType pb.IMSessionType) string {
+	if sessionType == pb.IMSessionType_kCIM_SESSION_TYPE_SINGLE {
+		fromStr := strconv.FormatInt(from, 10)
+		small, big := fromStr, to
+		if fromStr > to {
+			small, big = to, fromStr
+		}
+		return fmt.Sprintf("single:%s:%s", small, big)
+	}
+	// 群直接根据groupId查即可
+	return to
 }

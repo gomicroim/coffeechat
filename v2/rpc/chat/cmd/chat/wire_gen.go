@@ -38,7 +38,8 @@ func wireApp(confServer *conf.Server, confData *conf.Data, logger log.Logger, lo
 	msgSeq := cache.NewMsgSeq(redisClient)
 	sessionRepo := data.NewSessionRepo(dataData, logLogger)
 	messageUseCase := biz.NewMessageUseCase(messageRepo, msgSeq, sessionRepo)
-	chatService := service.NewChatService(messageUseCase)
+	recentSessionUseCase := biz.NewRecentSessionUseCase(sessionRepo)
+	chatService := service.NewChatService(messageUseCase, recentSessionUseCase)
 	grpcServer := server.NewGRPCServer(confServer, chatService, logger)
 	app := newApp(logger, grpcServer)
 	return app, func() {

@@ -2,12 +2,14 @@ package biz
 
 import (
 	"CoffeeChat/log"
+	pb "chat/api/chat"
 	"chat/internal/conf"
 	"chat/internal/data"
 	"chat/internal/data/cache"
 	"context"
 	"github.com/go-redis/redis/v8"
 	"github.com/stretchr/testify/assert"
+	"math"
 	"testing"
 )
 
@@ -40,6 +42,16 @@ func TestMessageUseCase_SendGroup(t *testing.T) {
 	dat, redisClient := setupBiz()
 	uc := NewMessageUseCase(data.NewMessageRepo(dat, log.L), cache.NewMsgSeq(redisClient), data.NewSessionRepo(dat, log.L))
 	msg, err := uc.sendGroup(context.Background(), 1, "22", "ddddd-ffff-eeee-cccc", 1, "hello group msg")
+	assert.NoError(t, err)
+	t.Log(msg)
+}
+
+func TestMessageUseCase_GetMessageList(t *testing.T) {
+	dat, redisClient := setupBiz()
+	uc := NewMessageUseCase(data.NewMessageRepo(dat, log.L), cache.NewMsgSeq(redisClient), data.NewSessionRepo(dat, log.L))
+	msg, err := uc.GetMessageList(context.Background(), 1, "22",
+		int(pb.IMSessionType_kCIM_SESSION_TYPE_GROUP), true,
+		int64(math.MaxInt64), 10)
 	assert.NoError(t, err)
 	t.Log(msg)
 }

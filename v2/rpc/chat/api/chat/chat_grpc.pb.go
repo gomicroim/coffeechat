@@ -24,8 +24,6 @@ const _ = grpc.SupportPackageIsVersion7
 type ChatClient interface {
 	// 发消息
 	SendMsg(ctx context.Context, in *SendMsgRequest, opts ...grpc.CallOption) (*SendMsgReply, error)
-	// timeline 同步消息（适合有本地存储能力的客户端，如APP）
-	GetSyncMessage(ctx context.Context, in *SyncMessageRequest, opts ...grpc.CallOption) (*SyncMessageReply, error)
 	// 查询会话列表
 	GetRecentContactSession(ctx context.Context, in *GetRecentSessionRequest, opts ...grpc.CallOption) (*GetRecentSessionReply, error)
 	// 查询历史消息列表
@@ -45,15 +43,6 @@ func NewChatClient(cc grpc.ClientConnInterface) ChatClient {
 func (c *chatClient) SendMsg(ctx context.Context, in *SendMsgRequest, opts ...grpc.CallOption) (*SendMsgReply, error) {
 	out := new(SendMsgReply)
 	err := c.cc.Invoke(ctx, "/chat.Chat/SendMsg", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *chatClient) GetSyncMessage(ctx context.Context, in *SyncMessageRequest, opts ...grpc.CallOption) (*SyncMessageReply, error) {
-	out := new(SyncMessageReply)
-	err := c.cc.Invoke(ctx, "/chat.Chat/GetSyncMessage", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -93,8 +82,6 @@ func (c *chatClient) MsgReadAck(ctx context.Context, in *MsgReadAckRequest, opts
 type ChatServer interface {
 	// 发消息
 	SendMsg(context.Context, *SendMsgRequest) (*SendMsgReply, error)
-	// timeline 同步消息（适合有本地存储能力的客户端，如APP）
-	GetSyncMessage(context.Context, *SyncMessageRequest) (*SyncMessageReply, error)
 	// 查询会话列表
 	GetRecentContactSession(context.Context, *GetRecentSessionRequest) (*GetRecentSessionReply, error)
 	// 查询历史消息列表
@@ -110,9 +97,6 @@ type UnimplementedChatServer struct {
 
 func (UnimplementedChatServer) SendMsg(context.Context, *SendMsgRequest) (*SendMsgReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendMsg not implemented")
-}
-func (UnimplementedChatServer) GetSyncMessage(context.Context, *SyncMessageRequest) (*SyncMessageReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetSyncMessage not implemented")
 }
 func (UnimplementedChatServer) GetRecentContactSession(context.Context, *GetRecentSessionRequest) (*GetRecentSessionReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetRecentContactSession not implemented")
@@ -150,24 +134,6 @@ func _Chat_SendMsg_Handler(srv interface{}, ctx context.Context, dec func(interf
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ChatServer).SendMsg(ctx, req.(*SendMsgRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Chat_GetSyncMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SyncMessageRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ChatServer).GetSyncMessage(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/chat.Chat/GetSyncMessage",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChatServer).GetSyncMessage(ctx, req.(*SyncMessageRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -236,10 +202,6 @@ var Chat_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SendMsg",
 			Handler:    _Chat_SendMsg_Handler,
-		},
-		{
-			MethodName: "GetSyncMessage",
-			Handler:    _Chat_GetSyncMessage_Handler,
 		},
 		{
 			MethodName: "GetRecentContactSession",
