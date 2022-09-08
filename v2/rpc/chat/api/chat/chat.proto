@@ -122,9 +122,8 @@ message SendMsgRequest {
   string to = 2;                  // 消息接受方，单聊用户ID，群聊群ID
   IMSessionType session_type = 3; // 会话类型
   string client_msg_id = 4;       // 客户端消息ID，唯一（UUID）
-  int32 create_time = 5;          // 消息创建时间戳(秒)
-  IMMsgType msg_type = 6;         // 消息类型
-  string msg_data = 7;            // 消息内容
+  IMMsgType msg_type = 5;         // 消息类型
+  string msg_data = 6;            // 消息内容
 }
 
 // 发送消息响应

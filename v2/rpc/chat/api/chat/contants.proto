@@ -4,7 +4,7 @@ package chat;
 option go_package = "chat/api/chat;chat";
 
 // 客户端类型
-enum CIMClientType {
+enum IMClientType {
   kCIM_CLIENT_TYPE_DEFAULT = 0; // unset
   kCIM_CLIENT_TYPE_ANDROID = 1; // 安卓
   kCIM_CLIENT_TYPE_IOS = 2;     // iOS
