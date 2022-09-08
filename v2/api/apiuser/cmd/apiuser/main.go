@@ -2,20 +2,15 @@ package main
 
 import (
 	"CoffeeChat/log"
-	"context"
+	"apiuser/internal/conf"
 	"flag"
 	"github.com/go-kratos/kratos/contrib/registry/etcd/v2"
-	"github.com/go-kratos/kratos/v2/registry"
-	"github.com/go-kratos/kratos/v2/transport/grpc"
-	clientv3 "go.etcd.io/etcd/client/v3"
-	"go.uber.org/zap"
-	"os"
-	"user/api/user"
-
-	"apiuser/internal/conf"
 	"github.com/go-kratos/kratos/v2"
 	kratoslog "github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/transport/http"
+	clientv3 "go.etcd.io/etcd/client/v3"
+	"go.uber.org/zap"
+	"os"
 )
 
 var (
@@ -61,11 +56,9 @@ func main() {
 	log.L.Info("connect etcd", zap.Strings("etcd", bc.Discover.Etcd.Endpoints))
 
 	// wire depends
-	app, cleanup, err := wireApp(bc.Server, bc.Data,
+	app, cleanup, err := wireApp(bc.Server, bc.Data, bc.Discover,
 		log.MustNewLogger(id, Name, Version, true, 4),
-		log.L,
-		NewAuthClient(bc, dis),
-	)
+		log.L, dis)
 	if err != nil {
 		panic(err)
 	}
@@ -75,16 +68,4 @@ func main() {
 	if err := app.Run(); err != nil {
 		panic(err)
 	}
-}
-
-func NewAuthClient(config *conf.Bootstrap, discovery registry.Discovery) user.AuthClient {
-	rpcUserEndpoint := "discovery:///" + config.Discover.ServiceEndpoint.RpcUser
-	conn, err := grpc.DialInsecure(context.Background(),
-		grpc.WithEndpoint(rpcUserEndpoint),
-		grpc.WithDiscovery(discovery),
-	)
-	if err != nil {
-		panic(err)
-	}
-	return user.NewAuthClient(conn)
 }
