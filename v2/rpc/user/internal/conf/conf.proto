@@ -14,6 +14,7 @@ message Bootstrap {
 message Registry {
   message ETCD {
     repeated string endpoints = 1;
+    string register_server_name = 2;
   }
   ETCD etcd = 3;
 }

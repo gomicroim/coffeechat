@@ -46,6 +46,7 @@ func main() {
 	log.SetGlobalLogger(logger)
 
 	bc := conf.Load(flagConf)
+	Name = bc.Registry.Etcd.RegisterServerName
 
 	// register etcd
 	etcdClient, err := clientv3.New(clientv3.Config{
