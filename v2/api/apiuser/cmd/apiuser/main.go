@@ -14,8 +14,6 @@ import (
 
 	"apiuser/internal/conf"
 	"github.com/go-kratos/kratos/v2"
-	"github.com/go-kratos/kratos/v2/config"
-	"github.com/go-kratos/kratos/v2/config/file"
 	kratoslog "github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/transport/http"
 )
@@ -50,21 +48,7 @@ func main() {
 	kratoslog.SetLogger(log.MustNewLogger(id, Name, Version, true, 2))
 	log.SetGlobalLogger(log.MustNewLogger(id, Name, Version, true, 0))
 
-	c := config.New(
-		config.WithSource(
-			file.NewSource(flagConf),
-		),
-	)
-	defer c.Close()
-
-	if err := c.Load(); err != nil {
-		panic(err)
-	}
-
-	var bc conf.Bootstrap
-	if err := c.Scan(&bc); err != nil {
-		panic(err)
-	}
+	bc := conf.MustLoad(flagConf)
 
 	// etcd conn
 	etcdClient, err := clientv3.New(clientv3.Config{
@@ -80,7 +64,7 @@ func main() {
 	app, cleanup, err := wireApp(bc.Server, bc.Data,
 		log.MustNewLogger(id, Name, Version, true, 4),
 		log.L,
-		NewAuthClient(&bc, dis),
+		NewAuthClient(bc, dis),
 	)
 	if err != nil {
 		panic(err)
