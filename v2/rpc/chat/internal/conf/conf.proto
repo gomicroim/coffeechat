@@ -8,21 +8,16 @@ import "google/protobuf/duration.proto";
 message Bootstrap {
   Server server = 1;
   Data data = 2;
+  Registry registry = 3;
 }
 
 message Server {
-  message HTTP {
-    string network = 1;
-    string addr = 2;
-    google.protobuf.Duration timeout = 3;
-  }
   message GRPC {
     string network = 1;
     string addr = 2;
     google.protobuf.Duration timeout = 3;
   }
-  HTTP http = 1;
-  GRPC grpc = 2;
+  GRPC grpc = 1;
 }
 
 message Data {
@@ -33,10 +28,19 @@ message Data {
   message Redis {
     string addr = 1;
     string password = 2;
-    int32  db = 3;
+    int32 db = 3;
     google.protobuf.Duration read_timeout = 4;
     google.protobuf.Duration write_timeout = 5;
+    google.protobuf.Duration dial_timeout = 6;
   }
   Database database = 1;
   Redis redis = 2;
+}
+
+message Registry {
+  message ETCD {
+    repeated string endpoints = 1;
+    string register_server_name = 2;
+  }
+  ETCD etcd = 3;
 }

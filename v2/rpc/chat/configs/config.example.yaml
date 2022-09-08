@@ -1,7 +1,4 @@
 server:
-  http:
-    addr: 0.0.0.0:8000
-    timeout: 1s
   grpc:
     addr: 0.0.0.0:9000
     timeout: 1s
@@ -11,7 +8,12 @@ data:
     source: cim:coffeechat2022@tcp(127.0.0.1:3306)/coffeechat?charset=utf8mb4&parseTime=true
   redis:
     addr: 127.0.0.1:6379
-    read_timeout: 0.2s
-    write_timeout: 0.2s
     password: "coffeechat"
-    db: 1
+    db: 0
+    read_timeout: 0.4s
+    write_timeout: 0.6s
+    dial_timeout: 1s
+registry:
+  etcd:
+    endpoints: [ 127.0.0.1:2379 ]
+    register_server_name: rpc-chat

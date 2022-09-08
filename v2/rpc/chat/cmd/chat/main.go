@@ -13,7 +13,7 @@ import (
 
 // go build -ldflags "-X main.Version=x.y.z"
 var (
-	Name     string
+	Name     = "rpc-chat"
 	Version  string
 	flagConf string
 
@@ -21,7 +21,7 @@ var (
 )
 
 func init() {
-	flag.StringVar(&flagConf, "conf", "../../configs/config.yaml", "config path, eg: -conf config.yaml")
+	flag.StringVar(&flagConf, "conf", "../../configs/config.example.yaml", "config path, eg: -conf config.yaml")
 }
 
 func newApp(logger kratoslog.Logger, gs *grpc.Server) *kratos.App {
@@ -44,6 +44,8 @@ func main() {
 	log.SetGlobalLogger(logger)
 
 	bc := conf.MustLoad(flagConf)
+	Name = bc.Registry.Etcd.RegisterServerName
+
 	app, cleanup, err := wireApp(bc.Server, bc.Data, logger, logger)
 	if err != nil {
 		panic(err)
