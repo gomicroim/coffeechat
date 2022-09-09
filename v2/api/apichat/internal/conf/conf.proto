@@ -16,7 +16,12 @@ message Server {
     string addr = 2;
     google.protobuf.Duration timeout = 3;
   }
+  message JWT {
+    string access_secret = 1;
+    string refresh_secret = 2;
+  }
   HTTP http = 1;
+  JWT jwt = 2;
 }
 
 message Discover {

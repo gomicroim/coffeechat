@@ -26,7 +26,7 @@ func (s *ChatService) SendMsg(ctx context.Context, req *pb.SendMsgRequest) (*pb.
 		return nil, err
 	}
 	return &pb.SendMsgReply{
-		MsgSeq:  uint64(msg.ServerMsgSeq),
+		MsgSeq:  msg.ServerMsgSeq,
 		ResCode: pb.IMResCode(msg.MsgResCode),
 	}, nil
 }

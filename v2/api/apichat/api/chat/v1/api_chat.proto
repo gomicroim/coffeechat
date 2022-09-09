@@ -152,16 +152,17 @@ message IMMessage{
 
 // 发送消息请求
 message SendMsgRequest {
-  int64 from = 1;           // 消息发送方
-  int64 to = 2;             // 消息接受方，单聊用户ID，群聊群ID
-  string client_msg_id = 3; // 客户端消息ID，唯一（UUID）
-  chat.IMMsgType msg_type = 4;  // 消息类型
-  bytes msg_data = 5;       // 消息内容
+  // 消息发送方（从token中解析）
+  // int64 from = 1;
+  string to = 1;                // 消息接受方，单聊用户ID，群聊群ID
+  string client_msg_id = 2;     // 客户端消息ID，唯一（UUID）
+  chat.IMMsgType msg_type = 3;  // 消息类型
+  string msg_data = 4;          // 消息内容
 }
 
 // 发送消息响应
 message SendMsgReply {
-  uint64 server_msg_seq = 1; // 服务端生成的消息ID，顺序
+  int64 server_msg_seq = 1; // 服务端生成的消息ID，顺序
   chat.IMResCode res_code = 2;   // 错误码
 }
 

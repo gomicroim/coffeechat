@@ -128,7 +128,7 @@ message SendMsgRequest {
 
 // 发送消息响应
 message SendMsgReply {
-  uint64 msg_seq = 1;        // 服务端生成的递增消息序号，乱序处理
+  int64 msg_seq = 1;        // 服务端生成的递增消息序号，乱序处理
   IMResCode res_code = 2;    // 消息状态码
 }
 
