@@ -1,0 +1,22 @@
+server:
+  grpc:
+    addr: 0.0.0.0:9000
+    timeout: 1s
+  jwt:
+    access_secret: "i love im"
+    refresh_secret: "u love im"
+data:
+  database:
+    driver: mysql
+    source: cim:coffeechat2022@tcp(mysql:3306)/coffeechat?charset=utf8mb4&parseTime=true
+  redis:
+    addr: redis:6379
+    password: "coffeechat"
+    db: 0
+    read_timeout: 0.4s
+    write_timeout: 0.6s
+    dial_timeout: 1s
+registry:
+  etcd:
+    endpoints: [ etcd:2379 ]
+    register_server_name: rpc-user

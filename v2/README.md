@@ -25,7 +25,7 @@ use kratos [swagger plugin](https://go-kratos.dev/docs/guide/openapi)
 浏览器中访问服务的/api/swagger-ui/路径即可打开Swagger UI。如apiuser：
 
 ```shell
-http://127.0.0.1:8000/api/swagger-ui/
+http://127.0.0.1:8000/q/swagger-ui/
 ```
 
 ### swagger.json

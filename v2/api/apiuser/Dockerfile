@@ -3,7 +3,7 @@ FROM golang:1.18 AS builder
 COPY . /src
 WORKDIR /src
 
-RUN cd rpc/user && GOPROXY=https://goproxy.cn make build
+RUN cd api/apiuser && GOPROXY=https://goproxy.cn make build
 
 FROM debian:stable-slim
 
@@ -13,11 +13,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/ \
     && apt-get autoremove -y && apt-get autoclean -y
 
-COPY --from=builder /src/rpc/user/bin /app
+COPY --from=builder /src/api/apiuser/bin /app
 
 WORKDIR /app
 
-EXPOSE 9000
+EXPOSE 8000
 VOLUME /data/conf
 
-CMD ["./user", "-conf", "/data/conf/config.user.yaml"]
+CMD ["./apiuser", "-conf", "/data/conf/config.apiuser.yaml"]

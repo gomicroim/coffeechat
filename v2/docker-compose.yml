@@ -23,7 +23,7 @@ services:
     image: 'arm64v8/mysql:8.0.28-oracle' # mac m1
 #    image: 'mysql:5.7'
     restart: always
-    container_name: cim_mysql
+    container_name: im_mysql
     environment:
       LANG: C.UTF-8 # 解决客户端连接中文乱码问题
       MYSQL_ROOT_PASSWORD: 123456
@@ -64,7 +64,46 @@ services:
       - "2380:2380"
     networks:
       - goMicroIM
-
+  rpc-user:
+    container_name: rpc-user
+    build: # 指定从dockerfile编译
+      context: .
+      dockerfile: ./rpc/user/Dockerfile
+    volumes:
+      - ./deploy/docker/configs:/data/conf
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    networks:
+      - goMicroIM
+    ports:
+      - "9000:9000"
+    depends_on:
+      - redis
+      - mysql
+      - etcd
+  api-user:
+    container_name: api-user
+    build:
+      context: .
+      dockerfile: ./api/apiuser/Dockerfile
+    volumes:
+      - ./deploy/docker/configs:/data/conf
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    networks:
+      - goMicroIM
+    ports:
+      - "8100:8000"
+    depends_on:
+      - rpc-user
 volumes: # 声明使用的数据卷，不使用宿主机目录，可以自行更改
   im_mysql_data:
     driver: local
