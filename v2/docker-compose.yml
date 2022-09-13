@@ -6,7 +6,7 @@ version: '3.4'
 
 services:
   mongo:
-    image: mongo
+    image: 'mongo:4.4.16'
     container_name: im_mongo
     restart: always
     volumes:
@@ -51,7 +51,7 @@ services:
     ports:
       - "6379:6379"     # 端口改掉，预防攻击
   etcd:
-    image: 'bitnami/etcd:latest'
+    image: 'bitnami/etcd:3.4'
     restart: always
     container_name: im_etcd
     environment:
