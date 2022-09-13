@@ -1,9 +1,9 @@
 package utils
 
 import (
-	"CoffeeChat/log"
 	"context"
 	"database/sql/driver"
+	"github.com/gomicroim/gomicroim/v2/pkg/log"
 	"github.com/pkg/errors"
 )
 

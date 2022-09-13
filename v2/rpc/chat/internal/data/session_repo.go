@@ -1,13 +1,13 @@
 package data
 
 import (
-	"CoffeeChat/ent/utils"
-	"CoffeeChat/log"
 	pb "chat/api/chat"
 	"chat/internal/data/ent"
 	"chat/internal/data/ent/session"
 	"context"
 	"fmt"
+	"github.com/gomicroim/gomicroim/v2/pkg/ent/utils"
+	"github.com/gomicroim/gomicroim/v2/pkg/log"
 	"time"
 )
 

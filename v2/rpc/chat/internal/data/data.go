@@ -1,7 +1,6 @@
 package data
 
 import (
-	"CoffeeChat/log"
 	"chat/internal/conf"
 	"chat/internal/data/cache"
 	"chat/internal/data/ent"
@@ -10,6 +9,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"fmt"
 	"github.com/go-redis/redis/v8"
+	"github.com/gomicroim/gomicroim/v2/pkg/log"
 	"github.com/google/wire"
 	"go.uber.org/zap"
 	"runtime"

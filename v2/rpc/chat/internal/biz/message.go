@@ -1,13 +1,13 @@
 package biz
 
 import (
-	"CoffeeChat/log"
 	pb "chat/api/chat"
 	"chat/internal/data"
 	"chat/internal/data/cache"
 	"chat/internal/data/ent"
 	"context"
 	"errors"
+	"github.com/gomicroim/gomicroim/v2/pkg/log"
 	"strconv"
 	"time"
 )

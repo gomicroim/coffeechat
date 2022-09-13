@@ -1,9 +1,9 @@
 package schema
 
 import (
-	"CoffeeChat/ent/mixin"
 	"entgo.io/ent"
 	"entgo.io/ent/schema/field"
+	"github.com/gomicroim/gomicroim/v2/pkg/ent/mixin"
 )
 
 // Message holds the schema definition for the User entity.
