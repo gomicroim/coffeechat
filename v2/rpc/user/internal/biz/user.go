@@ -1,8 +1,8 @@
 package biz
 
 import (
-	"CoffeeChat/log"
 	"context"
+	"github.com/gomicroim/gomicroim/v2/pkg/log"
 	"user/internal/data"
 	"user/internal/data/ent"
 )

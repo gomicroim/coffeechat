@@ -1,8 +1,8 @@
 package biz
 
 import (
-	"CoffeeChat/jwt"
 	"context"
+	"github.com/gomicroim/gomicroim/v2/pkg/jwt"
 	"user/internal/conf"
 	"user/internal/data/cache"
 )

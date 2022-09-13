@@ -1,8 +1,8 @@
 package data
 
 import (
-	"CoffeeChat/log"
 	"context"
+	"github.com/gomicroim/gomicroim/v2/pkg/log"
 	"time"
 	"user/internal/data/ent"
 	"user/internal/data/ent/user"

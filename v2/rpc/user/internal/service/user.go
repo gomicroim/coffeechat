@@ -1,9 +1,9 @@
 package service
 
 import (
-	"CoffeeChat/jwt"
 	"context"
 	"github.com/go-kratos/kratos/v2/errors"
+	"github.com/gomicroim/gomicroim/v2/pkg/jwt"
 	"user/api/user"
 	"user/internal/biz"
 	"user/internal/data"
