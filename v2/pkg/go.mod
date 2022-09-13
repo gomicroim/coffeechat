@@ -1,4 +1,4 @@
-module CoffeeChat
+module github.com/gomicroim/gomicroim/v2/pkg
 
 go 1.18
 
@@ -6,6 +6,7 @@ require (
 	entgo.io/ent v0.11.1
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-kratos/kratos/v2 v2.4.1
+	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.8.0
 	github.com/twinj/uuid v1.0.0
 	go.opentelemetry.io/otel/trace v1.8.0
@@ -21,7 +22,6 @@ require (
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/gorilla/mux v1.8.0 // indirect
 	github.com/myesui/uuid v1.0.0 // indirect
-	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	go.opentelemetry.io/otel v1.8.0 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
