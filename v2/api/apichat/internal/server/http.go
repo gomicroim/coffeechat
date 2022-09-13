@@ -1,7 +1,6 @@
 package server
 
 import (
-	"CoffeeChat/jwt"
 	v1 "apichat/api/chat/v1"
 	"apichat/internal/conf"
 	"apichat/internal/service"
@@ -12,6 +11,7 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/transport"
 	"github.com/go-kratos/kratos/v2/transport/http"
+	"github.com/gomicroim/gomicroim/v2/pkg/jwt"
 	"strings"
 )
 

@@ -1,12 +1,12 @@
 package service
 
 import (
-	"CoffeeChat/log"
 	"apichat/internal/conf"
 	"chat/api/chat"
 	"context"
 	"github.com/go-kratos/kratos/v2/registry"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
+	"github.com/gomicroim/gomicroim/v2/pkg/log"
 	"github.com/google/wire"
 	"go.uber.org/zap"
 )

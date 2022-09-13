@@ -7,13 +7,13 @@
 package main
 
 import (
-	log2 "CoffeeChat/log"
 	"apichat/internal/conf"
 	"apichat/internal/server"
 	"apichat/internal/service"
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/registry"
+	log2 "github.com/gomicroim/gomicroim/v2/pkg/log"
 )
 
 // Injectors from wire.go:

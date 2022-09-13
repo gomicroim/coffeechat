@@ -1,8 +1,8 @@
 package main
 
 import (
-	"CoffeeChat/log"
 	"flag"
+	"github.com/gomicroim/gomicroim/v2/pkg/log"
 	"go.uber.org/zap"
 	"os"
 

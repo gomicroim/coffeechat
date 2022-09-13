@@ -1,10 +1,10 @@
 package service
 
 import (
-	"CoffeeChat/jwt"
-	"CoffeeChat/log"
 	"chat/api/chat"
 	"context"
+	"github.com/gomicroim/gomicroim/v2/pkg/jwt"
+	"github.com/gomicroim/gomicroim/v2/pkg/log"
 	"go.uber.org/zap"
 	"strings"
 
