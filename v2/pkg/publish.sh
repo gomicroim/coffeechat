@@ -7,10 +7,16 @@ git checkout gh-pages
 git pull origin gh-pages --rebase
 
 # remove 'node_modules' and '_book' directory
-git clean -fx api
-git clean -fx deploy
-git clean -fx rpc
-git clean -fx third_party
+git clean -fx .idea
+
+git rm -rf ../api
+git rm -rf ../deploy
+git rm -rf ../rpc
+git rm -rf ../third_party
+
+git rm -rf ../../server
+git rm -rf ../../pb
+git rm -rf ../../docs
 
 # add all files
 git add .
