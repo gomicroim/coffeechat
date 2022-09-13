@@ -56,7 +56,7 @@ func main() {
 	log.L.Info("connect etcd", zap.Strings("etcd", bc.Discover.Etcd.Endpoints))
 
 	// wire depends
-	app, cleanup, err := wireApp(bc.Server, bc.Data, bc.Discover,
+	app, cleanup, err := wireApp(bc.Server, bc.Discover,
 		log.MustNewLogger(id, Name, Version, true, 4),
 		log.L, dis)
 	if err != nil {
