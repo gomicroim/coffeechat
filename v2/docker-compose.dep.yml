@@ -1,0 +1,85 @@
+#
+# docker compose 服务编排
+#
+
+version: '3.4'
+
+services:
+  mongo:
+    image: 'mongo:4.4.16'
+    container_name: im_mongo
+    restart: always
+    volumes:
+      - im_mongo_data:/data/db
+      - im_mongo_data:/data/configdb
+    ports:
+      - '27017:27017'
+    networks:
+      - goMicroIM
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=123456
+  mysql:
+    image: 'arm64v8/mysql:8.0.28-oracle' # mac m1
+#    image: 'mysql:5.7'
+    restart: always
+    container_name: im_mysql
+    environment:
+      LANG: C.UTF-8 # 解决客户端连接中文乱码问题
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: coffeechat
+      MYSQL_USER: cim
+      MYSQL_PASSWORD: coffeechat2022
+    volumes:
+      - im_mysql_data:/var/lib/mysql
+      # docker-entrypoint-initdb.d：这个目录下的脚本，只在容器第一次运行时被执行。
+      - ./deploy/setup/mysql/init/:/docker-entrypoint-initdb.d/
+    networks:
+      - goMicroIM
+    ports:
+      - "3306:3306"
+    command: [ '--default-authentication-plugin=mysql_native_password', '--character-set-server=utf8mb4',
+               '--collation-server=utf8mb4_unicode_ci' ]
+  redis:
+    build: deploy/setup/redis
+    container_name: im_redis
+    restart: always
+    volumes:
+      - im_redis_data:/data  # 持久化数据，其他如密码等，在redis.conf里已配置
+    networks:
+      - goMicroIM
+    ports:
+      - "6379:6379"     # 端口改掉，预防攻击
+  etcd:
+    image: 'bitnami/etcd:3.4'
+    restart: always
+    container_name: im_etcd
+    environment:
+      - ALLOW_NONE_AUTHENTICATION=yes
+      - ETCD_ADVERTISE_CLIENT_URLS=http://etcd:2379
+    volumes:
+      - im_etcd_data:/etcd-data
+    ports:
+      - "2379:2379"
+      - "2380:2380"
+    networks:
+      - goMicroIM
+volumes: # 声明使用的数据卷，不使用宿主机目录，可以自行更改
+  im_mysql_data:
+    driver: local
+  im_redis_data:
+    driver: local
+  im_mongo_data:
+    driver: local
+  im_etcd_data:
+    driver: local
+# 为了简单，使用默认侨接网络 + DNS连接内部服务器方式
+# 根据https://docs.docker.com/compose/networking/，docker compose默认创建了网络，但是创建自己的侨接网络更安全
+# 另外一个Host主机网络只支持Linux，虽然性能更高
+networks:
+  goMicroIM:
+    driver: bridge # 侨接网络，此时需要使用host访问（service下面的服务名）
+    ipam:          # see: https://docs.docker.com/compose/compose-file/compose-file-v3/#network
+      config:
+        - subnet: 172.16.0.0/24
+          gateway: 172.16.0.1

@@ -16,7 +16,7 @@ import (
 
 // go build -ldflags "-X main.Version=x.y.z"
 var (
-	Name     = "api-user"
+	Name     = "api-chat"
 	Version  string
 	flagConf string
 
