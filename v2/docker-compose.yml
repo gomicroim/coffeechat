@@ -21,7 +21,7 @@ services:
     networks:
       - goMicroIM
     ports:
-      - "9000:9000"
+      - "9100:9000"
   rpc-chat:
     container_name: rpc-chat
     build: # 指定从dockerfile编译
@@ -38,7 +38,7 @@ services:
     networks:
       - goMicroIM
     ports:
-      - "9001:9000"
+      - "9101:9000"
   api-user:
     container_name: api-user
     build:
