@@ -34,3 +34,6 @@ bin/
 .idea/
 *.swp
 *config.yaml
+
+# java protobuf
+/com/gomicroim/lib/protos/

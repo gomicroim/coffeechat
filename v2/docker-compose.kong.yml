@@ -58,8 +58,8 @@ services:
       - '8444:8444'
     networks:
       - goMicroIM
-    depends_on:
-      - kong-migrations
+#    depends_on:
+#      - kong-migrations
 
   konga:
     image: 'pantsel/konga'
