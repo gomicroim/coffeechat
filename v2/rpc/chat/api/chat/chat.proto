@@ -3,7 +3,7 @@ syntax = "proto3";
 package chat;
 option go_package = "chat/api/chat;chat";
 
-import "rpc/chat/api/chat/contants.proto";
+import "rpc/chat/api/chat/constant.proto";
 import "rpc/chat/api/chat/error_reason.proto";
 
 // 聊天服务

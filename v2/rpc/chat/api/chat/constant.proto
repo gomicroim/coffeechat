@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package chat;
 option go_package = "chat/api/chat;chat";
+option java_package = "com.gomicroim.lib.protos.chat";
+option java_outer_classname = "ChatContant";
 
 // 客户端类型
 enum IMClientType {
