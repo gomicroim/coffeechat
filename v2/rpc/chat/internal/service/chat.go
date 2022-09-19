@@ -1,12 +1,10 @@
 package service
 
 import (
+	pb "chat/api/chat"
 	"chat/internal/biz"
 	"context"
 	"errors"
-	"strconv"
-
-	pb "chat/api/chat"
 )
 
 type ChatService struct {
@@ -28,6 +26,19 @@ func (s *ChatService) SendMsg(ctx context.Context, req *pb.SendMsgRequest) (*pb.
 	return &pb.SendMsgReply{
 		MsgSeq:  msg.ServerMsgSeq,
 		ResCode: pb.IMResCode(msg.MsgResCode),
+		MsgInfo: &pb.IMMsgInfo{
+			FromUserId:   msg.From,
+			To:           msg.To,
+			SessionType:  pb.IMSessionType(msg.SessionType),
+			ClientMsgId:  msg.ClientMsgID,
+			ServerMsgSeq: msg.ServerMsgSeq,
+			MsgType:      pb.IMMsgType(msg.MsgType),
+			MsgData:      msg.MsgData,
+			MsgResCode:   pb.IMResCode(msg.MsgResCode),
+			MsgFeature:   pb.IMMsgFeature(msg.MsgFeature),
+			MsgStatus:    pb.IMMsgStatus(msg.MsgStatus),
+			CreateTime:   msg.Created.Unix(),
+		},
 	}, nil
 }
 
@@ -59,36 +70,38 @@ func (s *ChatService) GetRecentContactSession(ctx context.Context, req *pb.GetRe
 }
 
 func (s *ChatService) GetMsgList(ctx context.Context, req *pb.GetMsgListRequest) (*pb.GetMsgListReply, error) {
-	if req.TimeSpan != nil {
-		return nil, errors.New("not support timespan filter")
-	}
 	if req.Filter == nil {
 		return nil, errors.New("miss filter filed")
 	}
-	result, err := s.messageBiz.GetMessageList(ctx, req.UserId, strconv.FormatInt(req.PeerId, 10), req.SessionType,
+	result, err := s.messageBiz.GetMessageList(ctx, req.UserId, req.PeerId, req.SessionType,
 		req.Filter.IsForward, req.Filter.MsgSeq, int(req.LimitCount))
 	if err != nil {
 		return nil, err
 	}
+
 	out := &pb.GetMsgListReply{
-		EndMsgSeq: result[len(result)-1].ServerMsgSeq,
+		EndMsgSeq: req.Filter.MsgSeq,
 		MsgList:   make([]*pb.IMMsgInfo, len(result)),
 	}
-	for k, v := range result {
-		out.MsgList[k] = &pb.IMMsgInfo{
-			FromUserId:   v.From,
-			To:           v.To,
-			SessionType:  pb.IMSessionType(v.SessionType),
-			ClientMsgId:  v.ClientMsgID,
-			ServerMsgSeq: v.ServerMsgSeq,
-			MsgType:      pb.IMMsgType(v.MsgType),
-			MsgData:      v.MsgData,
-			MsgResCode:   pb.IMResCode(v.MsgResCode),
-			MsgFeature:   pb.IMMsgFeature(v.MsgFeature),
-			MsgStatus:    pb.IMMsgStatus(v.MsgStatus),
-			CreateTime:   v.Created.Unix(),
+	if len(result) > 0 {
+		out.EndMsgSeq = result[len(result)-1].ServerMsgSeq
+		for k, v := range result {
+			out.MsgList[k] = &pb.IMMsgInfo{
+				FromUserId:   v.From,
+				To:           v.To,
+				SessionType:  pb.IMSessionType(v.SessionType),
+				ClientMsgId:  v.ClientMsgID,
+				ServerMsgSeq: v.ServerMsgSeq,
+				MsgType:      pb.IMMsgType(v.MsgType),
+				MsgData:      v.MsgData,
+				MsgResCode:   pb.IMResCode(v.MsgResCode),
+				MsgFeature:   pb.IMMsgFeature(v.MsgFeature),
+				MsgStatus:    pb.IMMsgStatus(v.MsgStatus),
+				CreateTime:   v.Created.Unix(),
+			}
 		}
 	}
+
 	return out, nil
 }
 

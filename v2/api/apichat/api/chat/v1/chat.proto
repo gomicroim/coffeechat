@@ -56,48 +56,35 @@ message GetRecentSessionReply {
 
 // 历史离线聊天消息请求
 message GetMsgListRequest {
-  uint64 user_id = 1;
-  chat.IMSessionType session_type = 2;
-  uint64 session_id = 3;
-  //   uint64 from_time_stamp = 4; // 起始时间点，单位：毫秒
-  //   uint64 end_time_stamp = 5;  // 结束时间点，单位：毫秒
-  uint64 end_msg_id = 4; // 结束服务器消息id(不包含在查询结果中)
-  uint32 limit_count = 6; // 本次查询消息的条数上线(最多100条)
-  // repeated CIM.Def.CIMMessageType msg_type_list = 7; // 查询指定的消息类型
-  // optional bool is_exclusion_type_ = 8; // 是否排除指定的消息类型
+  string peer_id = 1;               // 对方ID，单聊userId，群聊groupId
+  int64 msg_seq = 2;                // 起始消息序号(不包含在查询结果中)
+  bool  is_forward = 3;             // true: 向前扫描 false: 向后扫描
+  int32 limit_count = 4;            // 本次查询消息的条数上线(最多100条)
 }
 
 // 消息信息
 message IMMsgInfo {
   string client_msg_id = 1; // 客户端消息ID（UUID）
-  uint64 server_msg_id = 2; // 服务端消息ID
+  int64 server_msg_id = 2;  // 服务端消息ID
 
-  chat.IMResCode msg_res_code = 3;     // 消息错误码
-  chat.IMMsgFeature msg_feature = 4;   // 消息属性
-  chat.IMSessionType session_type = 5; // 会话类型
-  uint64 from_user_id = 6;         // 来源会话ID
-  uint64 to_session_id = 7;        // 目标会话ID
-  uint32 create_time = 8;          // 消息创建时间戳（毫秒）
+  chat.IMResCode msg_res_code = 3;      // 消息错误码
+  chat.IMMsgFeature msg_feature = 4;    // 消息属性
+  chat.IMSessionType session_type = 5;  // 会话类型
+  int64 from_user_id = 6;               // 来源会话ID
+  string peer_id = 7;                   // 目标会话ID
+  int64 create_time = 8;                // 消息创建时间戳（毫秒）
 
   chat.IMMsgType msg_type = 9;      // 消息类型
   chat.IMMsgStatus msg_status = 10; // 消息状态（预留）
-  bytes msg_data = 11;          // 消息内容
-  /*optional*/
-  string attach = 12;                    // 消息附件（预留）
-  chat.IMClientType sender_client_type = 13; // 发送者客户端类型
+  string msg_data = 11;             // 消息内容
 }
 
 //对于群而言，如果消息数目返回的数值小于请求的cnt,则表示群的消息能拉取的到头了，更早的消息没有权限拉取。
 //如果limit_count 和 msg_list.count 不一致，说明服务器消息有缺失，需要
 //客户端做一个缺失标记，避免下次再次拉取。
 message GetMsgListReply {
-  uint64 user_id = 1;
-  chat.IMSessionType session_type = 2;
-  uint64 session_id = 3;
-  uint64 end_msg_id = 4; // 结束服务器消息id(不包含在查询结果中)
-  //   uint64 from_time_stamp = 4;     // 起始时间点，单位：毫秒
-  //   uint64 end_time_stamp = 5;      // 结束时间点，单位：毫秒
-  repeated IMMsgInfo msg_list = 6; // 消息列表
+  int64 end_msg_seq = 1;            // 结束消息序号(不包含在查询结果中)
+  repeated IMMsgInfo msg_list = 2;  // 消息列表
 }
 
 message IMMessage{
@@ -122,8 +109,9 @@ message SendMsgRequest {
 
 // 发送消息响应
 message SendMsgReply {
-  int64 server_msg_seq = 1; // 服务端生成的消息ID，顺序
-  chat.IMResCode res_code = 2;   // 错误码
+  int64 server_msg_seq = 1;       // 服务端生成的消息ID，顺序
+  chat.IMResCode res_code = 2;    // 错误码
+  IMMsgInfo msg_info = 3;         // 完整消息内容
 }
 
 // 同步消息请求
