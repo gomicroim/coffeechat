@@ -20,7 +20,7 @@ func (Message) Fields() []ent.Field {
 		field.String("to").MaxLen(32).Comment("接收目标ID"),
 		field.Int8("session_type").Comment("会话类型，0:未知 1:单聊 2:群聊"),
 
-		field.String("client_msg_id").MaxLen(32).Comment("客户端生成的消息UUID(去重)"),
+		field.String("client_msg_id").MaxLen(36).Comment("客户端生成的消息UUID(去重)"),
 		field.Int64("server_msg_seq").Comment("服务端生成的消息序号(乱序处理)"),
 
 		field.Int8("msg_type").Comment("消息类型"),

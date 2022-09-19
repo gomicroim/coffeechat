@@ -17,7 +17,7 @@ var (
 		{Name: "from", Type: field.TypeInt64},
 		{Name: "to", Type: field.TypeString, Size: 32},
 		{Name: "session_type", Type: field.TypeInt8},
-		{Name: "client_msg_id", Type: field.TypeString, Size: 32},
+		{Name: "client_msg_id", Type: field.TypeString, Size: 36},
 		{Name: "server_msg_seq", Type: field.TypeInt64},
 		{Name: "msg_type", Type: field.TypeInt8},
 		{Name: "msg_data", Type: field.TypeString, Size: 4096},
