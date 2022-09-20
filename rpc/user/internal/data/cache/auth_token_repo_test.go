@@ -1,12 +1,13 @@
 package cache
 
 import (
-	"CoffeeChat/jwt"
 	"context"
-	"github.com/go-redis/redis/v8"
-	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
+
+	"github.com/go-redis/redis/v8"
+	"github.com/gomicroim/gomicroim/v2/pkg/jwt"
+	"github.com/stretchr/testify/assert"
 )
 
 func setupRedis(t *testing.T) *redis.Client {
@@ -40,17 +41,17 @@ func TestAuthTokenRepo_CreateAuth(t *testing.T) {
 	assert.NoError(t, err)
 
 	// http auth middleware
-	userId, err := repo.FetchAuth(ctx, token)
+	userId, err := repo.FetchAuth(ctx, token.AccessUuid)
 	assert.NoError(t, err)
 	t.Log("FetchAuth success,userId:", userId)
 
 	// when user logout
 
-	userId, err = repo.DeleteAuth(ctx, token.AccessUuid)
+	_, err = repo.DeleteAuth(ctx, token.AccessUuid)
 	assert.NoError(t, err)
-	userId, err = repo.DeleteAuth(ctx, token.RefreshUuid)
+	_, err = repo.DeleteAuth(ctx, token.RefreshUuid)
 	assert.NoError(t, err)
-	_, err = repo.FetchAuth(ctx, token)
+	_, err = repo.FetchAuth(ctx, token.AccessUuid)
 	if err == nil {
 		t.Fatal("Delete Auth failed")
 	} else {
