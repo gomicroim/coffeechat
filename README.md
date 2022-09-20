@@ -50,6 +50,10 @@ $ cd gomicroim
 $ docker-compose down -v
 ```
 
+## Build
+
+see: [build.md](build.md)
+
 ### Thinks
 
 - [mattermost](https://github.com/mattermost/mattermost-server)：主要学习其go工程实践方面的一些技巧，目前还处在研究阶段。
