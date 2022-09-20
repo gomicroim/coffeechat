@@ -10,7 +10,7 @@ opensource distributed microservice im server write by golang（开源分布式�
 - 在线消息漫游使用 mysql 存储，满足审计和任意时间回溯消息的需求
 - BFF 层设计 + kong api网关设计，更贴合实战
 - 简化私有协议设计，除了消息推送(websocket协议)之外，发消息、拉聊天列表等等都使用HTTP+JSON方式实现，简化私有协议开发成本
-- websocket gateway 网关之间通信使用 kafka assign模式，解决到吞吐量下的消息跨服路由性能问题和可用性问题
+- websocket gateway 网关之间通信使用 kafka assign模式，解决高吞吐量下的消息跨服路由性能问题和可用性问题
 - 支持docker compose 和 k8s 部署
 - 支持百万级并发用户在线。建议使用 k8s 部署，配合动态扩容，实现高峰期的资源自适应分配和调整
 
