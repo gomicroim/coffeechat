@@ -10,11 +10,13 @@ based on:
 
 api(BFF层):
 
-- apiuser: user相关api接口
+- `apiuser`: user相关api接口
+- `apichat`: chat相关api接口
 
 rpc(Service层):
 
-- user: user相关rpc接口，对外只提供基础CRUD接口，无服务依赖
+- `user`: user相关rpc接口，对外只提供基础CRUD接口，无服务依赖
+- `chat`: chat相关rpc接口，对外只提供基础CRUD接口，无服务依赖
 
 ## API
 

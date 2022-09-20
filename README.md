@@ -1,176 +1,54 @@
 # gomicroim
 
-opensource im with server(go) and client(flutter+swift)
+opensource distributed microservice im server write by golang（开源分布式微服务IM服务端）.
 
-> ⚠️⚠️Warnning⚠️⚠️
-> 持续开发中，仅适合学习使用。
+特性：
 
-## News
-
-最新动态：
-- 至今: 生命不息，探索不止💪💪
-- 2022/07/01: 目前正在开发v2架构（基于kratos v2框架），总体设计由pb+tcp变更为http+json接口方式，降低上手成本。考虑到自由度和方便体验，目前正在开发android app。
-- ~~2022/04/10：制定Monthly Release计划，每个月至少要保证一次Release~~
-- 2021/08: 作者最近在考虑跳槽，故精力主要放在研究[OpenIM](https://github.com/OpenIMSDK/Open-IM-Server)，学习Kafka，微服务，收件箱，Etcd，Docker，K8S等使用，提升技术深度。
-- 2021/03 - 07: 开发QT客户端和C++跨平台SDK，受限于精力进展缓慢。
-- 2021/02: 使用sketch设计win+mac客户端界面。
-
-里程碑：
-- `2022`: 再出发，[CoffeeChat](https://github.com/xmcy0011/CoffeeChat) 正式更名 [gomicroim](https://github.com/gomicroim/gomicroim) ，学习android + kratos + k8s，实现go服务端v2版本重构
-- `2021`: 主要精力在探索百万级的架构，C++跨平台SDK，QT，Go微服务，Docker，Etcd等等，coffeechat几乎没有更新
-- `2020`: 这一年coffeechat不断完善，作者主要在学习ios开发，实现简单ios app
-- `2019/08`: coffeechat诞生，学习flutter，实现简单flutter客户端，后续因为flutter聊天界面下拉感觉效果不理想放弃
+- 分布式微服务架构。基于 kratos v2框架实现
+- 同时支持读写扩散。针对 web 使用读扩散模式，针对 app 使用写扩散
+- 离线消息同步使用 time-line模型，配合mongo实现高性能离线消息同步
+- 在线消息漫游使用 mysql 存储，满足审计和任意时间回溯消息的需求
+- BFF 层设计 + kong api网关设计，更贴合实战
+- 简化私有协议设计，除了消息推送(websocket协议)之外，发消息、拉聊天列表等等都使用HTTP+JSON方式实现，简化私有协议开发成本
+- websocket gateway 网关之间通信使用 kafka assign模式，解决到吞吐量下的消息跨服路由性能问题和可用性问题
+- 支持docker compose 和 k8s 部署
+- 支持百万级并发用户在线。建议使用 k8s 部署，配合动态扩容，实现高峰期的资源自适应分配和调整
 
 ## Client
 
-支持的客户端有：
-
-- 开发中（V2）
-  - [Android](https://github.com/gomicroim/client-android): 基于android 7.0 + java实现，目前正在开发中（2022年8月），适用于 `V2版本` 服务端。
-
-- 暂停中（V1）
-  - [iOS](https://github.com/xmcy0011/CoffeeChat-iOS)：基于swift5实现，目前主要维护的客户端，推荐使用。适用于 `V1版本` 服务端。
-  - [Flutter](https://github.com/xmcy0011/CoffeeChat-Flutter)：基于flutter2和dart实现，目前已不再维护，仅供学习。
-  - [Windows](https://github.com/xmcy0011/CoffeeChat-Win)：基于c++和网易duilib实现，目前只实现了登录功能。
-  - [Mac](https://github.com/xmcy0011/CoffeeChat-Desktop)：基于c++和Qt6实现，目前只实现了登录功能。
-
-请点击对应的链接查看详情。
+- [Android](https://github.com/gomicroim/client-android): 基于android 7.0 + java实现，目前正在开发中（2022年8月），适用于 `V2版本` 服务端。
 
 ## Preview
 
-### flutter
-
-see [CoffeeChat-Flutter](https://github.com/xmcy0011/CoffeeChat-Flutter) 暂不维护，仅供参考。
-
-### swift
-![screenshot](./docs/images/swift/screenshot.png)  
+to do.
 
 ## Features
 
-### 设计
-
-- [x] 架构设计：参考瓜子 IM
-- [x] 协议设计：参考网易云 IM、环信、TeamTalk
-- [x] 数据库设计
-- [x] 消息分表存储设计
-- [x] IM 消息 ID 生成设计
-
-### 单聊群聊
-
-- [x] flutter 客户端
-- [x] 单聊
-- [x] 消息格式
-    - [x] 文本
-    - [ ] 表情
-    - [ ] 图片
-- [x] 会话列表
-- [x] 消息存储
-- [x] 历史消息
-- [x] 漫游消息（用户切换到任何设备都可以读取到最近的历史消息）
-- [ ] 离线消息（用户离线重新上线后收到最近 30 天的未读消息）
-- [x] 未读消息计数
-- [ ] 消息推送(APNS)
-- [ ] 群聊
-- [ ] 群最高人数：200
-- [ ] 群管理：群主、加人、踢人
-- [ ] 群消息免打扰
-- [ ] 群成员管理
-
-### 服务端特有
-
-- [ ] consul注册中心
-- [ ] 分布式配置（nacos、etcd...）
-- [x] dockerfile & docker compose
-- [ ] admin后台和web界面，简化安装（参考wordpress）
-
-## 客户端特有
-
-- [ ] 消息推送提醒（系统通知栏消息提醒）
-- [ ] 消息转发
-- [ ] 网络连接状态
-- [ ] 图片管理器
-- [ ] 查找聊天记录
-- [ ] 消息同步缓存
-- [x] 会话同步缓存
-- [ ] 头像同步缓存
-- [ ] 未读计数桌面角标
-- [ ] 免打扰模式
-- [ ] 图片压缩
-
-### 特色功能
-
-- [ ] 阅后即焚
-- [ ] 撤回
-- [ ] 正在输入
-- [ ] 已读回执（用户发送消息，获取对方是否已读状态 ）
-- [ ] 多终端已读同步（同个产品多终端情况下，同步消息已读未读的状态）
-- [ ] 端到端加密
-- [ ] 高清语音消息
-- [ ] 文件上传下载
-- [x] 语音通话(声网FlutterSDK)
-- [ ] 视频通话
-- [ ] electron 跨平台桌面客户端
-- [x] flutter 跨平台移动端
-- [ ] swift/iOS 客户端+SDK
-
-### 聊天机器人功能
-
-- [ ] 图灵机器人接入
-- [ ] 小爱机器人接入
-- [x] 思知机器人接入
-- [x] 微信机器人接入
-
-## Architecture
-
-模块架构:  
-![模块架构](https://raw.githubusercontent.com/xmcy0011/CoffeeChat/master/docs/images/structure-v2.png)
-
-单聊模块交互图:
-![单聊](https://raw.githubusercontent.com/xmcy0011/CoffeeChat/master/docs/images/seq-c2c.png)
-
-See More [architecture](https://github.com/xmcy0011/CoffeeChat/blob/master/docs/02-%E6%9E%B6%E6%9E%84%E5%92%8C%E5%8D%8F%E8%AE%AE%E8%AE%BE%E8%AE%A1.md)
+See: [FEATURE.md](FEATURE.MD)
 
 ## Quick Start
 
 > PS：请切换到**master**分支，编译和运行！
 
-1. 启动Server（要求安装docker desktop >= 4.0.1）:
+启动Server（要求安装docker desktop >= 4.0.1）:
 
 ```bash
-$ git clone https://github.com/xmcy0011/CoffeeChat.git
-$ cd CoffeeChat/server
-# 从代码编译docker镜像，安装mysql,redis等依赖，并自动初始化mysql数据
-$ docker-compose up -d
+$ git clone https://github.com/gomicroim/gomicroim.git
+$ cd gomicroim
+# 启动 redis kafka mongo mysql etcd等依赖
+$ docker-compose up -d -f docker-compose.dep.yml
+# 启动 kong api 网关相关依赖
+$ docker-compose up -d -f docker-compose.kong.yml
+# 启动 gomicroim 所有的服务
+$ docker-compose up -d -f docker-compose.yml
 ```
-
-1. 编译客户端。推荐iOS客户端（模拟器选择iphone 11），请移步：[client](https://github.com/xmcy0011/CoffeeChat/blob/master/client/cc_flutter_app/README.md)
-1. iOS模拟器和app启动后，点击“注册”，更改服务器IP地址为本机IP（不需要输入端口），注册成功后，登录即可。
-1. 内置了2个机器人（思知和微信）和3个好友，可以测试聊天功能。
-
-更多细节，请移步：
-
-- [client](https://github.com/xmcy0011/CoffeeChat/blob/master/client/cc_flutter_app/README.md)
-- [server](https://github.com/xmcy0011/CoffeeChat/blob/master/server/src/README.md)
 
 停止：
 
 ```bash
-$ cd CoffeeChat/server
+$ cd gomicroim
 $ docker-compose down -v
 ```
-
-### Document
-
-1. [产品介绍](https://github.com/xmcy0011/CoffeeChat/blob/master/docs/01-%E4%BA%A7%E5%93%81%E4%BB%8B%E7%BB%8D.md)
-2. [架构和协议设计](https://github.com/xmcy0011/CoffeeChat/blob/master/docs/02-%E6%9E%B6%E6%9E%84%E5%92%8C%E5%8D%8F%E8%AE%AE%E8%AE%BE%E8%AE%A1.md)
-3. [消息分表存储](https://github.com/xmcy0011/CoffeeChat/blob/master/docs/03-%E6%B6%88%E6%81%AF%E5%88%86%E8%A1%A8%E5%AD%98%E5%82%A8.md)
-4. [IM 消息 ID 生成原理和常见技术难点](https://github.com/xmcy0011/CoffeeChat/blob/master/docs/04_IM%e5%b8%b8%e8%a7%81%e6%8a%80%e6%9c%af%e9%9a%be%e7%82%b9.md)
-5. [进度计划](https://github.com/xmcy0011/CoffeeChat/blob/master/docs/05-%E8%BF%9B%E5%BA%A6%E8%AE%A1%E5%88%92.md)
-6. [MQ在IM中的实践和选型](https://github.com/xmcy0011/CoffeeChat/blob/master/docs/06_MQ%e5%9c%a8IM%e4%b8%ad%e7%9a%84%e5%ae%9e%e8%b7%b5.md)
-
-更多文章请移步：
-
-- [CoffeeChat-GitBook](https://xmcy0011.github.io/CoffeeChat-GitBook/)
 
 ### Thinks
 
@@ -193,4 +71,4 @@ email：xmcy0011@sina.com
 
 ## LICENSE
 
-CoffeeChat is provided under the [mit license](https://github.com/xmcy0011/CoffeeChat/blob/master/LICENSE).
+gomicroim is provided under the [mit license](https://github.com/gomicroim/gomicroim/blob/master/LICENSE).
