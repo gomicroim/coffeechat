@@ -1,16 +1,17 @@
 package biz
 
 import (
-	"CoffeeChat/log"
 	pb "chat/api/chat"
 	"chat/internal/conf"
 	"chat/internal/data"
 	"chat/internal/data/cache"
 	"context"
-	"github.com/go-redis/redis/v8"
-	"github.com/stretchr/testify/assert"
 	"math"
 	"testing"
+
+	"github.com/go-redis/redis/v8"
+	"github.com/gomicroim/gomicroim/v2/pkg/log"
+	"github.com/stretchr/testify/assert"
 )
 
 func setupBiz() (*data.Data, *redis.Client) {
@@ -50,7 +51,7 @@ func TestMessageUseCase_GetMessageList(t *testing.T) {
 	dat, redisClient := setupBiz()
 	uc := NewMessageUseCase(data.NewMessageRepo(dat, log.L), cache.NewMsgSeq(redisClient), data.NewSessionRepo(dat, log.L))
 	msg, err := uc.GetMessageList(context.Background(), 1, "22",
-		int(pb.IMSessionType_kCIM_SESSION_TYPE_GROUP), true,
+		pb.IMSessionType_kCIM_SESSION_TYPE_GROUP, true,
 		int64(math.MaxInt64), 10)
 	assert.NoError(t, err)
 	t.Log(msg)

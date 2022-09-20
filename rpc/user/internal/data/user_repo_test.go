@@ -1,8 +1,8 @@
 package data
 
 import (
-	"CoffeeChat/log"
 	"context"
+	"github.com/gomicroim/gomicroim/v2/pkg/log"
 	"github.com/stretchr/testify/require"
 	"os"
 	"testing"
@@ -31,7 +31,7 @@ func setupUserRepo(t *testing.T) UserRepo {
 
 func TestUserRepo_Save(t *testing.T) {
 	repo := setupUserRepo(t)
-	u, err := repo.Save(context.Background(), &ent.User{
+	u, err := repo.Save(context.Background(), &User{
 		NickName: "xmcy0011",
 		Sex:      1,
 		Phone:    "17300000000",
@@ -45,7 +45,7 @@ func TestUserRepo_Save(t *testing.T) {
 
 func TestUserRepo_Update(t *testing.T) {
 	repo := setupUserRepo(t)
-	err := repo.Update(context.Background(), &ent.User{ID: 2, NickName: "xmcy0011-New"})
+	err := repo.Update(context.Background(), &User{ID: 2, NickName: "xmcy0011-New"})
 	require.Equal(t, err, nil)
 }
 

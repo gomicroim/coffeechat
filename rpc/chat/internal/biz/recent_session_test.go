@@ -1,9 +1,9 @@
 package biz
 
 import (
-	"CoffeeChat/log"
 	"chat/internal/data"
 	"context"
+	"github.com/gomicroim/gomicroim/v2/pkg/log"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
