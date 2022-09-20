@@ -14,6 +14,28 @@ opensource distributed microservice im server write by golang（开源分布式�
 - 支持docker compose 和 k8s 部署
 - 支持百万级并发用户在线。建议使用 k8s 部署，配合动态扩容，实现高峰期的资源自适应分配和调整
 
+architecture:
+
+## 物理架构图
+
+![物理架构图](https://user-images.githubusercontent.com/1918356/171880372-5010d846-e8b1-4942-8fe2-e2bbb584f762.png)
+
+所有IM关键服务都运行在k8s容器集群上。
+
+## 逻辑架构图
+
+![逻辑架构图](./docs/images/architecture-logic.jpg)
+
+- 负载均衡层：物理机部署使用ngix，k8s则使用ingress
+- 网关层：包含长连接网关(WebSocket)和API网关，API网关这里使用的kong
+- BFF层（[Backend for Frontend](https://time.geekbang.org/dailylesson/detail/100028414/)）：提供http接口，聚合后端接口，为前端写的后端服务层，单向依赖 Service 层。
+- Service（RPC）：真正的服务实现层，对外提供各个模块的grpc接口
+- 存储：存储层，主要是分布式缓存和分布式文档数据库，以及传统关系型mysql数据库。mongo主要用来扩散写存离线消息，mysql用来持久化存储历史消息，供消息漫游使用。
+
+## 模块交互图
+
+![模块交互图-发消息](./docs/images/architecture-seq.jpg)
+
 ## Client
 
 - [Android](https://github.com/gomicroim/client-android): 基于android 7.0 + java实现，目前正在开发中（2022年8月），适用于 `V2版本` 服务端。
