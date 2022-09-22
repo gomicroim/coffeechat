@@ -88,3 +88,20 @@ func (s *UserService) Auth(ctx context.Context, req *user.AuthRequest) (*user.Au
 		UserId:       result.ID,
 	}, nil
 }
+
+func (s *UserService) TokenValid(ctx context.Context, req *user.TokenValidRequest) (*user.TokenValidReply, error) {
+	clientInfo, details, err := s.ac.VerifyToken(ctx, req.Token, req.IsRefreshToken)
+	if err != nil {
+		return nil, err
+	}
+	return &user.TokenValidReply{
+		Expires: details.AtExpires,
+		ClientInfo: &user.TokenValidReply_ClientInfo{
+			UserId:     clientInfo.UserId,
+			DeviceId:   clientInfo.DeviceId,
+			ClientType: clientInfo.ClientType,
+			Domain:     clientInfo.Domain,
+			AppVersion: clientInfo.AppVersion,
+		},
+	}, nil
+}

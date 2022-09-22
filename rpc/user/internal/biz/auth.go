@@ -30,16 +30,16 @@ func (a *AuthUseCase) CreateToken(ctx context.Context, info jwt.ClientInfo, need
 	return details, err
 }
 
-func (a *AuthUseCase) VerifyToken(ctx context.Context, token string) (*jwt.ClientInfo, error) {
-	clientInfo, details, err := a.jwt.ParseToken(token, false)
+func (a *AuthUseCase) VerifyToken(ctx context.Context, token string, isRefreshToken bool) (*jwt.ClientInfo, *jwt.TokenDetails, error) {
+	clientInfo, details, err := a.jwt.ParseToken(token, isRefreshToken)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	// check token exist in redis
 	if _, err = a.authRepo.FetchAuth(ctx, details.AccessUuid); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-	return clientInfo, nil
+	return clientInfo, details, nil
 }
 
 func (a *AuthUseCase) GetClientInfo(token string) (*jwt.ClientInfo, error) {
