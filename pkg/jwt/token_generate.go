@@ -27,6 +27,7 @@ type ClientInfo struct {
 	DeviceId   string
 	ClientType string
 	Domain     string
+	AppVersion int32
 }
 
 type TokenGenerate struct {
@@ -112,6 +113,7 @@ func (t *TokenGenerate) setClientInfo(claims jwt.MapClaims, info ClientInfo) {
 	claims["device_id"] = info.DeviceId
 	claims["client_type"] = info.ClientType
 	claims["domain"] = info.Domain
+	claims["app_version"] = info.AppVersion
 }
 
 func (t *TokenGenerate) getClientInfo(claims jwt.MapClaims) (*ClientInfo, error) {
@@ -129,6 +131,9 @@ func (t *TokenGenerate) getClientInfo(claims jwt.MapClaims) (*ClientInfo, error)
 	}
 	if domain, ok := claims["domain"].(string); ok {
 		info.Domain = domain
+	}
+	if version, ok := claims["app_version"].(float64); ok {
+		info.AppVersion = int32(version)
 	}
 	return info, nil
 }

@@ -18,6 +18,7 @@ func TestTokenGenerate_CreateToken(t *testing.T) {
 		DeviceId:   "f23123-233",
 		ClientType: "ios",
 		Domain:     "im",
+		AppVersion: 1001,
 	}
 
 	token, err := generate.CreateToken(c)
