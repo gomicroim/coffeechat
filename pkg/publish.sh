@@ -1,5 +1,22 @@
 #!/bin/sh
 
+read -r -p "此操作会清理除了pkg外所有文件，请确认所有修改已提交后继续? [Y/n] " input
+
+case $input in
+    [yY][eE][sS]|[yY])
+		echo "Yes"
+		;;
+
+    [nN][oO]|[nN])
+		echo "No"
+                exit 1
+       	        ;;
+    *)
+		echo "Invalid input..."
+		exit 1
+		;;
+esac
+
 # checkout to the gh-pages branch
 git checkout gh-pages
 
@@ -14,9 +31,9 @@ git rm -rf ../deploy
 git rm -rf ../rpc
 git rm -rf ../third_party
 
-git rm -rf ../../server
-git rm -rf ../../pb
-git rm -rf ../../docs
+git rm -rf ../docs
+git rm -rf ../*.yml
+git rm -rf ../*.md
 
 # add all files
 git add .

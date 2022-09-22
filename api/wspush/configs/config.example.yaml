@@ -1,0 +1,10 @@
+server:
+  ws:
+    addr: 0.0.0.0:8000
+    timeout: 1s
+  server_id: auto
+discover:
+  etcd:
+    endpoints: [127.0.0.1:2379]
+  service_endpoint:
+    rpc_user: rpc-user

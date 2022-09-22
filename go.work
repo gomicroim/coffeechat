@@ -3,6 +3,7 @@ go 1.18
 use (
 	./api/apiuser
 	./api/apichat
+	./api/wspush
 	./rpc/user
 	./rpc/chat
 	./pkg
