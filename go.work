@@ -1,11 +1,11 @@
 go 1.18
 
 use (
-	./api/apiuser
 	./api/apichat
+	./api/apiuser
 	./api/wspush
-	./rpc/user
+	./pkg
 	./rpc/chat
 	./rpc/pushjob
-	./pkg
+	./rpc/user
 )

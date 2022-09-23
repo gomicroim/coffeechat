@@ -5,7 +5,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/go-redis/redis/v8"
 	"github.com/gomicroim/gomicroim/pkg/jwt"
 	"github.com/stretchr/testify/assert"
 )

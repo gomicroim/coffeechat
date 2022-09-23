@@ -9,7 +9,6 @@ import (
 	"math"
 	"testing"
 
-	"github.com/go-redis/redis/v8"
 	"github.com/gomicroim/gomicroim/pkg/log"
 	"github.com/stretchr/testify/assert"
 )

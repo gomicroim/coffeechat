@@ -6,7 +6,6 @@
 package main
 
 import (
-	"github.com/go-kratos/kratos/v2"
 	klog "github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/registry"
 	"github.com/gomicroim/gomicroim/pkg/log"
