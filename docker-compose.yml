@@ -77,6 +77,25 @@ services:
       - "8101:8000"
     depends_on:
       - rpc-chat
+  ws-push:
+    container_name: ws-push
+    build:
+      context: .
+      dockerfile: ./api/wspush/Dockerfile
+    volumes:
+      - ./deploy/docker/configs:/data/conf
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+    environment:
+      - TZ=Asia/Shanghai
+    networks:
+      - goMicroIM
+    ports:
+      - "8102:8000"
+    depends_on:
+      - rpc-user
 networks:
   goMicroIM:
     driver: bridge

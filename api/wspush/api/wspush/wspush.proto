@@ -5,13 +5,40 @@ package wspush.v1;
 option go_package = "wspush/api/wspush";
 option java_package = "com.gomicroim.lib.protos.wspush";
 option java_outer_classname = "WsPush";
+import "google/protobuf/any.proto";
 
-// The request message containing the user's name.
-message HelloRequest {
-  string name = 1;
+// Websocket头部消息
+message WebSocketHeader {
+  int32 seq = 1;          // 消息包序号
 }
 
-// The response message containing the greetings
-message HelloReply {
-  string message = 1;
+enum ServerWSMsgType{
+  ServerUnknownWsMsgType = 0;
+}
+
+enum ClientWSMsgType{
+  ClientUnknownWsMsgType = 0;
+  AckMessage = 1;
+}
+
+// 服务端->客户端(s2c)的websocket消息定义
+message S2CWebsocketMessage {
+  WebSocketHeader header = 1;            // 头部
+  repeated ServerMessage data_list = 2;  // 数据部
+}
+
+message ServerMessage{
+  ServerWSMsgType msg_type = 1;
+  google.protobuf.Any any_data = 2;
+}
+
+// 客户端->服务端(c2s)的websocket消息定义
+message C2SWebsocketMessage {
+  WebSocketHeader header = 1;       // 头部
+  ClientMessage body = 2;           // 数据部
+}
+
+message ClientMessage {
+  ClientWSMsgType type = 1;
+  google.protobuf.Any data = 2;
 }

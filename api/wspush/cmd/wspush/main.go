@@ -15,7 +15,7 @@ import (
 
 // go build -ldflags "-X main.Version=x.y.z"
 var (
-	Name     string
+	Name     = "ws-push"
 	Version  string
 	flagConf string
 

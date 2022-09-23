@@ -18,6 +18,6 @@ COPY --from=builder /src/api/wspush/bin /app
 WORKDIR /app
 
 EXPOSE 8000
-VOLUME /data/conf`
+VOLUME /data/conf
 
 CMD ["./wspush", "-conf", "/data/conf/config.wspush.yaml"]

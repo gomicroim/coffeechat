@@ -2,13 +2,14 @@
 // versions:
 // 	protoc-gen-go v1.28.0
 // 	protoc        v3.21.5
-// source: wspush.proto
+// source: api/wspush/api/wspush/wspush.proto
 
 package wspush
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	anypb "google.golang.org/protobuf/types/known/anypb"
 	reflect "reflect"
 	sync "sync"
 )
@@ -20,32 +21,121 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// The request message containing the user's name.
-type HelloRequest struct {
+type ServerWSMsgType int32
+
+const (
+	ServerWSMsgType_ServerUnknownWsMsgType ServerWSMsgType = 0
+)
+
+// Enum value maps for ServerWSMsgType.
+var (
+	ServerWSMsgType_name = map[int32]string{
+		0: "ServerUnknownWsMsgType",
+	}
+	ServerWSMsgType_value = map[string]int32{
+		"ServerUnknownWsMsgType": 0,
+	}
+)
+
+func (x ServerWSMsgType) Enum() *ServerWSMsgType {
+	p := new(ServerWSMsgType)
+	*p = x
+	return p
+}
+
+func (x ServerWSMsgType) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (ServerWSMsgType) Descriptor() protoreflect.EnumDescriptor {
+	return file_api_wspush_api_wspush_wspush_proto_enumTypes[0].Descriptor()
+}
+
+func (ServerWSMsgType) Type() protoreflect.EnumType {
+	return &file_api_wspush_api_wspush_wspush_proto_enumTypes[0]
+}
+
+func (x ServerWSMsgType) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use ServerWSMsgType.Descriptor instead.
+func (ServerWSMsgType) EnumDescriptor() ([]byte, []int) {
+	return file_api_wspush_api_wspush_wspush_proto_rawDescGZIP(), []int{0}
+}
+
+type ClientWSMsgType int32
+
+const (
+	ClientWSMsgType_ClientUnknownWsMsgType ClientWSMsgType = 0
+	ClientWSMsgType_AckMessage             ClientWSMsgType = 1
+)
+
+// Enum value maps for ClientWSMsgType.
+var (
+	ClientWSMsgType_name = map[int32]string{
+		0: "ClientUnknownWsMsgType",
+		1: "AckMessage",
+	}
+	ClientWSMsgType_value = map[string]int32{
+		"ClientUnknownWsMsgType": 0,
+		"AckMessage":             1,
+	}
+)
+
+func (x ClientWSMsgType) Enum() *ClientWSMsgType {
+	p := new(ClientWSMsgType)
+	*p = x
+	return p
+}
+
+func (x ClientWSMsgType) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (ClientWSMsgType) Descriptor() protoreflect.EnumDescriptor {
+	return file_api_wspush_api_wspush_wspush_proto_enumTypes[1].Descriptor()
+}
+
+func (ClientWSMsgType) Type() protoreflect.EnumType {
+	return &file_api_wspush_api_wspush_wspush_proto_enumTypes[1]
+}
+
+func (x ClientWSMsgType) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use ClientWSMsgType.Descriptor instead.
+func (ClientWSMsgType) EnumDescriptor() ([]byte, []int) {
+	return file_api_wspush_api_wspush_wspush_proto_rawDescGZIP(), []int{1}
+}
+
+// Websocket头部消息
+type WebSocketHeader struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Seq int32 `protobuf:"varint,1,opt,name=seq,proto3" json:"seq,omitempty"` // 消息包序号
 }
 
-func (x *HelloRequest) Reset() {
-	*x = HelloRequest{}
+func (x *WebSocketHeader) Reset() {
+	*x = WebSocketHeader{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_wspush_proto_msgTypes[0]
+		mi := &file_api_wspush_api_wspush_wspush_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
 }
 
-func (x *HelloRequest) String() string {
+func (x *WebSocketHeader) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*HelloRequest) ProtoMessage() {}
+func (*WebSocketHeader) ProtoMessage() {}
 
-func (x *HelloRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_wspush_proto_msgTypes[0]
+func (x *WebSocketHeader) ProtoReflect() protoreflect.Message {
+	mi := &file_api_wspush_api_wspush_wspush_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -56,44 +146,45 @@ func (x *HelloRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use HelloRequest.ProtoReflect.Descriptor instead.
-func (*HelloRequest) Descriptor() ([]byte, []int) {
-	return file_wspush_proto_rawDescGZIP(), []int{0}
+// Deprecated: Use WebSocketHeader.ProtoReflect.Descriptor instead.
+func (*WebSocketHeader) Descriptor() ([]byte, []int) {
+	return file_api_wspush_api_wspush_wspush_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *HelloRequest) GetName() string {
+func (x *WebSocketHeader) GetSeq() int32 {
 	if x != nil {
-		return x.Name
+		return x.Seq
 	}
-	return ""
+	return 0
 }
 
-// The response message containing the greetings
-type HelloReply struct {
+// 服务端->客户端(s2c)的websocket消息定义
+type S2CWebsocketMessage struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Message string `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
+	Header   *WebSocketHeader `protobuf:"bytes,1,opt,name=header,proto3" json:"header,omitempty"`                     // 头部
+	DataList []*ServerMessage `protobuf:"bytes,2,rep,name=data_list,json=dataList,proto3" json:"data_list,omitempty"` // 数据部
 }
 
-func (x *HelloReply) Reset() {
-	*x = HelloReply{}
+func (x *S2CWebsocketMessage) Reset() {
+	*x = S2CWebsocketMessage{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_wspush_proto_msgTypes[1]
+		mi := &file_api_wspush_api_wspush_wspush_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
 }
 
-func (x *HelloReply) String() string {
+func (x *S2CWebsocketMessage) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*HelloReply) ProtoMessage() {}
+func (*S2CWebsocketMessage) ProtoMessage() {}
 
-func (x *HelloReply) ProtoReflect() protoreflect.Message {
-	mi := &file_wspush_proto_msgTypes[1]
+func (x *S2CWebsocketMessage) ProtoReflect() protoreflect.Message {
+	mi := &file_api_wspush_api_wspush_wspush_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -104,67 +195,293 @@ func (x *HelloReply) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use HelloReply.ProtoReflect.Descriptor instead.
-func (*HelloReply) Descriptor() ([]byte, []int) {
-	return file_wspush_proto_rawDescGZIP(), []int{1}
+// Deprecated: Use S2CWebsocketMessage.ProtoReflect.Descriptor instead.
+func (*S2CWebsocketMessage) Descriptor() ([]byte, []int) {
+	return file_api_wspush_api_wspush_wspush_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *HelloReply) GetMessage() string {
+func (x *S2CWebsocketMessage) GetHeader() *WebSocketHeader {
 	if x != nil {
-		return x.Message
+		return x.Header
 	}
-	return ""
+	return nil
 }
 
-var File_wspush_proto protoreflect.FileDescriptor
+func (x *S2CWebsocketMessage) GetDataList() []*ServerMessage {
+	if x != nil {
+		return x.DataList
+	}
+	return nil
+}
 
-var file_wspush_proto_rawDesc = []byte{
-	0x0a, 0x0c, 0x77, 0x73, 0x70, 0x75, 0x73, 0x68, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x09,
-	0x77, 0x73, 0x70, 0x75, 0x73, 0x68, 0x2e, 0x76, 0x31, 0x22, 0x22, 0x0a, 0x0c, 0x48, 0x65, 0x6c,
-	0x6c, 0x6f, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d,
-	0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x22, 0x26, 0x0a,
-	0x0a, 0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x52, 0x65, 0x70, 0x6c, 0x79, 0x12, 0x18, 0x0a, 0x07, 0x6d,
-	0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6d, 0x65,
-	0x73, 0x73, 0x61, 0x67, 0x65, 0x42, 0x3c, 0x0a, 0x1f, 0x63, 0x6f, 0x6d, 0x2e, 0x67, 0x6f, 0x6d,
-	0x69, 0x63, 0x72, 0x6f, 0x69, 0x6d, 0x2e, 0x6c, 0x69, 0x62, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x73, 0x2e, 0x77, 0x73, 0x70, 0x75, 0x73, 0x68, 0x42, 0x06, 0x57, 0x73, 0x50, 0x75, 0x73, 0x68,
-	0x5a, 0x11, 0x77, 0x73, 0x70, 0x75, 0x73, 0x68, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x77, 0x73, 0x70,
-	0x75, 0x73, 0x68, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+type ServerMessage struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	MsgType ServerWSMsgType `protobuf:"varint,1,opt,name=msg_type,json=msgType,proto3,enum=wspush.v1.ServerWSMsgType" json:"msg_type,omitempty"`
+	AnyData *anypb.Any      `protobuf:"bytes,2,opt,name=any_data,json=anyData,proto3" json:"any_data,omitempty"`
+}
+
+func (x *ServerMessage) Reset() {
+	*x = ServerMessage{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_wspush_api_wspush_wspush_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ServerMessage) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ServerMessage) ProtoMessage() {}
+
+func (x *ServerMessage) ProtoReflect() protoreflect.Message {
+	mi := &file_api_wspush_api_wspush_wspush_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ServerMessage.ProtoReflect.Descriptor instead.
+func (*ServerMessage) Descriptor() ([]byte, []int) {
+	return file_api_wspush_api_wspush_wspush_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *ServerMessage) GetMsgType() ServerWSMsgType {
+	if x != nil {
+		return x.MsgType
+	}
+	return ServerWSMsgType_ServerUnknownWsMsgType
+}
+
+func (x *ServerMessage) GetAnyData() *anypb.Any {
+	if x != nil {
+		return x.AnyData
+	}
+	return nil
+}
+
+// 客户端->服务端(c2s)的websocket消息定义
+type C2SWebsocketMessage struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Header *WebSocketHeader `protobuf:"bytes,1,opt,name=header,proto3" json:"header,omitempty"` // 头部
+	Body   *ClientMessage   `protobuf:"bytes,2,opt,name=body,proto3" json:"body,omitempty"`     // 数据部
+}
+
+func (x *C2SWebsocketMessage) Reset() {
+	*x = C2SWebsocketMessage{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_wspush_api_wspush_wspush_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *C2SWebsocketMessage) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*C2SWebsocketMessage) ProtoMessage() {}
+
+func (x *C2SWebsocketMessage) ProtoReflect() protoreflect.Message {
+	mi := &file_api_wspush_api_wspush_wspush_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use C2SWebsocketMessage.ProtoReflect.Descriptor instead.
+func (*C2SWebsocketMessage) Descriptor() ([]byte, []int) {
+	return file_api_wspush_api_wspush_wspush_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *C2SWebsocketMessage) GetHeader() *WebSocketHeader {
+	if x != nil {
+		return x.Header
+	}
+	return nil
+}
+
+func (x *C2SWebsocketMessage) GetBody() *ClientMessage {
+	if x != nil {
+		return x.Body
+	}
+	return nil
+}
+
+type ClientMessage struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Type ClientWSMsgType `protobuf:"varint,1,opt,name=type,proto3,enum=wspush.v1.ClientWSMsgType" json:"type,omitempty"`
+	Data *anypb.Any      `protobuf:"bytes,2,opt,name=data,proto3" json:"data,omitempty"`
+}
+
+func (x *ClientMessage) Reset() {
+	*x = ClientMessage{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_wspush_api_wspush_wspush_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ClientMessage) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ClientMessage) ProtoMessage() {}
+
+func (x *ClientMessage) ProtoReflect() protoreflect.Message {
+	mi := &file_api_wspush_api_wspush_wspush_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ClientMessage.ProtoReflect.Descriptor instead.
+func (*ClientMessage) Descriptor() ([]byte, []int) {
+	return file_api_wspush_api_wspush_wspush_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *ClientMessage) GetType() ClientWSMsgType {
+	if x != nil {
+		return x.Type
+	}
+	return ClientWSMsgType_ClientUnknownWsMsgType
+}
+
+func (x *ClientMessage) GetData() *anypb.Any {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
+var File_api_wspush_api_wspush_wspush_proto protoreflect.FileDescriptor
+
+var file_api_wspush_api_wspush_wspush_proto_rawDesc = []byte{
+	0x0a, 0x22, 0x61, 0x70, 0x69, 0x2f, 0x77, 0x73, 0x70, 0x75, 0x73, 0x68, 0x2f, 0x61, 0x70, 0x69,
+	0x2f, 0x77, 0x73, 0x70, 0x75, 0x73, 0x68, 0x2f, 0x77, 0x73, 0x70, 0x75, 0x73, 0x68, 0x2e, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x12, 0x09, 0x77, 0x73, 0x70, 0x75, 0x73, 0x68, 0x2e, 0x76, 0x31, 0x1a,
+	0x19, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66,
+	0x2f, 0x61, 0x6e, 0x79, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x23, 0x0a, 0x0f, 0x57, 0x65,
+	0x62, 0x53, 0x6f, 0x63, 0x6b, 0x65, 0x74, 0x48, 0x65, 0x61, 0x64, 0x65, 0x72, 0x12, 0x10, 0x0a,
+	0x03, 0x73, 0x65, 0x71, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x03, 0x73, 0x65, 0x71, 0x22,
+	0x80, 0x01, 0x0a, 0x13, 0x53, 0x32, 0x43, 0x57, 0x65, 0x62, 0x73, 0x6f, 0x63, 0x6b, 0x65, 0x74,
+	0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x32, 0x0a, 0x06, 0x68, 0x65, 0x61, 0x64, 0x65,
+	0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x77, 0x73, 0x70, 0x75, 0x73, 0x68,
+	0x2e, 0x76, 0x31, 0x2e, 0x57, 0x65, 0x62, 0x53, 0x6f, 0x63, 0x6b, 0x65, 0x74, 0x48, 0x65, 0x61,
+	0x64, 0x65, 0x72, 0x52, 0x06, 0x68, 0x65, 0x61, 0x64, 0x65, 0x72, 0x12, 0x35, 0x0a, 0x09, 0x64,
+	0x61, 0x74, 0x61, 0x5f, 0x6c, 0x69, 0x73, 0x74, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x18,
+	0x2e, 0x77, 0x73, 0x70, 0x75, 0x73, 0x68, 0x2e, 0x76, 0x31, 0x2e, 0x53, 0x65, 0x72, 0x76, 0x65,
+	0x72, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x52, 0x08, 0x64, 0x61, 0x74, 0x61, 0x4c, 0x69,
+	0x73, 0x74, 0x22, 0x77, 0x0a, 0x0d, 0x53, 0x65, 0x72, 0x76, 0x65, 0x72, 0x4d, 0x65, 0x73, 0x73,
+	0x61, 0x67, 0x65, 0x12, 0x35, 0x0a, 0x08, 0x6d, 0x73, 0x67, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x1a, 0x2e, 0x77, 0x73, 0x70, 0x75, 0x73, 0x68, 0x2e, 0x76,
+	0x31, 0x2e, 0x53, 0x65, 0x72, 0x76, 0x65, 0x72, 0x57, 0x53, 0x4d, 0x73, 0x67, 0x54, 0x79, 0x70,
+	0x65, 0x52, 0x07, 0x6d, 0x73, 0x67, 0x54, 0x79, 0x70, 0x65, 0x12, 0x2f, 0x0a, 0x08, 0x61, 0x6e,
+	0x79, 0x5f, 0x64, 0x61, 0x74, 0x61, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x67,
+	0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x41,
+	0x6e, 0x79, 0x52, 0x07, 0x61, 0x6e, 0x79, 0x44, 0x61, 0x74, 0x61, 0x22, 0x77, 0x0a, 0x13, 0x43,
+	0x32, 0x53, 0x57, 0x65, 0x62, 0x73, 0x6f, 0x63, 0x6b, 0x65, 0x74, 0x4d, 0x65, 0x73, 0x73, 0x61,
+	0x67, 0x65, 0x12, 0x32, 0x0a, 0x06, 0x68, 0x65, 0x61, 0x64, 0x65, 0x72, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x77, 0x73, 0x70, 0x75, 0x73, 0x68, 0x2e, 0x76, 0x31, 0x2e, 0x57,
+	0x65, 0x62, 0x53, 0x6f, 0x63, 0x6b, 0x65, 0x74, 0x48, 0x65, 0x61, 0x64, 0x65, 0x72, 0x52, 0x06,
+	0x68, 0x65, 0x61, 0x64, 0x65, 0x72, 0x12, 0x2c, 0x0a, 0x04, 0x62, 0x6f, 0x64, 0x79, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x0b, 0x32, 0x18, 0x2e, 0x77, 0x73, 0x70, 0x75, 0x73, 0x68, 0x2e, 0x76, 0x31,
+	0x2e, 0x43, 0x6c, 0x69, 0x65, 0x6e, 0x74, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x52, 0x04,
+	0x62, 0x6f, 0x64, 0x79, 0x22, 0x69, 0x0a, 0x0d, 0x43, 0x6c, 0x69, 0x65, 0x6e, 0x74, 0x4d, 0x65,
+	0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x2e, 0x0a, 0x04, 0x74, 0x79, 0x70, 0x65, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x0e, 0x32, 0x1a, 0x2e, 0x77, 0x73, 0x70, 0x75, 0x73, 0x68, 0x2e, 0x76, 0x31, 0x2e,
+	0x43, 0x6c, 0x69, 0x65, 0x6e, 0x74, 0x57, 0x53, 0x4d, 0x73, 0x67, 0x54, 0x79, 0x70, 0x65, 0x52,
+	0x04, 0x74, 0x79, 0x70, 0x65, 0x12, 0x28, 0x0a, 0x04, 0x64, 0x61, 0x74, 0x61, 0x18, 0x02, 0x20,
+	0x01, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x41, 0x6e, 0x79, 0x52, 0x04, 0x64, 0x61, 0x74, 0x61, 0x2a,
+	0x2d, 0x0a, 0x0f, 0x53, 0x65, 0x72, 0x76, 0x65, 0x72, 0x57, 0x53, 0x4d, 0x73, 0x67, 0x54, 0x79,
+	0x70, 0x65, 0x12, 0x1a, 0x0a, 0x16, 0x53, 0x65, 0x72, 0x76, 0x65, 0x72, 0x55, 0x6e, 0x6b, 0x6e,
+	0x6f, 0x77, 0x6e, 0x57, 0x73, 0x4d, 0x73, 0x67, 0x54, 0x79, 0x70, 0x65, 0x10, 0x00, 0x2a, 0x3d,
+	0x0a, 0x0f, 0x43, 0x6c, 0x69, 0x65, 0x6e, 0x74, 0x57, 0x53, 0x4d, 0x73, 0x67, 0x54, 0x79, 0x70,
+	0x65, 0x12, 0x1a, 0x0a, 0x16, 0x43, 0x6c, 0x69, 0x65, 0x6e, 0x74, 0x55, 0x6e, 0x6b, 0x6e, 0x6f,
+	0x77, 0x6e, 0x57, 0x73, 0x4d, 0x73, 0x67, 0x54, 0x79, 0x70, 0x65, 0x10, 0x00, 0x12, 0x0e, 0x0a,
+	0x0a, 0x41, 0x63, 0x6b, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x10, 0x01, 0x42, 0x3c, 0x0a,
+	0x1f, 0x63, 0x6f, 0x6d, 0x2e, 0x67, 0x6f, 0x6d, 0x69, 0x63, 0x72, 0x6f, 0x69, 0x6d, 0x2e, 0x6c,
+	0x69, 0x62, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x73, 0x2e, 0x77, 0x73, 0x70, 0x75, 0x73, 0x68,
+	0x42, 0x06, 0x57, 0x73, 0x50, 0x75, 0x73, 0x68, 0x5a, 0x11, 0x77, 0x73, 0x70, 0x75, 0x73, 0x68,
+	0x2f, 0x61, 0x70, 0x69, 0x2f, 0x77, 0x73, 0x70, 0x75, 0x73, 0x68, 0x62, 0x06, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x33,
 }
 
 var (
-	file_wspush_proto_rawDescOnce sync.Once
-	file_wspush_proto_rawDescData = file_wspush_proto_rawDesc
+	file_api_wspush_api_wspush_wspush_proto_rawDescOnce sync.Once
+	file_api_wspush_api_wspush_wspush_proto_rawDescData = file_api_wspush_api_wspush_wspush_proto_rawDesc
 )
 
-func file_wspush_proto_rawDescGZIP() []byte {
-	file_wspush_proto_rawDescOnce.Do(func() {
-		file_wspush_proto_rawDescData = protoimpl.X.CompressGZIP(file_wspush_proto_rawDescData)
+func file_api_wspush_api_wspush_wspush_proto_rawDescGZIP() []byte {
+	file_api_wspush_api_wspush_wspush_proto_rawDescOnce.Do(func() {
+		file_api_wspush_api_wspush_wspush_proto_rawDescData = protoimpl.X.CompressGZIP(file_api_wspush_api_wspush_wspush_proto_rawDescData)
 	})
-	return file_wspush_proto_rawDescData
+	return file_api_wspush_api_wspush_wspush_proto_rawDescData
 }
 
-var file_wspush_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
-var file_wspush_proto_goTypes = []interface{}{
-	(*HelloRequest)(nil), // 0: wspush.v1.HelloRequest
-	(*HelloReply)(nil),   // 1: wspush.v1.HelloReply
+var file_api_wspush_api_wspush_wspush_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
+var file_api_wspush_api_wspush_wspush_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_api_wspush_api_wspush_wspush_proto_goTypes = []interface{}{
+	(ServerWSMsgType)(0),        // 0: wspush.v1.ServerWSMsgType
+	(ClientWSMsgType)(0),        // 1: wspush.v1.ClientWSMsgType
+	(*WebSocketHeader)(nil),     // 2: wspush.v1.WebSocketHeader
+	(*S2CWebsocketMessage)(nil), // 3: wspush.v1.S2CWebsocketMessage
+	(*ServerMessage)(nil),       // 4: wspush.v1.ServerMessage
+	(*C2SWebsocketMessage)(nil), // 5: wspush.v1.C2SWebsocketMessage
+	(*ClientMessage)(nil),       // 6: wspush.v1.ClientMessage
+	(*anypb.Any)(nil),           // 7: google.protobuf.Any
 }
-var file_wspush_proto_depIdxs = []int32{
-	0, // [0:0] is the sub-list for method output_type
-	0, // [0:0] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+var file_api_wspush_api_wspush_wspush_proto_depIdxs = []int32{
+	2, // 0: wspush.v1.S2CWebsocketMessage.header:type_name -> wspush.v1.WebSocketHeader
+	4, // 1: wspush.v1.S2CWebsocketMessage.data_list:type_name -> wspush.v1.ServerMessage
+	0, // 2: wspush.v1.ServerMessage.msg_type:type_name -> wspush.v1.ServerWSMsgType
+	7, // 3: wspush.v1.ServerMessage.any_data:type_name -> google.protobuf.Any
+	2, // 4: wspush.v1.C2SWebsocketMessage.header:type_name -> wspush.v1.WebSocketHeader
+	6, // 5: wspush.v1.C2SWebsocketMessage.body:type_name -> wspush.v1.ClientMessage
+	1, // 6: wspush.v1.ClientMessage.type:type_name -> wspush.v1.ClientWSMsgType
+	7, // 7: wspush.v1.ClientMessage.data:type_name -> google.protobuf.Any
+	8, // [8:8] is the sub-list for method output_type
+	8, // [8:8] is the sub-list for method input_type
+	8, // [8:8] is the sub-list for extension type_name
+	8, // [8:8] is the sub-list for extension extendee
+	0, // [0:8] is the sub-list for field type_name
 }
 
-func init() { file_wspush_proto_init() }
-func file_wspush_proto_init() {
-	if File_wspush_proto != nil {
+func init() { file_api_wspush_api_wspush_wspush_proto_init() }
+func file_api_wspush_api_wspush_wspush_proto_init() {
+	if File_api_wspush_api_wspush_wspush_proto != nil {
 		return
 	}
 	if !protoimpl.UnsafeEnabled {
-		file_wspush_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*HelloRequest); i {
+		file_api_wspush_api_wspush_wspush_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*WebSocketHeader); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -175,8 +492,44 @@ func file_wspush_proto_init() {
 				return nil
 			}
 		}
-		file_wspush_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*HelloReply); i {
+		file_api_wspush_api_wspush_wspush_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*S2CWebsocketMessage); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_api_wspush_api_wspush_wspush_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ServerMessage); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_api_wspush_api_wspush_wspush_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*C2SWebsocketMessage); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_api_wspush_api_wspush_wspush_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ClientMessage); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -192,18 +545,19 @@ func file_wspush_proto_init() {
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: file_wspush_proto_rawDesc,
-			NumEnums:      0,
-			NumMessages:   2,
+			RawDescriptor: file_api_wspush_api_wspush_wspush_proto_rawDesc,
+			NumEnums:      2,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
-		GoTypes:           file_wspush_proto_goTypes,
-		DependencyIndexes: file_wspush_proto_depIdxs,
-		MessageInfos:      file_wspush_proto_msgTypes,
+		GoTypes:           file_api_wspush_api_wspush_wspush_proto_goTypes,
+		DependencyIndexes: file_api_wspush_api_wspush_wspush_proto_depIdxs,
+		EnumInfos:         file_api_wspush_api_wspush_wspush_proto_enumTypes,
+		MessageInfos:      file_api_wspush_api_wspush_wspush_proto_msgTypes,
 	}.Build()
-	File_wspush_proto = out.File
-	file_wspush_proto_rawDesc = nil
-	file_wspush_proto_goTypes = nil
-	file_wspush_proto_depIdxs = nil
+	File_api_wspush_api_wspush_wspush_proto = out.File
+	file_api_wspush_api_wspush_wspush_proto_rawDesc = nil
+	file_api_wspush_api_wspush_wspush_proto_goTypes = nil
+	file_api_wspush_api_wspush_wspush_proto_depIdxs = nil
 }
