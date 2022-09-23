@@ -1,0 +1,79 @@
+syntax = "proto3";
+
+package pushjob;
+option go_package = "pushjob/api/pushjob;pushjob";
+import "google/protobuf/any.proto";
+
+// 推送服务，在线直接通过ws，离线则走系统推送
+service PushJob {
+  // 通过ws发送给单个用户
+  rpc PushToSingleUser(SingleUserRequest) returns(SingleUserReply);
+  // 通过ws发送给多个用户
+  rpc PushToBatchUser(BatchUserRequest) returns(BatchUserReply);
+  // 通过ws发送给所有在线用户
+  rpc PushToAllOnlineUser(AllOnlineUserReq) returns(AllOnlineUserReply);
+}
+
+//enum ToClientType{
+//  ToClientTypeUnknown = 0;
+//  ToClientTypeAll = 1; // 所有客户端
+//  ToClientTypeWeb = 2; // 只推送给web端
+//  ToClientTypeApp = 3; // 推送给app（包括android ios）
+//}
+//message AppVersionFilter{
+//  // 最小版本号（包含），可为0
+//  int32 MinAppVersion = 1;
+//  // 最大版本号（包含），不为0
+//  int32 MaxAppVersion = 2;
+//}
+
+// 单推给某个用户
+message SingleUserRequest {
+  int64 user_id = 1;
+  int32 ws_msg_type = 2;
+  google.protobuf.Any data = 3;
+  // ToClientType to_client_type = 4;
+  // AppVersionFilter to_app_version = 5;
+}
+
+message SingleUserReply {}
+
+// 推送给一批用户
+message BatchUserRequest {
+  repeated int64 user_id = 1;
+  int32 ws_msg_type = 2;
+  google.protobuf.Any data = 3;
+}
+
+message BatchUserReply {}
+
+// 推送给所有用户
+message AllOnlineUserReq {
+  int32 ws_msg_type = 1;
+  google.protobuf.Any data = 2;
+  bool needOfflinePush = 3;     // 是否启用系统推送，true：是，false：只通过ws推送
+}
+
+message AllOnlineUserReply {}
+
+// 通过MQ发送给ws网关的消息定义
+message InternalWsPushMessage {
+  // 接收者类型，只需要提供三种方式即可，其他由msg-dp转换
+  enum ToType {
+    ReceiverTypeUnknown = 0;      // 未知类型，不转发
+    ReceiverTypeBatchUser = 1;    // 转发给某一批用户
+    ReceiverTypeAllUser = 2;      // 转发给所有在线用户
+  }
+
+  ToType toType = 1;                  // 转发目标类型, ToType
+  repeated string toIds = 2;          // 接收者ID，SingleUser代表单个用户ID，RoomAllUser代表RoomID
+
+  int32 wsMsgType = 3;                // 类型 详见 constants.proto 中 WSMessageType 结构
+  google.protobuf.Any anyData = 4;    // 推送给客户端的数据。
+
+  // 推送客户端类型，internal_message.proto/ClientType
+  // ToClientType toClientType = 10;
+  // 版本号过滤，仅适用于app（当ClientTypeWeb!=Web时）
+  // AppVersionFilter toAppVersionFilter = 11;
+  string traceId = 13;                // 链路追踪使用
+}

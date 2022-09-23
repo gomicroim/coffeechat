@@ -6,5 +6,6 @@ use (
 	./api/wspush
 	./rpc/user
 	./rpc/chat
+	./rpc/pushjob
 	./pkg
 )
