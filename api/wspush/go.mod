@@ -5,7 +5,7 @@ go 1.17
 require (
 	github.com/go-kratos/kratos/contrib/registry/etcd/v2 v2.0.0-20220921072156-7866ff75fd6c
 	github.com/go-kratos/kratos/v2 v2.5.0
-	github.com/gomicroim/gomicroim/v2/pkg v0.0.0-20220913074023-9ff279b73492
+	github.com/gomicroim/gomicroim/pkg v0.0.0-20220913074023-9ff279b73492
 	github.com/google/wire v0.5.0
 	github.com/gorilla/mux v1.8.0
 	github.com/gorilla/websocket v1.5.0

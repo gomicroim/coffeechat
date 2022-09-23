@@ -10,7 +10,7 @@ import (
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/registry"
-	log2 "github.com/gomicroim/gomicroim/v2/pkg/log"
+	log2 "github.com/gomicroim/gomicroim/pkg/log"
 	"wspush/internal/conf"
 	"wspush/internal/service"
 )

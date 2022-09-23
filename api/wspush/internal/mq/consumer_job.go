@@ -3,9 +3,9 @@ package mq
 import (
 	"context"
 	"github.com/Shopify/sarama"
-	"github.com/gomicroim/gomicroim/v2/pkg/kafka"
-	"github.com/gomicroim/gomicroim/v2/pkg/log"
-	"github.com/gomicroim/gomicroim/v2/pkg/rescue"
+	"github.com/gomicroim/gomicroim/pkg/kafka"
+	"github.com/gomicroim/gomicroim/pkg/log"
+	"github.com/gomicroim/gomicroim/pkg/rescue"
 	"go.uber.org/zap"
 	"sync"
 	"time"

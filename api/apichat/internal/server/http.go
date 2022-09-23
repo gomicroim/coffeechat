@@ -11,7 +11,7 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/transport"
 	"github.com/go-kratos/kratos/v2/transport/http"
-	"github.com/gomicroim/gomicroim/v2/pkg/jwt"
+	"github.com/gomicroim/gomicroim/pkg/jwt"
 	"strings"
 )
 

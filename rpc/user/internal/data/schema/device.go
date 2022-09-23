@@ -3,7 +3,7 @@ package schema
 import (
 	"entgo.io/ent"
 	"entgo.io/ent/schema/field"
-	"github.com/gomicroim/gomicroim/v2/pkg/ent/mixin"
+	"github.com/gomicroim/gomicroim/pkg/ent/mixin"
 )
 
 // Device holds the schema definition for the Device entity.

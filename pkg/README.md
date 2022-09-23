@@ -6,7 +6,7 @@ go公共pkg。
 
 其他项目使用，需要指定特定分支以减少冗余文件，加快下载速度。
 ```shell
-$ go get github.com/gomicroim/gomicroim/v2/pkg@gh-pages
+$ go get github.com/gomicroim/gomicroim/pkg@gh-pages
 ```
 
 ## publish

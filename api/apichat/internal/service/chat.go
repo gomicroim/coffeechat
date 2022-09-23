@@ -3,8 +3,8 @@ package service
 import (
 	"chat/api/chat"
 	"context"
-	"github.com/gomicroim/gomicroim/v2/pkg/jwt"
-	"github.com/gomicroim/gomicroim/v2/pkg/log"
+	"github.com/gomicroim/gomicroim/pkg/jwt"
+	"github.com/gomicroim/gomicroim/pkg/log"
 	"go.uber.org/zap"
 	"strconv"
 	"strings"

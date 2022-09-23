@@ -6,8 +6,8 @@ import (
 	"chat/internal/data/ent/session"
 	"context"
 	"fmt"
-	"github.com/gomicroim/gomicroim/v2/pkg/ent/utils"
-	"github.com/gomicroim/gomicroim/v2/pkg/log"
+	"github.com/gomicroim/gomicroim/pkg/ent/utils"
+	"github.com/gomicroim/gomicroim/pkg/log"
 	"time"
 )
 

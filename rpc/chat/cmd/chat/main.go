@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"github.com/go-kratos/kratos/contrib/registry/etcd/v2"
-	"github.com/gomicroim/gomicroim/v2/pkg/log"
+	"github.com/gomicroim/gomicroim/pkg/log"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"go.uber.org/zap"
 	"os"

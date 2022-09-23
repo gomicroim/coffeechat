@@ -2,7 +2,7 @@ package data
 
 import (
 	"context"
-	"github.com/gomicroim/gomicroim/v2/pkg/log"
+	"github.com/gomicroim/gomicroim/pkg/log"
 	"github.com/stretchr/testify/require"
 	"os"
 	"testing"

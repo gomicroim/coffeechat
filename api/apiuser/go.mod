@@ -6,7 +6,7 @@ require (
 	github.com/go-kratos/kratos/contrib/registry/etcd/v2 v2.0.0-20220816145455-2d206076f88c
 	github.com/go-kratos/kratos/v2 v2.4.1
 	github.com/go-kratos/swagger-api v1.0.1
-	github.com/gomicroim/gomicroim/v2/pkg v0.0.0-20220913074023-9ff279b73492
+	github.com/gomicroim/gomicroim/pkg v0.0.0-20220913074023-9ff279b73492
 	github.com/google/wire v0.5.0
 	go.etcd.io/etcd/client/v3 v3.5.4
 	go.uber.org/zap v1.21.0

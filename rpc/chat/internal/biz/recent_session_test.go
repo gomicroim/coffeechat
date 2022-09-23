@@ -3,7 +3,7 @@ package biz
 import (
 	"chat/internal/data"
 	"context"
-	"github.com/gomicroim/gomicroim/v2/pkg/log"
+	"github.com/gomicroim/gomicroim/pkg/log"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )

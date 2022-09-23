@@ -16,7 +16,7 @@ import (
 	"github.com/go-kratos/kratos/contrib/registry/etcd/v2"
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
-	log2 "github.com/gomicroim/gomicroim/v2/pkg/log"
+	log2 "github.com/gomicroim/gomicroim/pkg/log"
 )
 
 // Injectors from wire.go:

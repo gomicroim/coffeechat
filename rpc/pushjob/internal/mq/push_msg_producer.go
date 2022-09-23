@@ -3,8 +3,8 @@ package mq
 import (
 	"context"
 	"github.com/Shopify/sarama"
-	"github.com/gomicroim/gomicroim/v2/pkg/kafka"
-	"github.com/gomicroim/gomicroim/v2/pkg/log"
+	"github.com/gomicroim/gomicroim/pkg/kafka"
+	"github.com/gomicroim/gomicroim/pkg/log"
 	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
 	"google.golang.org/protobuf/encoding/protojson"

@@ -5,7 +5,7 @@ import (
 	"github.com/go-kratos/kratos/contrib/registry/etcd/v2"
 	"github.com/go-kratos/kratos/v2"
 	kratoslog "github.com/go-kratos/kratos/v2/log"
-	"github.com/gomicroim/gomicroim/v2/pkg/log"
+	"github.com/gomicroim/gomicroim/pkg/log"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"go.uber.org/zap"
 	"os"

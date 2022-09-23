@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 	"github.com/go-kratos/kratos/v2/errors"
-	"github.com/gomicroim/gomicroim/v2/pkg/jwt"
+	"github.com/gomicroim/gomicroim/pkg/jwt"
 	"user/api/user"
 	"user/internal/biz"
 	"user/internal/data"

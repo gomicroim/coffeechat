@@ -10,7 +10,7 @@ import (
 	"testing"
 
 	"github.com/go-redis/redis/v8"
-	"github.com/gomicroim/gomicroim/v2/pkg/log"
+	"github.com/gomicroim/gomicroim/pkg/log"
 	"github.com/stretchr/testify/assert"
 )
 

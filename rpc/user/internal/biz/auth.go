@@ -2,7 +2,7 @@ package biz
 
 import (
 	"context"
-	"github.com/gomicroim/gomicroim/v2/pkg/jwt"
+	"github.com/gomicroim/gomicroim/pkg/jwt"
 	"user/internal/conf"
 	"user/internal/data/cache"
 )

@@ -6,7 +6,7 @@ import (
 	"chat/internal/data/ent/message"
 	"context"
 	"fmt"
-	"github.com/gomicroim/gomicroim/v2/pkg/log"
+	"github.com/gomicroim/gomicroim/pkg/log"
 	"strconv"
 	"time"
 )

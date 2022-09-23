@@ -2,7 +2,7 @@ package data
 
 import (
 	"context"
-	"github.com/gomicroim/gomicroim/v2/pkg/log"
+	"github.com/gomicroim/gomicroim/pkg/log"
 	"user/internal/data/ent"
 	"user/internal/data/ent/device"
 )

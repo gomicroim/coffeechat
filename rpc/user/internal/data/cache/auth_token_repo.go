@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/go-redis/redis/v8"
-	"github.com/gomicroim/gomicroim/v2/pkg/jwt"
+	"github.com/gomicroim/gomicroim/pkg/jwt"
 	"strconv"
 	"time"
 )
