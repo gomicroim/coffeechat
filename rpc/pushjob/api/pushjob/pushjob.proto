@@ -36,7 +36,10 @@ message SingleUserRequest {
   // AppVersionFilter to_app_version = 5;
 }
 
-message SingleUserReply {}
+message SingleUserReply {
+  int32 partition = 1;     // kafka 分区
+  int64 offset = 2;        // 该推送消息的offset
+}
 
 // 推送给一批用户
 message BatchUserRequest {
@@ -45,7 +48,10 @@ message BatchUserRequest {
   google.protobuf.Any data = 3;
 }
 
-message BatchUserReply {}
+message BatchUserReply {
+  int32 partition = 1;     // kafka 分区
+  int64 offset = 2;        // 该推送消息的offset
+}
 
 // 推送给所有用户
 message AllOnlineUserReq {
@@ -54,7 +60,10 @@ message AllOnlineUserReq {
   bool needOfflinePush = 3;     // 是否启用系统推送，true：是，false：只通过ws推送
 }
 
-message AllOnlineUserReply {}
+message AllOnlineUserReply {
+  int32 partition = 1;     // kafka 分区
+  int64 offset = 2;        // 该推送消息的offset
+}
 
 // 通过MQ发送给ws网关的消息定义
 message InternalWsPushMessage {

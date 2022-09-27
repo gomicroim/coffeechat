@@ -5,6 +5,7 @@ import (
 	"github.com/go-kratos/kratos/contrib/registry/etcd/v2"
 	"github.com/go-kratos/kratos/v2"
 	"os"
+	"pushjob/internal/mq"
 
 	kratoslog "github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
@@ -59,9 +60,15 @@ func main() {
 		zap.Strings("endpoints", bc.Registry.Etcd.Endpoints))
 	reg := etcd.New(etcdClient)
 
+	// create kafka producer
+	producer, err := mq.NewMsgProducer(bc.Kafka.Brokers, bc.Kafka.WsPushTopic)
+	if err != nil {
+		panic(err)
+	}
+
 	app, cleanup, err := wireApp(bc.Server, bc.Data,
 		log.MustNewLogger(id, Name, Version, true, 4), // fix kratos caller stack
-		log.L, reg)
+		log.L, reg, producer)
 	if err != nil {
 		panic(err)
 	}

@@ -16,7 +16,7 @@ type PushMsgProducer interface {
 	BuildBatchUserReceiver(ctx context.Context, userIds []string, msgType int32, msg *anypb.Any) *pb.InternalWsPushMessage
 	BuildAllUserReceiver(ctx context.Context, msgType int32, msg *anypb.Any) *pb.InternalWsPushMessage
 
-	PushWsMsg(ctx context.Context, msg *pb.InternalWsPushMessage) error
+	PushWsMsg(ctx context.Context, msg *pb.InternalWsPushMessage) (partition int32, offset int64, err error)
 }
 
 // implement MsgProducer interface check
@@ -67,11 +67,11 @@ func (m *msgProducer) buildReceiver(ctx context.Context, recvIds []string,
 }
 
 // PushWsMsg 发送消息到ws网关
-func (m *msgProducer) PushWsMsg(ctx context.Context, msg *pb.InternalWsPushMessage) error {
+func (m *msgProducer) PushWsMsg(ctx context.Context, msg *pb.InternalWsPushMessage) (partition int32, offset int64, err error) {
 	// proto convert to json
 	data, err := protojson.Marshal(msg)
 	if err != nil {
-		return err
+		return 0, 0, err
 	}
 
 	mq := sarama.ProducerMessage{
@@ -80,10 +80,10 @@ func (m *msgProducer) PushWsMsg(ctx context.Context, msg *pb.InternalWsPushMessa
 		Topic: m.wsPushTopic,
 	}
 
-	p, offset, err := m.producer.SendMessage(&mq)
+	partition, offset, err = m.producer.SendMessage(&mq)
 
-	log.Trace(ctx).Debug("SendMsgToMQ", zap.Int32("partition", p), zap.Int64("offset", offset),
+	log.Trace(ctx).Debug("SendMsgToMQ", zap.Int32("partition", partition), zap.Int64("offset", offset),
 		zap.Error(err))
 
-	return err
+	return
 }

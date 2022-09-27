@@ -12,11 +12,12 @@ import (
 	"github.com/gomicroim/gomicroim/pkg/log"
 	"github.com/google/wire"
 	"pushjob/internal/conf"
+	"pushjob/internal/mq"
 	"pushjob/internal/server"
 	"pushjob/internal/service"
 )
 
 // wireApp init kratos application.
-func wireApp(*conf.Server, *conf.Data, klog.Logger, *log.Logger, *etcd.Registry) (*kratos.App, func(), error) {
+func wireApp(*conf.Server, *conf.Data, klog.Logger, *log.Logger, *etcd.Registry, mq.PushMsgProducer) (*kratos.App, func(), error) {
 	panic(wire.Build(server.ProviderSet, service.ProviderSet, newApp))
 }
