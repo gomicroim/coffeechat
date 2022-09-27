@@ -3,6 +3,7 @@ module apiuser
 go 1.18
 
 require (
+	github.com/go-kratos/kratos/contrib/registry/etcd/v2 v2.0.0-20220921072156-7866ff75fd6c
 	github.com/go-kratos/kratos/v2 v2.5.0
 	github.com/go-kratos/swagger-api v1.0.1
 	github.com/google/wire v0.5.0

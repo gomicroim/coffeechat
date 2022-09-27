@@ -64,6 +64,35 @@ services:
       - "2380:2380"
     networks:
       - goMicroIM
+  zookeeper:
+    image: 'bitnami/zookeeper:3.7'
+    container_name: im_zookeeper
+    ports:
+      - '2181:2181'
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+    volumes:
+      - im_zookeeper:/bitnami
+    networks:
+      - goMicroIM
+  kafka:
+    image: 'bitnami/kafka:3'
+    container_name: im_kafka
+    ports:
+      - '9092:9092'
+    volumes:
+      - im_kafka_data:/bitnami/kafka
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://192.168.200.197:9092
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=false # 禁止自动创建topic
+    depends_on:
+      - zookeeper
+    networks:
+      - goMicroIM
 volumes: # 声明使用的数据卷，不使用宿主机目录，可以自行更改
   im_mysql_data:
     driver: local
@@ -72,6 +101,10 @@ volumes: # 声明使用的数据卷，不使用宿主机目录，可以自行更
   im_mongo_data:
     driver: local
   im_etcd_data:
+    driver: local
+  im_zookeeper:
+    driver: local
+  im_kafka_data:
     driver: local
 # 为了简单，使用默认侨接网络 + DNS连接内部服务器方式
 # 根据https://docs.docker.com/compose/networking/，docker compose默认创建了网络，但是创建自己的侨接网络更安全
