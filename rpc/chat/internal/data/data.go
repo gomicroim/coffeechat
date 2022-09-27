@@ -8,6 +8,7 @@ import (
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
 	"fmt"
+	"github.com/go-redis/redis/v8"
 	"github.com/gomicroim/gomicroim/pkg/log"
 	"github.com/google/wire"
 	"go.uber.org/zap"
