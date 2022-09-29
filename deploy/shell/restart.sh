@@ -95,6 +95,9 @@ case $1 in
     start_all
     check_status
     ;;
+  check)
+    check_status
+    ;;
   *)
     echo "restart.sh start|stop"
     echo "\t start: start all service"
