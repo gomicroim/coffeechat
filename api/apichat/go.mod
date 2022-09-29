@@ -2,6 +2,10 @@ module apichat
 
 go 1.17
 
+// fixed go mod tidy in go work
+// see: https://github.com/golang/go/issues/50750
+replace github.com/gomicroim/gomicroim/pkg => ../../pkg
+
 require (
 	github.com/go-kratos/kratos/contrib/registry/etcd/v2 v2.0.0-20220921072156-7866ff75fd6c
 	github.com/go-kratos/kratos/v2 v2.5.0
