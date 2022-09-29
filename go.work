@@ -7,5 +7,5 @@ use (
 	./pkg
 	./rpc/chat
 	./rpc/pushjob
-	./rpc/users
+	./rpc/user
 )

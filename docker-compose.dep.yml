@@ -72,7 +72,7 @@ services:
     environment:
       - ALLOW_ANONYMOUS_LOGIN=yes
     volumes:
-      - im_zookeeper:/bitnami
+      - im_zookeeper:/bitnami/zookeeper
     networks:
       - goMicroIM
   kafka:
