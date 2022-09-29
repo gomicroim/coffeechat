@@ -1,7 +1,8 @@
 #!/bin/sh
 
+cur_dir=`pwd`
 root_dir=`cd ../../ && pwd`
-out_bin_dir=${root_dir}/bin/
+out_bin_dir=${cur_dir}/bin/
 src_services="
   api/apichat
   api/apiuser
@@ -15,8 +16,7 @@ function build(){
   echo "build start..."
   for server in ${src_services}; do
       echo "build ${server} ok"
-      cd ${root_dir}
-      cd ${server} && make build
+      cd ${root_dir}/${server} && make build
   done
   echo "build end!"
 }

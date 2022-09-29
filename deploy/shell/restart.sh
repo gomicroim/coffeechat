@@ -1,7 +1,7 @@
 #!/bin/sh
 
-root_dir=`cd ../../ && pwd`
-bin_dir=${root_dir}/bin
+cur_dir=`pwd`
+bin_dir=${cur_dir}/bin
 log_dir=${bin_dir}/log
 pid_dir=${bin_dir}/pids
 # 启动顺序无辜，不过还是建议rpc 服务先启，再起api 服务
@@ -91,6 +91,7 @@ case $1 in
     stop_all
     ;;
   start)
+    stop_all
     start_all
     check_status
     ;;
