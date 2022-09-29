@@ -20,7 +20,7 @@ import (
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(confServer *conf.Server, data *conf.Data, logger log.Logger, logLogger *log2.Logger, registry *etcd.Registry, pushMsgProducer mq.PushMsgProducer) (*kratos.App, func(), error) {
+func wireApp(confServer *conf.Server, logger log.Logger, logLogger *log2.Logger, registry *etcd.Registry, pushMsgProducer mq.PushMsgProducer) (*kratos.App, func(), error) {
 	pushJobService := service.NewPushJobService(pushMsgProducer)
 	grpcServer := server.NewGRPCServer(confServer, pushJobService, logger)
 	app := newApp(logLogger, grpcServer, registry)

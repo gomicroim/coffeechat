@@ -7,24 +7,17 @@ import "google/protobuf/duration.proto";
 
 message Bootstrap {
   Server server = 1;
-  Data data = 2;
-  Registry registry = 3;
-  Kafka kafka = 4;
+  Registry registry = 2;
+  Kafka kafka = 3;
 }
 
 message Server {
-  message HTTP {
-    string network = 1;
-    string addr = 2;
-    google.protobuf.Duration timeout = 3;
-  }
   message GRPC {
     string network = 1;
     string addr = 2;
     google.protobuf.Duration timeout = 3;
   }
-  HTTP http = 1;
-  GRPC grpc = 2;
+  GRPC grpc = 1;
 }
 
 message Registry {
@@ -35,23 +28,7 @@ message Registry {
   ETCD etcd = 3;
 }
 
-message Data {
-  message Database {
-    string driver = 1;
-    string source = 2;
-  }
-  message Redis {
-    string network = 1;
-    string addr = 2;
-    google.protobuf.Duration read_timeout = 3;
-    google.protobuf.Duration write_timeout = 4;
-  }
-  Database database = 1;
-  Redis redis = 2;
-}
-
 message Kafka{
   repeated string brokers = 1;
   string ws_push_topic = 2;
-  string consumer_group = 3;
 }

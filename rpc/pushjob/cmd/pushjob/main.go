@@ -66,7 +66,7 @@ func main() {
 		panic(err)
 	}
 
-	app, cleanup, err := wireApp(bc.Server, bc.Data,
+	app, cleanup, err := wireApp(bc.Server,
 		log.MustNewLogger(id, Name, Version, true, 4), // fix kratos caller stack
 		log.L, reg, producer)
 	if err != nil {
