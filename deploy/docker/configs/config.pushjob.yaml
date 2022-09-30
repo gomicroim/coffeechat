@@ -1,0 +1,12 @@
+server:
+  grpc:
+    addr: 0.0.0.0:9000
+    timeout: 1s
+registry:
+  etcd:
+    endpoints: [ etcd:2379 ]
+    register_server_name: rpc-push-job
+kafka:
+  brokers:
+    - kafka:9092
+  ws_push_topic: pushUserMsg

@@ -9,7 +9,9 @@ services:
     container_name: rpc-user
     build: # 指定从dockerfile编译
       context: .
-      dockerfile: ./rpc/user/Dockerfile
+      dockerfile: ./template.rpc.Dockerfile
+      args:
+        app: user
     volumes:
       - ./deploy/docker/configs:/data/conf
     environment:
@@ -26,7 +28,7 @@ services:
     container_name: rpc-chat
     build: # 指定从dockerfile编译
       context: .
-      dockerfile: ./rpc/chat/Dockerfile
+      dockerfile: ./template.rpc.Dockerfile
     volumes:
       - ./deploy/docker/configs:/data/conf
     environment:
@@ -39,6 +41,25 @@ services:
       - goMicroIM
     ports:
       - "9101:9000"
+  rpc-push-job:
+    container_name: rpc-push-job
+    build:
+      context: .
+      dockerfile: ./template.rpc.Dockerfile
+      args:
+        app: pushjob
+    volumes:
+      - ./deploy/docker/configs:/data/conf
+    environment:
+      - TZ=Asia/Shanghai
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+    networks:
+      - goMicroIM
+    ports:
+      - "9102:9000"
   api-user:
     container_name: api-user
     build:

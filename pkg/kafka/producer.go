@@ -19,3 +19,22 @@ func NewSyncProducer(addrs []string, config *sarama.Config) (sarama.SyncProducer
 
 	return sarama.NewSyncProducer(addrs, config)
 }
+
+// NewSyncProducerClient A nil sarama.config use the default config
+func NewSyncProducerClient(addrs []string, config *sarama.Config) (sarama.Client, sarama.SyncProducer, error) {
+	if config == nil {
+		config = sarama.NewConfig()
+		config.Producer.RequiredAcks = sarama.WaitForAll
+		config.Producer.Partitioner = sarama.NewRandomPartitioner
+	}
+
+	client, err := sarama.NewClient(addrs, config)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	config.Producer.Return.Successes = true
+
+	p, err := sarama.NewSyncProducerFromClient(client)
+	return client, p, err
+}
