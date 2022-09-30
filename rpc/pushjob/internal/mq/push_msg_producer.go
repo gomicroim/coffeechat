@@ -2,6 +2,7 @@ package mq
 
 import (
 	"context"
+	"fmt"
 	"github.com/Shopify/sarama"
 	"github.com/gomicroim/gomicroim/pkg/kafka"
 	"github.com/gomicroim/gomicroim/pkg/log"
@@ -30,10 +31,25 @@ type msgProducer struct {
 }
 
 func NewMsgProducer(addr []string, topic string) (PushMsgProducer, error) {
-	p, err := kafka.NewSyncProducer(addr, nil)
+	client, p, err := kafka.NewSyncProducerClient(addr, nil)
 	if err != nil {
 		return nil, err
 	}
+
+	brokers := make([]string, 0)
+	for _, b := range client.Brokers() {
+		brokers = append(brokers, fmt.Sprintf("id:%d, addr:%s", b.ID(), b.Addr()))
+	}
+	partitions, err := client.Partitions(topic)
+	if err != nil {
+		return nil, err
+	}
+
+	log.L.Info("start kafka producer",
+		zap.Strings("brokers", brokers),
+		zap.String("topic", topic),
+		zap.Int32s("topic partitions", partitions))
+
 	return &msgProducer{
 		producer:    p,
 		wsPushTopic: topic,
