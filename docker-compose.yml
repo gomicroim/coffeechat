@@ -29,6 +29,8 @@ services:
     build: # 指定从dockerfile编译
       context: .
       dockerfile: ./template.rpc.Dockerfile
+      args:
+        app: chat
     volumes:
       - ./deploy/docker/configs:/data/conf
     environment:
@@ -64,7 +66,9 @@ services:
     container_name: api-user
     build:
       context: .
-      dockerfile: ./api/apiuser/Dockerfile
+      dockerfile: ./template.api.Dockerfile
+      args:
+        app: apiuser
     volumes:
       - ./deploy/docker/configs:/data/conf
     deploy:
@@ -83,7 +87,9 @@ services:
     container_name: api-chat
     build:
       context: .
-      dockerfile: ./api/apichat/Dockerfile
+      dockerfile: ./template.api.Dockerfile
+      args:
+        app: apichat
     volumes:
       - ./deploy/docker/configs:/data/conf
     deploy:
@@ -102,7 +108,9 @@ services:
     container_name: ws-push
     build:
       context: .
-      dockerfile: ./api/wspush/Dockerfile
+      dockerfile: ./template.api.Dockerfile
+      args:
+        app: wspush
     volumes:
       - ./deploy/docker/configs:/data/conf
     deploy:

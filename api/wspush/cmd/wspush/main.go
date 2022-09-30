@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"github.com/go-kratos/kratos/contrib/registry/etcd/v2"
 	"github.com/go-kratos/kratos/v2"
@@ -10,6 +11,7 @@ import (
 	"go.uber.org/zap"
 	"os"
 	"wspush/internal/conf"
+	"wspush/internal/mq"
 	"wspush/internal/service"
 )
 
@@ -54,6 +56,10 @@ func main() {
 	}
 	dis := etcd.New(etcdClient)
 	log.L.Info("connect etcd", zap.Strings("etcd", bc.Discover.Etcd.Endpoints))
+
+	// start kafka consumer (manual manager partition)
+	consumerJob := mq.MustNewJob(bc.Kafka)
+	consumerJob.StartConsume(context.Background())
 
 	app, cleanup, err := wireApp(bc.Server, bc.Discover, dis,
 		log.MustNewLogger(id, Name, Version, true, 4), // fix kratos caller stack

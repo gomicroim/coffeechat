@@ -8,5 +8,5 @@ registry:
     register_server_name: rpc-pushjob
 kafka:
   brokers:
-    - 192.168.0.164:9092
+    - 127.0.0.1:9092
   ws_push_topic: pushUserMsg

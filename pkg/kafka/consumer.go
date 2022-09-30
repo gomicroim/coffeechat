@@ -36,15 +36,23 @@ type ConsumerHandler func(partition int32, partitionConsumer sarama.PartitionCon
 func NewConsumer(addrs []string, config *sarama.Config) (sarama.Consumer, error) {
 	if config == nil {
 		config = sarama.NewConfig()
-		// Aliyun kafka version 2.2.0
 		config.Version = sarama.V2_0_0_0
 	}
 	return sarama.NewConsumer(addrs, config)
 }
 
-// NewConsumerFromClient create consumer from client
-func NewConsumerFromClient(client sarama.Client) (sarama.Consumer, error) {
-	return sarama.NewConsumerFromClient(client)
+// NewConsumerClient create consumer use default config and return client
+func NewConsumerClient(addrs []string, config *sarama.Config) (sarama.Client, sarama.Consumer, error) {
+	if config == nil {
+		config = sarama.NewConfig()
+		config.Version = sarama.V2_0_0_0
+	}
+	client, err := sarama.NewClient(addrs, config)
+	if err != nil {
+		return nil, nil, err
+	}
+	consumer, err := sarama.NewConsumerFromClient(client)
+	return client, consumer, err
 }
 
 // Consume start consume, will block until exit, call in `goroutine`

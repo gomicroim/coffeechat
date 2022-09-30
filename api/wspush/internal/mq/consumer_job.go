@@ -26,17 +26,17 @@ type jobImpl struct {
 	partitionMutex        sync.RWMutex
 }
 
-// NewJob new kafka consumer job
-func NewJob(config *conf.Kafka) (ConsumerJob, error) {
+// MustNewJob new kafka consumer job
+func MustNewJob(config *conf.Kafka) ConsumerJob {
 	consumer, err := kafka.NewConsumer(config.Brokers, nil)
 	if err != nil {
 		log.L.Error("NewConsumer failed", zap.Error(err))
-		return nil, err
+		panic(err)
 	}
 
 	partitions, err := consumer.Partitions(config.SendMsgTopic)
 	if err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	log.L.Info("kafka", zap.Any("brokers", config.Brokers), zap.Any("partitions", partitions))
@@ -46,7 +46,7 @@ func NewJob(config *conf.Kafka) (ConsumerJob, error) {
 		consumer:              consumer,
 		logger:                log.L,
 		partitionLatestOffset: make(map[int32]int64),
-	}, nil
+	}
 }
 
 func (j *jobImpl) StartConsume(ctx context.Context) {
@@ -58,7 +58,7 @@ func (j *jobImpl) StartConsume(ctx context.Context) {
 		j.onHandlePushMsg(ctx, partitionConsumer, msg)
 	}
 
-	// dp kafka mq
+	// create kafka consumer go routine
 	go rescue.WithRecover(func() {
 		for {
 			err := kafka.Consume(ctx, j.consumer, j.config.SendMsgTopic, handle)

@@ -5,10 +5,10 @@ server:
   server_id: auto
 discover:
   etcd:
-    endpoints: [127.0.0.1:2379]
+    endpoints: [etcd:2379]
   service_endpoint:
     rpc_user: rpc-user
 kafka:
   brokers:
-    - 192.168.0.164:9092
+    - kafka:9092
   send_msg_topic: pushUserMsg

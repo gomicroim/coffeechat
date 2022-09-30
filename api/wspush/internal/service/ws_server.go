@@ -13,7 +13,7 @@ import (
 	"net/http"
 	"strings"
 	"time"
-	"users/api/user"
+	"user/api/user"
 	"wspush/api/wspush"
 	"wspush/internal/biz"
 	"wspush/internal/conf"
