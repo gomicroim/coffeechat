@@ -23,20 +23,20 @@ services:
     networks:
       - goMicroIM
 
-  #  # 拷贝 kong配置文件到db，没有的话不需要
-  #  kong-migrations:
-  #    image: 'kong:3.0.0'
-  #    environment:
-  #      - KONG_DATABASE=postgres
-  #      - KONG_PG_HOST=kong-database
-  #      - KONG_PG_PASSWORD=kong
-  #      - KONG_CASSANDRA_CONTACT_POINTS=kong-database
-  #    command: kong migrations bootstrap
-  #    restart: on-failure
-  #    networks:
-  #      - goMicroIM
-  #    depends_on:
-  #      - kong-database
+  # 拷贝 kong配置文件到db，没有的话不需要
+#  kong-migrations:
+#    image: 'kong:3.0.0'
+#    environment:
+#      - KONG_DATABASE=postgres
+#      - KONG_PG_HOST=kong-database
+#      - KONG_PG_PASSWORD=kong
+#      - KONG_CASSANDRA_CONTACT_POINTS=kong-database
+#    command: kong migrations bootstrap
+#    restart: on-failure
+#    networks:
+#      - goMicroIM
+#    depends_on:
+#      - kong-database
 
   kong:
     image: 'kong:3.0.0'
@@ -74,7 +74,14 @@ services:
     ports:
       - '1337:1337'
     environment:
+      - TOKEN_SECRET=goMicroIM
       - NODE_ENV=production
+      - DB_ADAPTER=postgres
+      - DB_HOST=kong-database
+      - DB_PORT=5432
+      - DB_USER=kong
+      - DB_PASSWORD=kong
+      - DB_DATABASE=konga_db
     deploy:
       restart_policy:
         condition: on-failure

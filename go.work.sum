@@ -1,2 +1,4 @@
 github.com/go-kratos/kratos/contrib/registry/etcd/v2 v2.0.0-20220921072156-7866ff75fd6c/go.mod h1:INri3TA0fMvDVtDolESez+NAK3XuPO+c4JG7KLJNlgU=
+github.com/google/subcommands v1.0.1 h1:/eqq+otEXm5vhfBrbREPCSVQbvofip6kIz+mX5TUH7k=
 github.com/grpc-ecosystem/grpc-gateway v1.16.0 h1:gmcG1KaJ57LophUzW0Hy8NmPhnMZb4M0+kPpLofRdBo=
+golang.org/x/tools v0.1.13-0.20220804200503-81c7dc4e4efa h1:uKcci2q7Qtp6nMTC/AAvfNUAldFtJuHWV9/5QWiypts=

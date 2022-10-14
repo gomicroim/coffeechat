@@ -20,3 +20,4 @@ registry:
   etcd:
     endpoints: [ etcd:2379 ]
     register_server_name: rpc-user
+    register_end_point: "host.docker.internal:9100"

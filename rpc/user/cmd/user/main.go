@@ -9,6 +9,7 @@ import (
 	"github.com/gomicroim/gomicroim/pkg/log"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"go.uber.org/zap"
+	"net/url"
 	"os"
 	"user/internal/conf"
 )
@@ -25,7 +26,11 @@ func init() {
 	flag.StringVar(&flagConf, "conf", "../../configs/config.example.yaml", "config path, eg: -conf config.yaml")
 }
 
-func newApp(logger *log.Logger, gs *grpc.Server, registry *etcd.Registry) *kratos.App {
+func newApp(logger *log.Logger, config *conf.Bootstrap, gs *grpc.Server, registry *etcd.Registry) *kratos.App {
+	var endpoint kratos.Option = nil
+	if config.Registry.Etcd.RegisterEndPoint != "" {
+		endpoint = kratos.Endpoint(&url.URL{Host: config.Registry.Etcd.RegisterEndPoint, Scheme: "grpc"})
+	}
 	return kratos.New(
 		kratos.ID(id),
 		kratos.Name(Name),
@@ -36,6 +41,7 @@ func newApp(logger *log.Logger, gs *grpc.Server, registry *etcd.Registry) *krato
 			gs,
 		),
 		kratos.Registrar(registry),
+		endpoint,
 	)
 }
 
@@ -60,7 +66,7 @@ func main() {
 	reg := etcd.New(etcdClient)
 
 	// wire depends
-	app, cleanup, err := wireApp(bc.Server, bc.Data, bc.Server.Jwt, bc.Data.Redis, logger, log.L, reg)
+	app, cleanup, err := wireApp(bc.Server, bc, bc.Data, bc.Server.Jwt, bc.Data.Redis, logger, log.L, reg)
 	if err != nil {
 		panic(err)
 	}
