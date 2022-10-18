@@ -3,6 +3,7 @@ package biz
 import (
 	"context"
 	"github.com/gomicroim/gomicroim/pkg/jwt"
+	"github.com/pkg/errors"
 	"user/internal/conf"
 	"user/internal/data/cache"
 )
@@ -33,7 +34,7 @@ func (a *AuthUseCase) CreateToken(ctx context.Context, info jwt.ClientInfo, need
 func (a *AuthUseCase) VerifyToken(ctx context.Context, token string, isRefreshToken bool) (*jwt.ClientInfo, *jwt.TokenDetails, error) {
 	clientInfo, details, err := a.jwt.ParseToken(token, isRefreshToken)
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, errors.Wrap(err, "parse token error")
 	}
 	// check token exist in redis
 	if _, err = a.authRepo.FetchAuth(ctx, details.AccessUuid); err != nil {

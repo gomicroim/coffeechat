@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/go-redis/redis/v8"
 	"github.com/gomicroim/gomicroim/pkg/jwt"
+	"github.com/pkg/errors"
 	"strconv"
 	"time"
 )
@@ -62,6 +63,9 @@ func (a *authTokenRepo) FetchAuth(ctx context.Context, tokenUuid string) (userId
 	key := a.buildTokenUuidKey(tokenUuid)
 	userid, err := a.client.Get(ctx, key).Result()
 	if err != nil {
+		if redis.Nil.Error() == err.Error() {
+			return 0, errors.Wrap(err, "token uuid not found")
+		}
 		return 0, err
 	}
 	userID, _ := strconv.ParseInt(userid, 10, 64)
