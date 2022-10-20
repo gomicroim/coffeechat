@@ -27,10 +27,11 @@ func init() {
 }
 
 func newApp(logger *log.Logger, config *conf.Bootstrap, gs *grpc.Server, registry *etcd.Registry) *kratos.App {
-	var endpoint kratos.Option = nil
+	var endpoint = kratos.Endpoint([]*url.URL{}...)
 	if config.Registry.Etcd.RegisterEndPoint != "" {
 		endpoint = kratos.Endpoint(&url.URL{Host: config.Registry.Etcd.RegisterEndPoint, Scheme: "grpc"})
 	}
+
 	return kratos.New(
 		kratos.ID(id),
 		kratos.Name(Name),
