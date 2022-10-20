@@ -36,10 +36,14 @@ message AuthRequest {
   ClientType client_type = 3;
 }
 
-message AuthReply {
+message TokenInfo {
   string access_token = 1;
   string refresh_token = 2;
   int64 at_expires = 3;
   int64 rt_expires = 4;
-  int64 user_id = 5;
+}
+
+message AuthReply {
+  TokenInfo token = 1;
+  int64 user_id = 2;
 }

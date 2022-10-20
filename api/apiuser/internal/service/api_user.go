@@ -63,11 +63,13 @@ func (s *ApiUserService) Auth(ctx context.Context, req *pb.AuthRequest) (*pb.Aut
 	}
 
 	return &pb.AuthReply{
-		AccessToken:  result.AccessToken,
-		RefreshToken: result.RefreshToken,
-		AtExpires:    result.AtExpires,
-		RtExpires:    result.RtExpires,
-		UserId:       result.UserId,
+		Token: &pb.TokenInfo{
+			AccessToken:  result.AccessToken,
+			RefreshToken: result.RefreshToken,
+			AtExpires:    result.AtExpires,
+			RtExpires:    result.RtExpires,
+		},
+		UserId: result.UserId,
 	}, nil
 }
 
