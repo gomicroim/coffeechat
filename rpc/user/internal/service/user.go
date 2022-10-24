@@ -81,11 +81,13 @@ func (s *UserService) Auth(ctx context.Context, req *user.AuthRequest) (*user.Au
 	}
 
 	return &user.AuthReply{
-		AccessToken:  tokenDetail.AccessToken,
-		RefreshToken: tokenDetail.RefreshToken,
-		AtExpires:    tokenDetail.AtExpires,
-		RtExpires:    tokenDetail.RtExpires,
-		UserId:       result.ID,
+		TokenInfo: &user.TokenInfo{
+			AccessToken:  tokenDetail.AccessToken,
+			RefreshToken: tokenDetail.RefreshToken,
+			AtExpires:    tokenDetail.AtExpires,
+			RtExpires:    tokenDetail.RtExpires,
+		},
+		UserId: result.ID,
 	}, nil
 }
 
@@ -102,6 +104,21 @@ func (s *UserService) TokenValid(ctx context.Context, req *user.TokenValidReques
 			ClientType: clientInfo.ClientType,
 			Domain:     clientInfo.Domain,
 			AppVersion: clientInfo.AppVersion,
+		},
+	}, nil
+}
+
+func (s *UserService) RefreshToken(ctx context.Context, req *user.RefreshTokenRequest) (*user.RefreshTokenReply, error) {
+	_, details, err := s.ac.RefreshToken(ctx, req.RefreshToken)
+	if err != nil {
+		return nil, err
+	}
+	return &user.RefreshTokenReply{
+		TokenInfo: &user.TokenInfo{
+			AccessToken:  details.AccessToken,
+			RefreshToken: details.RefreshToken,
+			AtExpires:    details.AtExpires,
+			RtExpires:    details.RtExpires,
 		},
 	}, nil
 }

@@ -12,6 +12,8 @@ service Auth {
   rpc Auth (AuthRequest) returns (AuthReply);
   // 校验token有效性
   rpc TokenValid(TokenValidRequest) returns (TokenValidReply);
+  // 换取新的token
+  rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenReply);
 }
 
 message RegisterRequest {
@@ -45,12 +47,16 @@ message AuthRequest {
   ClientType client_type = 4;
 }
 
-message AuthReply {
+message TokenInfo {
   string access_token = 1;
   string refresh_token = 2;
   int64 at_expires = 3;
   int64 rt_expires = 4;
-  int64 user_id = 5;
+}
+
+message AuthReply {
+  TokenInfo token_info = 1;
+  int64 user_id = 2;
 }
 
 message TokenValidRequest{
@@ -70,4 +76,12 @@ message TokenValidReply{
     int32 app_version = 5;
   }
   ClientInfo client_info = 2;
+}
+
+message RefreshTokenRequest{
+  string refresh_token = 1;
+}
+
+message RefreshTokenReply{
+  TokenInfo token_info = 1;
 }

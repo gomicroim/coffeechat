@@ -51,20 +51,20 @@ func (a *AuthUseCase) GetClientInfo(token string) (*jwt.ClientInfo, error) {
 	return clientInfo, nil
 }
 
-func (a *AuthUseCase) RefreshToken(ctx context.Context, refreshToken string) error {
+func (a *AuthUseCase) RefreshToken(ctx context.Context, refreshToken string) (*jwt.ClientInfo, *jwt.TokenDetails, error) {
 	clientInfo, details, err := a.jwt.ParseToken(refreshToken, true)
 	if err != nil {
-		return err
+		return nil, nil, err
 	}
 	//Delete the previous Refresh Token
 	if _, err = a.authRepo.DeleteAuth(ctx, details.RefreshUuid); err != nil {
-		return err
+		return nil, nil, err
 	}
 	token, err := a.jwt.CreateToken(*clientInfo)
 	if err != nil {
-		return err
+		return nil, nil, err
 	}
-	return a.authRepo.CreateAuth(ctx, clientInfo.UserId, *token)
+	return clientInfo, token, a.authRepo.CreateAuth(ctx, clientInfo.UserId, *token)
 }
 
 func (a *AuthUseCase) DeleteToken(ctx context.Context, accessToken string) error {
