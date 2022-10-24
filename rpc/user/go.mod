@@ -14,6 +14,7 @@ require (
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/gomicroim/gomicroim/pkg v0.0.0-00010101000000-000000000000
 	github.com/google/wire v0.5.0
+	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.8.0
 	go.etcd.io/etcd/client/v3 v3.5.5
 	go.uber.org/zap v1.23.0
