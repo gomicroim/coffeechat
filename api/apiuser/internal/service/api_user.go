@@ -64,13 +64,31 @@ func (s *ApiUserService) Auth(ctx context.Context, req *pb.AuthRequest) (*pb.Aut
 
 	return &pb.AuthReply{
 		Token: &pb.TokenInfo{
-			AccessToken:  result.AccessToken,
-			RefreshToken: result.RefreshToken,
-			AtExpires:    result.AtExpires,
-			RtExpires:    result.RtExpires,
+			AccessToken:  result.TokenInfo.AccessToken,
+			RefreshToken: result.TokenInfo.RefreshToken,
+			AtExpires:    result.TokenInfo.AtExpires,
+			RtExpires:    result.TokenInfo.RtExpires,
 		},
 		UserId: result.UserId,
 	}, nil
+}
+
+func (s *ApiUserService) RefreshToken(ctx context.Context, req *pb.RefreshTokenRequest) (*pb.RefreshTokenReply, error) {
+	httpCtx := ctx.(http.Context)
+	refreshToken, err := extractToken(httpCtx)
+	if err != nil {
+		return nil, err
+	}
+	result, err := s.client.RefreshToken(ctx, &user.RefreshTokenRequest{RefreshToken: refreshToken})
+	if err != nil {
+		return nil, err
+	}
+	return &pb.RefreshTokenReply{Token: &pb.TokenInfo{
+		AccessToken:  result.TokenInfo.AccessToken,
+		RefreshToken: result.TokenInfo.RefreshToken,
+		AtExpires:    result.TokenInfo.AtExpires,
+		RtExpires:    result.TokenInfo.RtExpires,
+	}}, nil
 }
 
 func extractToken(ctx http.Context) (string, error) {

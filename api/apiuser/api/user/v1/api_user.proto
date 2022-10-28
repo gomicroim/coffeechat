@@ -21,4 +21,11 @@ service ApiUser {
       body: "*"
     };
   };
+
+  rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenReply){
+    option (google.api.http) = {
+      post: "/auth/token/refresh"
+      body: "*"
+    };
+  }
 }

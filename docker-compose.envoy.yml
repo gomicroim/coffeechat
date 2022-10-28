@@ -1,0 +1,26 @@
+#
+# docker compose 服务编排
+#
+
+version: '3.4'
+
+services:
+  envoy-service:
+    image: 'bitnami/envoy:1.23.2'
+    container_name: envoy-service
+    restart: on-failure
+    volumes:
+      - ./deploy/setup/envoy/envoy-static.yaml:/opt/bitnami/envoy/conf/envoy.yaml
+    ports:
+      - '8888:8888'
+      - '9901:9901'
+    networks:
+      - goMicroIM
+
+networks:
+  goMicroIM:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.16.0.0/24
+          gateway: 172.16.0.1

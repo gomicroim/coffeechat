@@ -47,3 +47,12 @@ message AuthReply {
   TokenInfo token = 1;
   int64 user_id = 2;
 }
+
+message RefreshTokenRequest {
+  // refresh_token 也放在http头部，不单独携带进body
+  // string refresh_token = 1;
+}
+
+message RefreshTokenReply {
+  TokenInfo token = 1;
+}

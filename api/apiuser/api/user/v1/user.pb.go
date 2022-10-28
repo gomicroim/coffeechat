@@ -422,6 +422,91 @@ func (x *AuthReply) GetUserId() int64 {
 	return 0
 }
 
+type RefreshTokenRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *RefreshTokenRequest) Reset() {
+	*x = RefreshTokenRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_apiuser_api_user_v1_user_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *RefreshTokenRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RefreshTokenRequest) ProtoMessage() {}
+
+func (x *RefreshTokenRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_apiuser_api_user_v1_user_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RefreshTokenRequest.ProtoReflect.Descriptor instead.
+func (*RefreshTokenRequest) Descriptor() ([]byte, []int) {
+	return file_api_apiuser_api_user_v1_user_proto_rawDescGZIP(), []int{5}
+}
+
+type RefreshTokenReply struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Token *TokenInfo `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
+}
+
+func (x *RefreshTokenReply) Reset() {
+	*x = RefreshTokenReply{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_apiuser_api_user_v1_user_proto_msgTypes[6]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *RefreshTokenReply) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RefreshTokenReply) ProtoMessage() {}
+
+func (x *RefreshTokenReply) ProtoReflect() protoreflect.Message {
+	mi := &file_api_apiuser_api_user_v1_user_proto_msgTypes[6]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RefreshTokenReply.ProtoReflect.Descriptor instead.
+func (*RefreshTokenReply) Descriptor() ([]byte, []int) {
+	return file_api_apiuser_api_user_v1_user_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *RefreshTokenReply) GetToken() *TokenInfo {
+	if x != nil {
+		return x.Token
+	}
+	return nil
+}
+
 type AuthRequest_MobileAuth struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -434,7 +519,7 @@ type AuthRequest_MobileAuth struct {
 func (x *AuthRequest_MobileAuth) Reset() {
 	*x = AuthRequest_MobileAuth{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_api_apiuser_api_user_v1_user_proto_msgTypes[5]
+		mi := &file_api_apiuser_api_user_v1_user_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -447,7 +532,7 @@ func (x *AuthRequest_MobileAuth) String() string {
 func (*AuthRequest_MobileAuth) ProtoMessage() {}
 
 func (x *AuthRequest_MobileAuth) ProtoReflect() protoreflect.Message {
-	mi := &file_api_apiuser_api_user_v1_user_proto_msgTypes[5]
+	mi := &file_api_apiuser_api_user_v1_user_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -533,12 +618,17 @@ var file_api_apiuser_api_user_v1_user_proto_rawDesc = []byte{
 	0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x12, 0x2e, 0x75, 0x73,
 	0x65, 0x72, 0x2e, 0x76, 0x31, 0x2e, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x49, 0x6e, 0x66, 0x6f, 0x52,
 	0x05, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x12, 0x17, 0x0a, 0x07, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x69,
-	0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x64, 0x42,
-	0x3d, 0x0a, 0x1d, 0x63, 0x6f, 0x6d, 0x2e, 0x67, 0x6f, 0x6d, 0x69, 0x63, 0x72, 0x6f, 0x69, 0x6d,
-	0x2e, 0x6c, 0x69, 0x62, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x73, 0x2e, 0x75, 0x73, 0x65, 0x72,
-	0x42, 0x04, 0x55, 0x73, 0x65, 0x72, 0x5a, 0x16, 0x61, 0x70, 0x69, 0x75, 0x73, 0x65, 0x72, 0x2f,
-	0x61, 0x70, 0x69, 0x2f, 0x75, 0x73, 0x65, 0x72, 0x2f, 0x76, 0x31, 0x3b, 0x76, 0x31, 0x62, 0x06,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x64, 0x22,
+	0x15, 0x0a, 0x13, 0x52, 0x65, 0x66, 0x72, 0x65, 0x73, 0x68, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x52,
+	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x3d, 0x0a, 0x11, 0x52, 0x65, 0x66, 0x72, 0x65, 0x73,
+	0x68, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x52, 0x65, 0x70, 0x6c, 0x79, 0x12, 0x28, 0x0a, 0x05, 0x74,
+	0x6f, 0x6b, 0x65, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x12, 0x2e, 0x75, 0x73, 0x65,
+	0x72, 0x2e, 0x76, 0x31, 0x2e, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x05,
+	0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x42, 0x3d, 0x0a, 0x1d, 0x63, 0x6f, 0x6d, 0x2e, 0x67, 0x6f, 0x6d,
+	0x69, 0x63, 0x72, 0x6f, 0x69, 0x6d, 0x2e, 0x6c, 0x69, 0x62, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x73, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x42, 0x04, 0x55, 0x73, 0x65, 0x72, 0x5a, 0x16, 0x61, 0x70,
+	0x69, 0x75, 0x73, 0x65, 0x72, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x75, 0x73, 0x65, 0x72, 0x2f, 0x76,
+	0x31, 0x3b, 0x76, 0x31, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -554,7 +644,7 @@ func file_api_apiuser_api_user_v1_user_proto_rawDescGZIP() []byte {
 }
 
 var file_api_apiuser_api_user_v1_user_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_api_apiuser_api_user_v1_user_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_api_apiuser_api_user_v1_user_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_api_apiuser_api_user_v1_user_proto_goTypes = []interface{}{
 	(AuthRequest_LoginType)(0),     // 0: user.v1.AuthRequest.LoginType
 	(AuthRequest_ClientType)(0),    // 1: user.v1.AuthRequest.ClientType
@@ -563,18 +653,21 @@ var file_api_apiuser_api_user_v1_user_proto_goTypes = []interface{}{
 	(*AuthRequest)(nil),            // 4: user.v1.AuthRequest
 	(*TokenInfo)(nil),              // 5: user.v1.TokenInfo
 	(*AuthReply)(nil),              // 6: user.v1.AuthReply
-	(*AuthRequest_MobileAuth)(nil), // 7: user.v1.AuthRequest.MobileAuth
+	(*RefreshTokenRequest)(nil),    // 7: user.v1.RefreshTokenRequest
+	(*RefreshTokenReply)(nil),      // 8: user.v1.RefreshTokenReply
+	(*AuthRequest_MobileAuth)(nil), // 9: user.v1.AuthRequest.MobileAuth
 }
 var file_api_apiuser_api_user_v1_user_proto_depIdxs = []int32{
 	0, // 0: user.v1.AuthRequest.login_type:type_name -> user.v1.AuthRequest.LoginType
-	7, // 1: user.v1.AuthRequest.by_mobile:type_name -> user.v1.AuthRequest.MobileAuth
+	9, // 1: user.v1.AuthRequest.by_mobile:type_name -> user.v1.AuthRequest.MobileAuth
 	1, // 2: user.v1.AuthRequest.client_type:type_name -> user.v1.AuthRequest.ClientType
 	5, // 3: user.v1.AuthReply.token:type_name -> user.v1.TokenInfo
-	4, // [4:4] is the sub-list for method output_type
-	4, // [4:4] is the sub-list for method input_type
-	4, // [4:4] is the sub-list for extension type_name
-	4, // [4:4] is the sub-list for extension extendee
-	0, // [0:4] is the sub-list for field type_name
+	5, // 4: user.v1.RefreshTokenReply.token:type_name -> user.v1.TokenInfo
+	5, // [5:5] is the sub-list for method output_type
+	5, // [5:5] is the sub-list for method input_type
+	5, // [5:5] is the sub-list for extension type_name
+	5, // [5:5] is the sub-list for extension extendee
+	0, // [0:5] is the sub-list for field type_name
 }
 
 func init() { file_api_apiuser_api_user_v1_user_proto_init() }
@@ -644,6 +737,30 @@ func file_api_apiuser_api_user_v1_user_proto_init() {
 			}
 		}
 		file_api_apiuser_api_user_v1_user_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*RefreshTokenRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_api_apiuser_api_user_v1_user_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*RefreshTokenReply); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_api_apiuser_api_user_v1_user_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*AuthRequest_MobileAuth); i {
 			case 0:
 				return &v.state
@@ -662,7 +779,7 @@ func file_api_apiuser_api_user_v1_user_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_api_apiuser_api_user_v1_user_proto_rawDesc,
 			NumEnums:      2,
-			NumMessages:   6,
+			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

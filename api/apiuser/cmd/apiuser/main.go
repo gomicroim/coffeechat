@@ -14,15 +14,16 @@ import (
 )
 
 var (
-	Name     string
-	Version  string
-	flagConf string
+	Name             = "apiuser"
+	Version          string
+	flagConf         string
+	EtcdApiNameSpace = "/api"
 
 	id, _ = os.Hostname()
 )
 
 func init() {
-	flag.StringVar(&flagConf, "conf", "../../configs/config.example.yaml", "config path, eg: -conf config.yaml")
+	flag.StringVar(&flagConf, "conf", "../../configs/config.yaml", "config path, eg: -conf config.yaml")
 }
 
 func newApp(logger *log.Logger, hs *http.Server) *kratos.App {

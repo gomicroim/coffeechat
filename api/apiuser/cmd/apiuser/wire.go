@@ -9,6 +9,7 @@ import (
 	"apiuser/internal/conf"
 	"apiuser/internal/server"
 	"apiuser/internal/service"
+	"github.com/go-kratos/kratos/v2"
 	klog "github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/registry"
 	"github.com/gomicroim/gomicroim/pkg/log"
