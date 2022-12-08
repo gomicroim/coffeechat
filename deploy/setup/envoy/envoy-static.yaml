@@ -15,13 +15,15 @@ static_resources:
           stat_prefix: ingress_http
           codec_type: AUTO
           route_config:
-            name: local_route
+            name: api_route
             virtual_hosts:
-            - name: local_service
+            - name: user_service
               domains: ["*"]
               routes:
               - match: { prefix: "/auth" }
                 route: { cluster: api_user }
+              - match: { prefix: "/chat" }
+                route: { cluster: api_chat }
           http_filters:
           - name: envoy.filters.http.router
             typed_config:
