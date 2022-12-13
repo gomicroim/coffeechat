@@ -99,6 +99,22 @@ services:
       - zookeeper
     networks:
       - goMicroIM
+  go-timeline: # 实现的扩散写timeline服务
+    image: "xmcy0011/go-timeline:v0.2"
+    container_name: im-timeline
+    volumes:
+      - ./deploy/docker/configs:/data/conf
+    environment:
+      - TZ=Asia/Shanghai
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+    networks:
+      - goMicroIM
+    ports:
+      - "9321:8000"
+      - "9322:9000"
 volumes: # 声明使用的数据卷，不使用宿主机目录，可以自行更改
   im_mysql_data:
     driver: local
