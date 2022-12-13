@@ -1,13 +1,13 @@
 package data
 
 import (
-	pb "chat/api/chat"
 	"chat/internal/data/ent"
 	"chat/internal/data/ent/session"
 	"context"
 	"fmt"
 	"github.com/gomicroim/gomicroim/pkg/ent/utils"
 	"github.com/gomicroim/gomicroim/pkg/log"
+	"github.com/gomicroim/gomicroim/protos/chat"
 	"time"
 )
 
@@ -15,10 +15,10 @@ type Session struct {
 	Id            int32
 	Created       time.Time
 	Updated       time.Time
-	UserId        string                 // 用户ID
-	PeerId        string                 // 对方ID
-	SessionType   pb.IMSessionType       // 会话类型，0：未知，1：用户，2：群组
-	SessionStatus pb.IMSessionStatusType // 会话状态，0：正常，1：被删除
+	UserId        string               // 用户ID
+	PeerId        string               // 对方ID
+	SessionType   chat.IMSessionType   // 会话类型，0：未知，1：用户，2：群组
+	SessionStatus chat.IMSessionStatus // 会话状态，0：正常，1：被删除
 }
 
 func (s Session) String() string {
@@ -27,9 +27,9 @@ func (s Session) String() string {
 
 type SessionRepo interface {
 	Create(ctx context.Context, session *Session) error
-	FindOne(ctx context.Context, userId, peerId string, sessionType pb.IMSessionType) (*Session, error)
-	FindSingleSession(ctx context.Context, userId, peerId string, sessionType pb.IMSessionType) ([]*Session, error)
-	UpdateUpdated(ctx context.Context, sessionId int32, updated time.Time, sessionStatus pb.IMSessionStatusType) (int, error)
+	FindOne(ctx context.Context, userId, peerId string, sessionType chat.IMSessionType) (*Session, error)
+	FindSingleSession(ctx context.Context, userId, peerId string, sessionType chat.IMSessionType) ([]*Session, error)
+	UpdateUpdated(ctx context.Context, sessionId int32, updated time.Time, sessionStatus chat.IMSessionStatus) (int, error)
 	ListAll(ctx context.Context, userId string) ([]*Session, error)
 }
 
@@ -43,7 +43,7 @@ func NewSessionRepo(data *Data, logger *log.Logger) SessionRepo {
 }
 
 func (s *sessionRepo) Create(ctx context.Context, session *Session) error {
-	if session.SessionType == pb.IMSessionType_kCIM_SESSION_TYPE_SINGLE {
+	if session.SessionType == chat.IMSessionType_SessionTypeSingle {
 		tx, err := s.client.Tx(ctx)
 		if err != nil {
 			return err
@@ -85,12 +85,12 @@ func (s *sessionRepo) ent2Model(session *ent.Session) *Session {
 		Updated:       session.Updated,
 		UserId:        session.UserID,
 		PeerId:        session.PeerID,
-		SessionType:   pb.IMSessionType(session.SessionType),
-		SessionStatus: pb.IMSessionStatusType(session.SessionStatus),
+		SessionType:   chat.IMSessionType(session.SessionType),
+		SessionStatus: chat.IMSessionStatus(session.SessionStatus),
 	}
 }
 
-func (s *sessionRepo) FindOne(ctx context.Context, userId, peerId string, sessionType pb.IMSessionType) (*Session, error) {
+func (s *sessionRepo) FindOne(ctx context.Context, userId, peerId string, sessionType chat.IMSessionType) (*Session, error) {
 	r, err := s.client.Session.Query().
 		Where(session.UserID(userId), session.PeerID(peerId), session.SessionType(int8(sessionType))).
 		Only(ctx)
@@ -100,7 +100,7 @@ func (s *sessionRepo) FindOne(ctx context.Context, userId, peerId string, sessio
 	return s.ent2Model(r), nil
 }
 
-func (s *sessionRepo) FindSingleSession(ctx context.Context, userId, peerId string, sessionType pb.IMSessionType) ([]*Session, error) {
+func (s *sessionRepo) FindSingleSession(ctx context.Context, userId, peerId string, sessionType chat.IMSessionType) ([]*Session, error) {
 	r, err := s.client.Session.Query().
 		Where(
 			session.Or(session.UserID(userId), session.PeerID(peerId), session.SessionType(int8(sessionType))),
@@ -117,7 +117,7 @@ func (s *sessionRepo) FindSingleSession(ctx context.Context, userId, peerId stri
 	return sessions, nil
 }
 
-func (s *sessionRepo) UpdateUpdated(ctx context.Context, sessionId int32, updated time.Time, sessionStatus pb.IMSessionStatusType) (int, error) {
+func (s *sessionRepo) UpdateUpdated(ctx context.Context, sessionId int32, updated time.Time, sessionStatus chat.IMSessionStatus) (int, error) {
 	return s.client.Session.Update().Where(session.ID(sessionId)).
 		SetSessionStatus(int8(sessionStatus)).SetUpdated(updated).Save(ctx)
 }
