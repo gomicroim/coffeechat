@@ -1,13 +1,13 @@
 package biz
 
 import (
-	pb "chat/api/chat"
 	"chat/internal/data"
 	"chat/internal/data/cache"
 	"chat/internal/data/ent"
 	"context"
 	"errors"
 	"github.com/gomicroim/gomicroim/pkg/log"
+	"github.com/gomicroim/gomicroim/protos/chat"
 	"strconv"
 	"time"
 )
@@ -31,15 +31,16 @@ func NewMessageUseCase(repo data.MessageRepo, seq cache.MsgSeq, sessionRepo data
 
 func (m *MessageUseCase) Send(ctx context.Context, from int64, to string, sessionType int, clientMsgID string,
 	msgType int8, msgData string) (*data.Message, error) {
+
 	// 幂等，如果由于网络等问题，ack客户端没有收到，则下次重发不必再插入数据库
 	msg, err := m.msgRepo.FindByClientMsgId(ctx, clientMsgID)
 	if err != nil && !ent.IsNotFound(err) {
 		return msg, err
 	}
 
-	if sessionType == int(pb.IMSessionType_kCIM_SESSION_TYPE_SINGLE) {
+	if sessionType == int(chat.IMSessionType_SessionTypeSingle) {
 		return m.send(ctx, from, to, clientMsgID, msgType, msgData)
-	} else if sessionType == int(pb.IMSessionType_kCIM_SESSION_TYPE_GROUP) {
+	} else if sessionType == int(chat.IMSessionType_SessionTypeSuperGroup) {
 		return m.sendGroup(ctx, from, to, clientMsgID, msgType, msgData)
 	} else {
 		return nil, errors.New("invalid sessionType")
@@ -47,7 +48,7 @@ func (m *MessageUseCase) Send(ctx context.Context, from int64, to string, sessio
 }
 
 func (m *MessageUseCase) GetMessageList(ctx context.Context, userId int64, peerId string,
-	sessionType pb.IMSessionType, isForward bool, msgSeq int64, limit int) ([]*data.Message, error) {
+	sessionType chat.IMSessionType, isForward bool, msgSeq int64, limit int) ([]*data.Message, error) {
 	if isForward {
 		endMsgSeq := msgSeq
 		return m.msgRepo.ListByEndMsgSeq(ctx, m.msgRepo.GetSessionKey(userId, peerId, sessionType), endMsgSeq, limit)
@@ -59,7 +60,7 @@ func (m *MessageUseCase) GetMessageList(ctx context.Context, userId int64, peerI
 func (m *MessageUseCase) send(ctx context.Context, from int64, to string, clientMsgID string,
 	msgType int8, msgData string) (*data.Message, error) {
 
-	sessionType := pb.IMSessionType_kCIM_SESSION_TYPE_SINGLE
+	sessionType := chat.IMSessionType_SessionTypeSingle
 	fromStr := strconv.FormatInt(from, 10)
 
 	// check session
@@ -72,7 +73,7 @@ func (m *MessageUseCase) send(ctx context.Context, from int64, to string, client
 			UserId:        strconv.FormatInt(from, 10),
 			PeerId:        to,
 			SessionType:   sessionType,
-			SessionStatus: pb.IMSessionStatusType_kCIM_SESSION_STATUS_OK,
+			SessionStatus: chat.IMSessionStatus_SessionStatusOk,
 		})
 		if err != nil {
 			return nil, err
@@ -83,10 +84,10 @@ func (m *MessageUseCase) send(ctx context.Context, from int64, to string, client
 			m.log.Warn("single session miss row")
 		}
 		for _, v := range sessions {
-			if v.SessionStatus == pb.IMSessionStatusType_kCIM_SESSION_STATUS_OK {
+			if v.SessionStatus == chat.IMSessionStatus_SessionStatusOk {
 				continue
 			}
-			_, err = m.sessionRepo.UpdateUpdated(ctx, v.Id, time.Now(), pb.IMSessionStatusType_kCIM_SESSION_STATUS_OK)
+			_, err = m.sessionRepo.UpdateUpdated(ctx, v.Id, time.Now(), chat.IMSessionStatus_SessionStatusOk)
 			if err != nil {
 				return nil, err
 			}
@@ -108,25 +109,25 @@ func (m *MessageUseCase) send(ctx context.Context, from int64, to string, client
 		ServerMsgSeq: msgSeq,
 		MsgType:      int(msgType),
 		MsgData:      msgData,
-		MsgResCode:   int(pb.IMResCode_kCIM_RES_CODE_OK),
-		MsgFeature:   int(pb.IMMsgFeature_kCIM_MSG_FEATURE_ROAM_MSG),
-		MsgStatus:    int(pb.IMMsgStatus_kCIM_MSG_STATUS_NONE),
+		MsgResCode:   int(chat.IMResCode_ResCodeOk),
+		MsgFeature:   int(chat.IMMsgFeature_MsgFeatureRoamMsg),
+		MsgStatus:    int(chat.IMMsgStatus_MsgStatusNone),
 	})
 }
 
 func (m *MessageUseCase) sendGroup(ctx context.Context, from int64, groupId string,
 	clientMsgID string, msgType int8, msgData string) (*data.Message, error) {
-	sessionType := pb.IMSessionType_kCIM_SESSION_TYPE_GROUP
+	sessionType := chat.IMSessionType_SessionTypeNormalGroup
 	fromStr := strconv.FormatInt(from, 10)
 
-	session, err := m.sessionRepo.FindOne(ctx, fromStr, groupId, pb.IMSessionType_kCIM_SESSION_TYPE_GROUP)
+	session, err := m.sessionRepo.FindOne(ctx, fromStr, groupId, chat.IMSessionType_SessionTypeNormalGroup)
 	if err != nil {
 		if ent.IsNotFound(err) {
 			err = m.sessionRepo.Create(ctx, &data.Session{
 				UserId:        fromStr,
 				PeerId:        groupId,
-				SessionType:   pb.IMSessionType_kCIM_SESSION_TYPE_GROUP,
-				SessionStatus: pb.IMSessionStatusType_kCIM_SESSION_STATUS_OK,
+				SessionType:   chat.IMSessionType_SessionTypeNormalGroup,
+				SessionStatus: chat.IMSessionStatus_SessionStatusOk,
 			})
 			if err != nil {
 				return nil, err
@@ -136,7 +137,7 @@ func (m *MessageUseCase) sendGroup(ctx context.Context, from int64, groupId stri
 		}
 	} else {
 		// update session last chat time
-		if _, err = m.sessionRepo.UpdateUpdated(ctx, session.Id, time.Now(), pb.IMSessionStatusType_kCIM_SESSION_STATUS_OK); err != nil {
+		if _, err = m.sessionRepo.UpdateUpdated(ctx, session.Id, time.Now(), chat.IMSessionStatus_SessionStatusOk); err != nil {
 			return nil, err
 		}
 	}
@@ -155,8 +156,8 @@ func (m *MessageUseCase) sendGroup(ctx context.Context, from int64, groupId stri
 		ServerMsgSeq: msgSeq,
 		MsgType:      int(msgType),
 		MsgData:      msgData,
-		MsgResCode:   int(pb.IMResCode_kCIM_RES_CODE_OK),
-		MsgFeature:   int(pb.IMMsgFeature_kCIM_MSG_FEATURE_ROAM_MSG),
-		MsgStatus:    int(pb.IMMsgStatus_kCIM_MSG_STATUS_NONE),
+		MsgResCode:   int(chat.IMResCode_ResCodeOk),
+		MsgFeature:   int(chat.IMMsgFeature_MsgFeatureRoamMsg),
+		MsgStatus:    int(chat.IMMsgStatus_MsgStatusNone),
 	})
 }

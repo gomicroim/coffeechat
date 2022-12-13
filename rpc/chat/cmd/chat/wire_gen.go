@@ -41,7 +41,9 @@ func wireApp(bootstrap *conf.Bootstrap, confServer *conf.Server, confData *conf.
 	messageUseCase := biz.NewMessageUseCase(messageRepo, msgSeq, sessionRepo)
 	recentSessionUseCase := biz.NewRecentSessionUseCase(sessionRepo)
 	chatService := service.NewChatService(messageUseCase, recentSessionUseCase)
-	grpcServer := server.NewGRPCServer(confServer, chatService, logger)
+	sessionService := service.NewSessionService(recentSessionUseCase)
+	msgListService := service.NewMsgListService(messageUseCase)
+	grpcServer := server.NewGRPCServer(confServer, chatService, sessionService, msgListService, logger)
 	app := newApp(logger, bootstrap, grpcServer, registry)
 	return app, func() {
 		cleanup()

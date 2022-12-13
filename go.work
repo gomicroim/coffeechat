@@ -5,6 +5,7 @@ use (
 	./api/apiuser
 	./api/wspush
 	./pkg
+	./protos
 	./rpc/chat
 	./rpc/pushjob
 	./rpc/user
