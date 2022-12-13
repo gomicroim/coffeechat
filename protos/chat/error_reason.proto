@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package chat;
+option go_package = "github.com/gomicroim/gomicroim/protos/chat;chat";
+option java_package = "com.gomicroim.lib.protos.chat";
+option java_outer_classname = "ChatErrorReason";
+
+// chat 错误代码定义
+enum ErrorReason {
+  GEETER_UNSPECIFIED = 0;
+  USER_NOT_FOUND = 1;
+}

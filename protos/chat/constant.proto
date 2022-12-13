@@ -1,0 +1,79 @@
+syntax = "proto3";
+
+package chat;
+option go_package = "github.com/gomicroim/gomicroim/protos/chat;chat";
+option java_package = "com.gomicroim.lib.protos.chat";
+option java_outer_classname = "ChatConstant";
+
+// 客户端类型
+enum IMClientType {
+  ClientTypeDefault = 0;      // unset
+  ClientTypeAndroid = 1;      // 安卓
+  ClientTypeIos = 2;          // iOS
+  ClientTypeWeb = 3;          // WebSocket
+  ClientTypeDesktopWin = 4;   // PC Windows
+  ClientTypeDesktopMacos = 5; // MAC
+}
+
+// 会话类型
+enum IMSessionType {
+  SessionTypeInvalid = 0;     // 无效会话
+  SessionTypeSingle = 1;      // 单聊
+  SessionTypeNormalGroup = 2; // 群聊（2000人内）
+  SessionTypeSuperGroup = 3;  // 2000-100W 人超大群
+}
+
+// 消息类型
+enum IMMsgType {
+  MsgTypeUnknown = 0;      // 未知类型消息，本地使用，发送时请勿使用
+  MsgTypeMix = 1;          // 默认图文混排类型，涵盖 text,img,video,file,voice,location 等等
+  MsgTypeText = 2;         // 纯文本，包括表情（系统内置和emoji）
+  MsgTypeImage = 3;        // 纯图片
+  MsgTypeAudio = 4;        // 纯声音(暂不支持)
+  MsgTypeVideo = 5;        // 纯视频(暂不支持)
+  MsgTypeFile = 6;         // 纯文件(暂不支持)
+  MsgTypeLocation = 7;     // 纯位置(暂不支持)
+  MsgTypeTips = 8;         // 提醒类型（如入群出群通知等）
+}
+
+// 消息状态
+enum IMMsgStatus {
+  MsgStatusNone = 0;       // 默认，不能当查询条件，意义太多
+  MsgStatusUnread = 1;     // 收到消息，未读
+  MsgStatusRead = 2;       // 收到消息，已读
+  MsgStatusDeleted = 3;    // 已删
+  MsgStatusSent = 4;       // 已发送
+  MsgStatusReceipt = 5;    // 对方已读发送的内容
+  MsgStatusRefused = 6;    // 被对方拒绝，比如被对方加入黑名单等等
+
+  // 下面的状态仅在客户端侧使用
+  MsgStatusSending = 20;    // 发送中
+  MsgStatusDraft = 21;      // 草稿
+  MsgStatusSendCancel = 22; // 发送取消
+  MsgStatusFailed = 23;     // 发送失败
+}
+
+// 会话状态
+enum IMSessionStatus {
+  SessionStatusUnknown = 0; // 未知
+  SessionStatusOk = 1;
+  SessionStatusDelete = 2;
+}
+
+// 消息属性
+enum IMMsgFeature {
+  MsgFeatureDefault = 0;      // 默认
+  MsgFeatureLeaveMsg = 1;     // 离线消息(和漫游消息有何区别)
+  MsgFeatureRoamMsg = 2;      // 漫游消息，多端同步接收，永久存储(或1年)
+  MsgFeatureSyncMsg = 3;      // 同步消息
+  // MsgFeatureCUSTOMIZED_MSG = 4; // 透传消息
+}
+
+// 消息错误码
+enum IMResCode {
+  ResCodeUnknown = 0; // unknown
+  ResCodeOk = 1;      // 一切正常
+  ResCodeError = 2;   // 服务器内部错误
+  ResCodeGroupNotExist = 3;       // 群不存在
+  //  ResCodeInBlack = 4;             // 被接收方加入黑名单
+}
