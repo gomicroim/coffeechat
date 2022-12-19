@@ -38,11 +38,12 @@ func (m *MessageUseCase) Send(ctx context.Context, from int64, to string, sessio
 		return msg, err
 	}
 
-	if sessionType == int(chat.IMSessionType_SessionTypeSingle) {
+	switch sessionType {
+	case int(chat.IMSessionType_SessionTypeSingle):
 		return m.send(ctx, from, to, clientMsgID, msgType, msgData)
-	} else if sessionType == int(chat.IMSessionType_SessionTypeSuperGroup) {
+	case int(chat.IMSessionType_SessionTypeSuperGroup):
 		return m.sendGroup(ctx, from, to, clientMsgID, msgType, msgData)
-	} else {
+	default:
 		return nil, errors.New("invalid sessionType")
 	}
 }
@@ -84,7 +85,7 @@ func (m *MessageUseCase) send(ctx context.Context, from int64, to string, client
 			m.log.Warn("single session miss row")
 		}
 		for _, v := range sessions {
-			if v.SessionStatus == chat.IMSessionStatus_SessionStatusOk {
+			if v.SessionStatus == chat.IMSessionStatus_SessionStatusDelete {
 				continue
 			}
 			_, err = m.sessionRepo.UpdateUpdated(ctx, v.Id, time.Now(), chat.IMSessionStatus_SessionStatusOk)
@@ -117,6 +118,7 @@ func (m *MessageUseCase) send(ctx context.Context, from int64, to string, client
 
 func (m *MessageUseCase) sendGroup(ctx context.Context, from int64, groupId string,
 	clientMsgID string, msgType int8, msgData string) (*data.Message, error) {
+
 	sessionType := chat.IMSessionType_SessionTypeNormalGroup
 	fromStr := strconv.FormatInt(from, 10)
 
