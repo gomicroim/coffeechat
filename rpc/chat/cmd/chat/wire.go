@@ -9,6 +9,7 @@ import (
 	"chat/internal/biz"
 	"chat/internal/conf"
 	"chat/internal/data"
+	"chat/internal/mq"
 	"chat/internal/server"
 	"chat/internal/service"
 	"github.com/go-kratos/kratos/contrib/registry/etcd/v2"
@@ -20,6 +21,6 @@ import (
 )
 
 // wireApp init kratos application.
-func wireApp(*conf.Bootstrap, *conf.Server, *conf.Data, kratosLogs.Logger, *log.Logger, *etcd.Registry) (*kratos.App, func(), error) {
-	panic(wire.Build(server.ProviderSet, data.ProviderSet, biz.ProviderSet, service.ProviderSet, newApp))
+func wireApp(*conf.Bootstrap, *conf.Server, *conf.Data, *conf.Data_Kafka, kratosLogs.Logger, *log.Logger, *etcd.Registry) (*kratos.App, func(), error) {
+	panic(wire.Build(server.ProviderSet, data.ProviderSet, biz.ProviderSet, service.ProviderSet, mq.ProviderSet, newApp))
 }

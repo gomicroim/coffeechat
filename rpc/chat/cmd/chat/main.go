@@ -1,6 +1,8 @@
 package main
 
 import (
+	"chat/internal/mq"
+	"context"
 	"flag"
 	"github.com/go-kratos/kratos/contrib/registry/etcd/v2"
 	"github.com/go-kratos/kratos/v2"
@@ -28,11 +30,15 @@ func init() {
 	flag.StringVar(&flagConf, "conf", "../../configs/config.example.yaml", "config path, eg: -conf config.yaml")
 }
 
-func newApp(logger kratoslog.Logger, config *conf.Bootstrap, gs *grpc.Server, registry *etcd.Registry) *kratos.App {
+func newApp(logger kratoslog.Logger, config *conf.Bootstrap, gs *grpc.Server, registry *etcd.Registry, group mq.ChatConsumerGroup) *kratos.App {
 	var endpoint = kratos.Endpoint([]*url.URL{}...)
 	if config.Registry.Etcd.RegisterEndPoint != "" {
 		endpoint = kratos.Endpoint(&url.URL{Host: config.Registry.Etcd.RegisterEndPoint, Scheme: "grpc"})
 	}
+
+	// start consumer group
+	group.Consume(context.Background())
+
 	return kratos.New(
 		kratos.ID(id),
 		kratos.Name(Name),
@@ -67,7 +73,7 @@ func main() {
 		zap.Strings("endpoints", bc.Registry.Etcd.Endpoints))
 	reg := etcd.New(etcdClient)
 
-	app, cleanup, err := wireApp(bc, bc.Server, bc.Data, logger, logger, reg)
+	app, cleanup, err := wireApp(bc, bc.Server, bc.Data, bc.Data.Kafka, logger, logger, reg)
 	if err != nil {
 		panic(err)
 	}

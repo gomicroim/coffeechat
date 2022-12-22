@@ -11,6 +11,7 @@ import (
 	"chat/internal/conf"
 	"chat/internal/data"
 	"chat/internal/data/cache"
+	"chat/internal/mq"
 	"chat/internal/server"
 	"chat/internal/service"
 	"github.com/go-kratos/kratos/contrib/registry/etcd/v2"
@@ -22,7 +23,7 @@ import (
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(bootstrap *conf.Bootstrap, confServer *conf.Server, confData *conf.Data, logger log.Logger, logLogger *log2.Logger, registry *etcd.Registry) (*kratos.App, func(), error) {
+func wireApp(bootstrap *conf.Bootstrap, confServer *conf.Server, confData *conf.Data, data_Kafka *conf.Data_Kafka, logger log.Logger, logLogger *log2.Logger, registry *etcd.Registry) (*kratos.App, func(), error) {
 	client, err := data.NewEntClient(confData)
 	if err != nil {
 		return nil, nil, err
@@ -40,11 +41,13 @@ func wireApp(bootstrap *conf.Bootstrap, confServer *conf.Server, confData *conf.
 	sessionRepo := data.NewSessionRepo(dataData, logLogger)
 	messageUseCase := biz.NewMessageUseCase(messageRepo, msgSeq, sessionRepo)
 	recentSessionUseCase := biz.NewRecentSessionUseCase(sessionRepo)
-	chatService := service.NewChatService(messageUseCase, recentSessionUseCase)
+	chatConsumerGroup := mq.NewChatConsumerGroup(data_Kafka)
+	msgProducer := mq.NewMsgProducer(data_Kafka)
+	chatService := service.NewChatService(messageUseCase, recentSessionUseCase, logLogger, bootstrap, chatConsumerGroup, msgProducer)
 	sessionService := service.NewSessionService(recentSessionUseCase)
 	msgListService := service.NewMsgListService(messageUseCase)
 	grpcServer := server.NewGRPCServer(confServer, chatService, sessionService, msgListService, logger)
-	app := newApp(logger, bootstrap, grpcServer, registry)
+	app := newApp(logger, bootstrap, grpcServer, registry, chatConsumerGroup)
 	return app, func() {
 		cleanup()
 	}, nil

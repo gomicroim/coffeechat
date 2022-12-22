@@ -1,6 +1,6 @@
 server:
   grpc:
-    addr: 0.0.0.0:9001
+    addr: 0.0.0.0:9000
     timeout: 1s
 data:
   database:
@@ -13,6 +13,19 @@ data:
     read_timeout: 0.4s
     write_timeout: 0.6s
     dial_timeout: 1s
+  kafka:
+    brokers:
+      - 127.0.0.1:9092
+    consumer_group: rpc-chat
+    # 通过mq自己消费的方式，扩散写方式持久化到mongo中
+    consumer_topics:
+      outbox_write: msg_write_outbox
+    producer_topics:
+      outbox_write: msg_write_outbox
+      dead: msg_write_failed # 死信队列
+  timeline:
+    #    grpc_addr: "127.0.0.1:8000"
+    grpc_addr: "127.0.0.1:9321"
 registry:
   etcd:
     endpoints: [ 127.0.0.1:2379 ]

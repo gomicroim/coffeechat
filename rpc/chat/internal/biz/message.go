@@ -29,8 +29,8 @@ func NewMessageUseCase(repo data.MessageRepo, seq cache.MsgSeq, sessionRepo data
 	}
 }
 
-func (m *MessageUseCase) Send(ctx context.Context, from int64, to string, sessionType int, clientMsgID string,
-	msgType int8, msgData string) (*data.Message, error) {
+func (m *MessageUseCase) Send(ctx context.Context, from int64, to string, sessionType chat.IMSessionType, clientMsgID string,
+	msgType chat.IMMsgType, msgData string) (*data.Message, error) {
 
 	// 幂等，如果由于网络等问题，ack客户端没有收到，则下次重发不必再插入数据库
 	msg, err := m.msgRepo.FindByClientMsgId(ctx, clientMsgID)
@@ -39,10 +39,12 @@ func (m *MessageUseCase) Send(ctx context.Context, from int64, to string, sessio
 	}
 
 	switch sessionType {
-	case int(chat.IMSessionType_SessionTypeSingle):
-		return m.send(ctx, from, to, clientMsgID, msgType, msgData)
-	case int(chat.IMSessionType_SessionTypeSuperGroup):
-		return m.sendGroup(ctx, from, to, clientMsgID, msgType, msgData)
+	case chat.IMSessionType_SessionTypeSingle:
+		return m.sendSingle(ctx, from, to, clientMsgID, int8(msgType), msgData)
+	case chat.IMSessionType_SessionTypeNormalGroup:
+		return m.sendGroup(ctx, from, to, clientMsgID, int8(msgType), msgData)
+	case chat.IMSessionType_SessionTypeSuperGroup:
+		return nil, errors.New("not support super group")
 	default:
 		return nil, errors.New("invalid sessionType")
 	}
@@ -58,7 +60,7 @@ func (m *MessageUseCase) GetMessageList(ctx context.Context, userId int64, peerI
 	return m.msgRepo.ListByStartMsgSeq(ctx, m.msgRepo.GetSessionKey(userId, peerId, sessionType), startMsgSeq, limit)
 }
 
-func (m *MessageUseCase) send(ctx context.Context, from int64, to string, clientMsgID string,
+func (m *MessageUseCase) sendSingle(ctx context.Context, from int64, to string, clientMsgID string,
 	msgType int8, msgData string) (*data.Message, error) {
 
 	sessionType := chat.IMSessionType_SessionTypeSingle
