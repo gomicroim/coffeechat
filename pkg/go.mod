@@ -8,7 +8,7 @@ require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-kratos/kratos/v2 v2.5.0
 	github.com/pkg/errors v0.9.1
-	github.com/stretchr/testify v1.8.0
+	github.com/stretchr/testify v1.8.1
 	github.com/twinj/uuid v1.0.0
 	go.opentelemetry.io/otel/trace v1.8.0
 	go.uber.org/zap v1.23.0

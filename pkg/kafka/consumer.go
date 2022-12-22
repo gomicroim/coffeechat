@@ -2,11 +2,15 @@ package kafka
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"sync"
 	"time"
 
 	"github.com/Shopify/sarama"
 )
+
+var ErrConsumerCanceled = errors.New("context cancel")
 
 type ConsumerHandler func(partition int32, partitionConsumer sarama.PartitionConsumer, message *sarama.ConsumerMessage)
 
@@ -55,11 +59,9 @@ func NewConsumerClient(addrs []string, config *sarama.Config) (sarama.Client, sa
 	return client, consumer, err
 }
 
-// Consume start consume, will block until exit, call in `goroutine`
+// ConsumeAllPartitions start consume, will block until exit, call in `goroutine`
 // note: `handle` called in `goroutine`
-func Consume(ctx context.Context, consumer sarama.Consumer, topic string, handle ConsumerHandler) error {
-	defer consumer.Close()
-
+func ConsumeAllPartitions(ctx context.Context, consumer sarama.Consumer, topic string, handle ConsumerHandler) error {
 	partitions, err := consumer.Partitions(topic)
 	if err != nil {
 		return err
@@ -81,8 +83,19 @@ func Consume(ctx context.Context, consumer sarama.Consumer, topic string, handle
 				select {
 				case <-ctx.Done():
 					return
-				case m := <-partitionConsumer.Messages():
-					handle(partition, partitionConsumer, m)
+				case m, ok := <-partitionConsumer.Messages():
+					if !ok {
+						return
+					}
+					handleWithRecover := func() {
+						defer func() {
+							if e := recover(); e != nil {
+								fmt.Printf("%+v\n", e)
+							}
+						}()
+						handle(partition, partitionConsumer, m)
+					}
+					handleWithRecover()
 				default:
 					time.Sleep(time.Millisecond)
 				}
@@ -90,5 +103,12 @@ func Consume(ctx context.Context, consumer sarama.Consumer, topic string, handle
 		}(int32(k), p)
 	}
 	waitGroup.Wait()
+
+	select {
+	case <-ctx.Done():
+		return ErrConsumerCanceled
+	default:
+		break
+	}
 	return nil
 }
