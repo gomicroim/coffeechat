@@ -1,11 +1,12 @@
 package biz
 
 import (
-	pb "chat/api/chat"
 	"chat/internal/conf"
 	"chat/internal/data"
 	"chat/internal/data/cache"
 	"context"
+	"github.com/go-redis/redis/v8"
+	pb "github.com/gomicroim/gomicroim/protos/chat"
 	"math"
 	"testing"
 
@@ -32,15 +33,15 @@ func setupBiz() (*data.Data, *redis.Client) {
 
 func TestMessageUseCase_Send(t *testing.T) {
 	dat, redisClient := setupBiz()
-	uc := NewMessageUseCase(data.NewMessageRepo(dat, log.L), cache.NewMsgSeq(redisClient), data.NewSessionRepo(dat, log.L))
-	msg, err := uc.send(context.Background(), 1, "2", "ddddd-ffff-eeee-cccc", 1, "hello")
+	uc := NewMessageHistoryUseCase(data.NewMessageRepo(dat, log.L), cache.NewMsgSeq(redisClient), data.NewSessionRepo(dat, log.L))
+	msg, err := uc.Send(context.Background(), 1, "2", pb.IMSessionType_SessionTypeNormalGroup, "ddddd-ffff-eeee-cccc", 1, "hello")
 	assert.NoError(t, err)
 	t.Log(msg)
 }
 
 func TestMessageUseCase_SendGroup(t *testing.T) {
 	dat, redisClient := setupBiz()
-	uc := NewMessageUseCase(data.NewMessageRepo(dat, log.L), cache.NewMsgSeq(redisClient), data.NewSessionRepo(dat, log.L))
+	uc := NewMessageHistoryUseCase(data.NewMessageRepo(dat, log.L), cache.NewMsgSeq(redisClient), data.NewSessionRepo(dat, log.L))
 	msg, err := uc.sendGroup(context.Background(), 1, "22", "ddddd-ffff-eeee-cccc", 1, "hello group msg")
 	assert.NoError(t, err)
 	t.Log(msg)
@@ -48,9 +49,9 @@ func TestMessageUseCase_SendGroup(t *testing.T) {
 
 func TestMessageUseCase_GetMessageList(t *testing.T) {
 	dat, redisClient := setupBiz()
-	uc := NewMessageUseCase(data.NewMessageRepo(dat, log.L), cache.NewMsgSeq(redisClient), data.NewSessionRepo(dat, log.L))
+	uc := NewMessageHistoryUseCase(data.NewMessageRepo(dat, log.L), cache.NewMsgSeq(redisClient), data.NewSessionRepo(dat, log.L))
 	msg, err := uc.GetMessageList(context.Background(), 1, "22",
-		pb.IMSessionType_kCIM_SESSION_TYPE_GROUP, true,
+		pb.IMSessionType_SessionTypeNormalGroup, true,
 		int64(math.MaxInt64), 10)
 	assert.NoError(t, err)
 	t.Log(msg)

@@ -18,8 +18,8 @@ import (
 type ChatService struct {
 	pb.UnimplementedChatServer
 
-	persistentBiz *biz.MessageUseCase // 消息持久化到mysql，读扩散模型
-	timeline      v1.TimelineClient   // 写扩散存储到mongo，目前是grpc方式，可以考虑优化为mq异步提升吞吐
+	persistentBiz *biz.MessageHistoryUseCase // 消息持久化到mysql，读扩散模型
+	timeline      v1.TimelineClient          // 写扩散存储到mongo，目前是grpc方式，可以考虑优化为mq异步提升吞吐
 	logger        *log.Logger
 
 	sessionBiz *biz.RecentSessionUseCase
@@ -27,7 +27,7 @@ type ChatService struct {
 	producer   mq.MsgProducer
 }
 
-func NewChatService(msgBiz *biz.MessageUseCase, sessionBiz *biz.RecentSessionUseCase,
+func NewChatService(msgBiz *biz.MessageHistoryUseCase, sessionBiz *biz.RecentSessionUseCase,
 	l *log.Logger, config *conf.Bootstrap, group mq.ChatConsumerGroup, producer mq.MsgProducer) *ChatService {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*1)
 	defer cancel()

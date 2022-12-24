@@ -12,7 +12,8 @@ import (
 	"time"
 )
 
-type MessageUseCase struct {
+// MessageHistoryUseCase 读扩散，历史聊天消息管理，存储到mysql
+type MessageHistoryUseCase struct {
 	msgRepo     data.MessageRepo
 	sessionRepo data.SessionRepo
 	seqCache    cache.MsgSeq
@@ -20,8 +21,8 @@ type MessageUseCase struct {
 	log *log.Logger
 }
 
-func NewMessageUseCase(repo data.MessageRepo, seq cache.MsgSeq, sessionRepo data.SessionRepo) *MessageUseCase {
-	return &MessageUseCase{
+func NewMessageHistoryUseCase(repo data.MessageRepo, seq cache.MsgSeq, sessionRepo data.SessionRepo) *MessageHistoryUseCase {
+	return &MessageHistoryUseCase{
 		msgRepo:     repo,
 		seqCache:    seq,
 		sessionRepo: sessionRepo,
@@ -29,7 +30,7 @@ func NewMessageUseCase(repo data.MessageRepo, seq cache.MsgSeq, sessionRepo data
 	}
 }
 
-func (m *MessageUseCase) Send(ctx context.Context, from int64, to string, sessionType chat.IMSessionType, clientMsgID string,
+func (m *MessageHistoryUseCase) Send(ctx context.Context, from int64, to string, sessionType chat.IMSessionType, clientMsgID string,
 	msgType chat.IMMsgType, msgData string) (*data.Message, error) {
 
 	// 幂等，如果由于网络等问题，ack客户端没有收到，则下次重发不必再插入数据库
@@ -50,7 +51,7 @@ func (m *MessageUseCase) Send(ctx context.Context, from int64, to string, sessio
 	}
 }
 
-func (m *MessageUseCase) GetMessageList(ctx context.Context, userId int64, peerId string,
+func (m *MessageHistoryUseCase) GetMessageList(ctx context.Context, userId int64, peerId string,
 	sessionType chat.IMSessionType, isForward bool, msgSeq int64, limit int) ([]*data.Message, error) {
 	if isForward {
 		endMsgSeq := msgSeq
@@ -60,7 +61,7 @@ func (m *MessageUseCase) GetMessageList(ctx context.Context, userId int64, peerI
 	return m.msgRepo.ListByStartMsgSeq(ctx, m.msgRepo.GetSessionKey(userId, peerId, sessionType), startMsgSeq, limit)
 }
 
-func (m *MessageUseCase) sendSingle(ctx context.Context, from int64, to string, clientMsgID string,
+func (m *MessageHistoryUseCase) sendSingle(ctx context.Context, from int64, to string, clientMsgID string,
 	msgType int8, msgData string) (*data.Message, error) {
 
 	sessionType := chat.IMSessionType_SessionTypeSingle
@@ -118,7 +119,7 @@ func (m *MessageUseCase) sendSingle(ctx context.Context, from int64, to string, 
 	})
 }
 
-func (m *MessageUseCase) sendGroup(ctx context.Context, from int64, groupId string,
+func (m *MessageHistoryUseCase) sendGroup(ctx context.Context, from int64, groupId string,
 	clientMsgID string, msgType int8, msgData string) (*data.Message, error) {
 
 	sessionType := chat.IMSessionType_SessionTypeNormalGroup
