@@ -5,6 +5,22 @@
 version: '3.4'
 
 services:
+  rpc-timeline: # 实现的扩散写timeline服务
+    image: "xmcy0011/go-timeline:latest"
+    container_name: rpc-timeline
+    volumes:
+      - ./deploy/docker/configs:/data/conf
+    environment:
+      - TZ=Asia/Shanghai
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+    networks:
+      - goMicroIM
+    ports:
+      - "9321:8000"
+      - "9322:9000"
   rpc-user:
     container_name: rpc-user
     build: # 指定从dockerfile编译

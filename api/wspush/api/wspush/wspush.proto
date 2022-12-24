@@ -13,12 +13,13 @@ message WebSocketHeader {
 }
 
 enum ServerWSMsgType{
-  ServerUnknownWsMsgType = 0;
+  SUnknownWsMsgType = 0;
+  ChatNewMessage = 1;          // 收到新的聊天消息
 }
 
 enum ClientWSMsgType{
   ClientUnknownWsMsgType = 0;
-  AckMessage = 1;
+  ChatAckMessage = 1;          // 客户端收到消息回复
 }
 
 // 服务端->客户端(s2c)的websocket消息定义
