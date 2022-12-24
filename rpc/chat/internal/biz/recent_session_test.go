@@ -9,7 +9,7 @@ import (
 )
 
 func TestRecentSession_GetSessionList(t *testing.T) {
-	dat, _ := setupBiz()
+	_, dat := setupBiz(t)
 	session := NewRecentSessionUseCase(data.NewSessionRepo(dat, log.L))
 	r, err := session.GetSessionList(context.Background(), 1)
 	assert.NoError(t, err)

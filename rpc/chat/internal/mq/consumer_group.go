@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-type OutboxWriteMsgCallback func(ctx context.Context, msg *pb.SendMsgRequest)
+type OutboxWriteMsgCallback func(ctx context.Context, msg *pb.IMBaseMsg)
 
 type ChatConsumerGroup interface {
 	// Consume 启动消费组
@@ -96,7 +96,7 @@ func (c *chatConsumerGroup) ConsumeClaim(session sarama.ConsumerGroupSession, ms
 }
 
 func (c chatConsumerGroup) onHandleOutboxWriteMsg(message *sarama.ConsumerMessage) {
-	req := pb.SendMsgRequest{}
+	req := pb.IMBaseMsg{}
 	err := protojson.Unmarshal(message.Value, &req)
 	if err != nil {
 		log.L.Warn("ConsumeClaim Unmarshal error", zap.Error(err))

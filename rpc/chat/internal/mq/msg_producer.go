@@ -21,7 +21,7 @@ type DeadChatMsg struct {
 
 type MsgProducer interface {
 	// SendOutboxMsg 发送消息
-	SendOutboxMsg(ctx context.Context, key string, msg *pb.SendMsgRequest) (partition int32, offset int64, err error)
+	SendOutboxMsg(ctx context.Context, key string, msg *pb.IMBaseMsg) (partition int32, offset int64, err error)
 	// SendDeadMsg 发送到死信队列
 	SendDeadMsg(ctx context.Context, key string, deadMsg DeadChatMsg) (partition int32, offset int64, err error)
 }
@@ -44,7 +44,7 @@ func NewMsgProducer(data *conf.Data_Kafka) MsgProducer {
 	return &msgProducer{producer: producer, config: data}
 }
 
-func (m msgProducer) SendOutboxMsg(ctx context.Context, key string, msg *pb.SendMsgRequest) (partition int32, offset int64, err error) {
+func (m msgProducer) SendOutboxMsg(ctx context.Context, key string, msg *pb.IMBaseMsg) (partition int32, offset int64, err error) {
 	buffer, err := protojson.Marshal(msg)
 	if err != nil {
 		return 0, 0, err

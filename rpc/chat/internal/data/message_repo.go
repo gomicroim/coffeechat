@@ -49,7 +49,7 @@ type messageRepo struct {
 
 func NewMessageRepo(data *Data, logger *log.Logger) MessageRepo {
 	return &messageRepo{
-		client: data.entClient,
+		client: data.EntClient,
 		log:    logger,
 	}
 }

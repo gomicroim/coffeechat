@@ -3,6 +3,7 @@ package service
 import (
 	pb "chat/api"
 	"chat/internal/biz"
+	"chat/internal/data"
 	"chat/internal/mq"
 	"context"
 	"github.com/gomicroim/gomicroim/pkg/log"
@@ -44,28 +45,37 @@ func (s *ChatService) SendMsg(ctx context.Context, req *pb.SendMsgRequest) (*pb.
 		return nil, err
 	}
 
+	pbMsgInfo := s.toPbMessage(msg)
+
 	// persistent to mongo use kafka (outbox, write diffusion)
-	s.msgWriterBiz.WriteMsg(ctx, req)
-	if err != nil {
-		log.L.Error("SendOutboxMsg err", zap.Error(err))
-	}
+	go func() {
+		err = s.msgWriterBiz.WriteMsg(ctx, pbMsgInfo)
+		if err != nil {
+			log.L.Error("WriteMsg err", zap.Error(err))
+		}
+	}()
+
 	return &pb.SendMsgReply{
 		MsgSeq:  msg.ServerMsgSeq,
 		ResCode: chat.IMResCode(msg.MsgResCode),
-		MsgInfo: &pb.IMBaseMsg{
-			FromUserId:   msg.From,
-			To:           msg.To,
-			SessionType:  chat.IMSessionType(msg.SessionType),
-			ClientMsgId:  msg.ClientMsgID,
-			ServerMsgSeq: msg.ServerMsgSeq,
-			MsgType:      chat.IMMsgType(msg.MsgType),
-			MsgData:      msg.MsgData,
-			MsgResCode:   chat.IMResCode(msg.MsgResCode),
-			MsgFeature:   chat.IMMsgFeature(msg.MsgFeature),
-			MsgStatus:    chat.IMMsgStatus(msg.MsgStatus),
-			CreateTime:   msg.Created.Unix(),
-		},
+		MsgInfo: pbMsgInfo,
 	}, nil
+}
+
+func (s ChatService) toPbMessage(msg *data.Message) *pb.IMBaseMsg {
+	return &pb.IMBaseMsg{
+		FromUserId:   msg.From,
+		To:           msg.To,
+		SessionType:  chat.IMSessionType(msg.SessionType),
+		ClientMsgId:  msg.ClientMsgID,
+		ServerMsgSeq: msg.ServerMsgSeq,
+		MsgType:      chat.IMMsgType(msg.MsgType),
+		MsgData:      msg.MsgData,
+		MsgResCode:   chat.IMResCode(msg.MsgResCode),
+		MsgFeature:   chat.IMMsgFeature(msg.MsgFeature),
+		MsgStatus:    chat.IMMsgStatus(msg.MsgStatus),
+		CreateTime:   msg.Created.Unix(),
+	}
 }
 
 // SyncMessage timeline 同步消息

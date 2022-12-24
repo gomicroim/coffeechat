@@ -39,7 +39,7 @@ type sessionRepo struct {
 }
 
 func NewSessionRepo(data *Data, logger *log.Logger) SessionRepo {
-	return &sessionRepo{client: data.entClient, log: logger}
+	return &sessionRepo{client: data.EntClient, log: logger}
 }
 
 func (s *sessionRepo) Create(ctx context.Context, session *Session) error {

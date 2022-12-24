@@ -25,8 +25,8 @@ var ProviderSet = wire.NewSet(NewRedis, NewEntClient, NewData,
 	cache.NewMsgSeq)
 
 type Data struct {
-	entClient   *ent.Client
-	redisClient *redis.Client
+	EntClient   *ent.Client
+	RedisClient *redis.Client
 }
 
 // NewData .
@@ -38,8 +38,8 @@ func NewData(logger *log.Logger, entClient *ent.Client, redisClient *redis.Clien
 		}
 	}
 	return &Data{
-		entClient:   entClient,
-		redisClient: redisClient,
+		EntClient:   entClient,
+		RedisClient: redisClient,
 	}, cleanup, nil
 }
 

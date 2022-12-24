@@ -5,8 +5,8 @@ import (
 	"chat/internal/data"
 	"chat/internal/data/cache"
 	"context"
-	"github.com/go-redis/redis/v8"
 	pb "github.com/gomicroim/gomicroim/protos/chat"
+	"github.com/stretchr/testify/require"
 	"math"
 	"testing"
 
@@ -14,7 +14,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func setupBiz() (*data.Data, *redis.Client) {
+func setupBiz(t *testing.T) (*conf.Bootstrap, *data.Data) {
 	bc := conf.MustLoad("../../configs/config.yaml")
 
 	entClient, err := data.NewEntClient(bc.Data)
@@ -28,28 +28,29 @@ func setupBiz() (*data.Data, *redis.Client) {
 	}
 
 	dat, _, err := data.NewData(log.L, entClient, redisClient)
-	return dat, redisClient
+	require.NoError(t, err)
+	return bc, dat
 }
 
-func TestMessageUseCase_Send(t *testing.T) {
-	dat, redisClient := setupBiz()
-	uc := NewMessageHistoryUseCase(data.NewMessageRepo(dat, log.L), cache.NewMsgSeq(redisClient), data.NewSessionRepo(dat, log.L))
-	msg, err := uc.Send(context.Background(), 1, "2", pb.IMSessionType_SessionTypeNormalGroup, "ddddd-ffff-eeee-cccc", 1, "hello")
+func TestMessageUseCase_SendSingle(t *testing.T) {
+	_, dat := setupBiz(t)
+	uc := NewMessageHistoryUseCase(data.NewMessageRepo(dat, log.L), cache.NewMsgSeq(dat.RedisClient), data.NewSessionRepo(dat, log.L))
+	msg, err := uc.Send(context.Background(), 1, "2", pb.IMSessionType_SessionTypeSingle, "ddddd-ffff-eeee-cccc", 1, "hello")
 	assert.NoError(t, err)
 	t.Log(msg)
 }
 
 func TestMessageUseCase_SendGroup(t *testing.T) {
-	dat, redisClient := setupBiz()
-	uc := NewMessageHistoryUseCase(data.NewMessageRepo(dat, log.L), cache.NewMsgSeq(redisClient), data.NewSessionRepo(dat, log.L))
-	msg, err := uc.sendGroup(context.Background(), 1, "22", "ddddd-ffff-eeee-cccc", 1, "hello group msg")
+	_, dat := setupBiz(t)
+	uc := NewMessageHistoryUseCase(data.NewMessageRepo(dat, log.L), cache.NewMsgSeq(dat.RedisClient), data.NewSessionRepo(dat, log.L))
+	msg, err := uc.Send(context.Background(), 1, "22", pb.IMSessionType_SessionTypeNormalGroup, "ddddd-ffff-eeee-cccc", 1, "hello group msg")
 	assert.NoError(t, err)
 	t.Log(msg)
 }
 
 func TestMessageUseCase_GetMessageList(t *testing.T) {
-	dat, redisClient := setupBiz()
-	uc := NewMessageHistoryUseCase(data.NewMessageRepo(dat, log.L), cache.NewMsgSeq(redisClient), data.NewSessionRepo(dat, log.L))
+	_, dat := setupBiz(t)
+	uc := NewMessageHistoryUseCase(data.NewMessageRepo(dat, log.L), cache.NewMsgSeq(dat.RedisClient), data.NewSessionRepo(dat, log.L))
 	msg, err := uc.GetMessageList(context.Background(), 1, "22",
 		pb.IMSessionType_SessionTypeNormalGroup, true,
 		int64(math.MaxInt64), 10)
