@@ -13,7 +13,14 @@ import (
 )
 
 // MessageHistoryUseCase 读扩散，历史聊天消息管理，存储到mysql
-type MessageHistoryUseCase struct {
+type MessageHistoryUseCase interface {
+	Send(ctx context.Context, from int64, to string, sessionType chat.IMSessionType, clientMsgID string,
+		msgType chat.IMMsgType, msgData string) (*data.Message, error)
+	GetMessageList(ctx context.Context, userId int64, peerId string,
+		sessionType chat.IMSessionType, isForward bool, msgSeq int64, limit int) ([]*data.Message, error)
+}
+
+type messageHistoryUseCase struct {
 	msgRepo     data.MessageRepo
 	sessionRepo data.SessionRepo
 	seqCache    cache.MsgSeq
@@ -21,8 +28,8 @@ type MessageHistoryUseCase struct {
 	log *log.Logger
 }
 
-func NewMessageHistoryUseCase(repo data.MessageRepo, seq cache.MsgSeq, sessionRepo data.SessionRepo) *MessageHistoryUseCase {
-	return &MessageHistoryUseCase{
+func NewMessageHistoryUseCase(repo data.MessageRepo, seq cache.MsgSeq, sessionRepo data.SessionRepo) MessageHistoryUseCase {
+	return &messageHistoryUseCase{
 		msgRepo:     repo,
 		seqCache:    seq,
 		sessionRepo: sessionRepo,
@@ -30,7 +37,7 @@ func NewMessageHistoryUseCase(repo data.MessageRepo, seq cache.MsgSeq, sessionRe
 	}
 }
 
-func (m *MessageHistoryUseCase) Send(ctx context.Context, from int64, to string, sessionType chat.IMSessionType, clientMsgID string,
+func (m *messageHistoryUseCase) Send(ctx context.Context, from int64, to string, sessionType chat.IMSessionType, clientMsgID string,
 	msgType chat.IMMsgType, msgData string) (*data.Message, error) {
 
 	// 幂等，如果由于网络等问题，ack客户端没有收到，则下次重发不必再插入数据库
@@ -51,7 +58,7 @@ func (m *MessageHistoryUseCase) Send(ctx context.Context, from int64, to string,
 	}
 }
 
-func (m *MessageHistoryUseCase) GetMessageList(ctx context.Context, userId int64, peerId string,
+func (m *messageHistoryUseCase) GetMessageList(ctx context.Context, userId int64, peerId string,
 	sessionType chat.IMSessionType, isForward bool, msgSeq int64, limit int) ([]*data.Message, error) {
 	if isForward {
 		endMsgSeq := msgSeq
@@ -61,7 +68,7 @@ func (m *MessageHistoryUseCase) GetMessageList(ctx context.Context, userId int64
 	return m.msgRepo.ListByStartMsgSeq(ctx, m.msgRepo.GetSessionKey(userId, peerId, sessionType), startMsgSeq, limit)
 }
 
-func (m *MessageHistoryUseCase) sendSingle(ctx context.Context, from int64, to string, clientMsgID string,
+func (m *messageHistoryUseCase) sendSingle(ctx context.Context, from int64, to string, clientMsgID string,
 	msgType int8, msgData string) (*data.Message, error) {
 
 	sessionType := chat.IMSessionType_SessionTypeSingle
@@ -119,7 +126,7 @@ func (m *MessageHistoryUseCase) sendSingle(ctx context.Context, from int64, to s
 	})
 }
 
-func (m *MessageHistoryUseCase) sendGroup(ctx context.Context, from int64, groupId string,
+func (m *messageHistoryUseCase) sendGroup(ctx context.Context, from int64, groupId string,
 	clientMsgID string, msgType int8, msgData string) (*data.Message, error) {
 
 	sessionType := chat.IMSessionType_SessionTypeNormalGroup
