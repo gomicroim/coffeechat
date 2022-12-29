@@ -98,7 +98,7 @@ message SyncMessageReply{
   int64 entry_set_last_seq = 2;         // entry_set 中最后的序号值
   message TimelineEntry {
     int64 sequence = 1;
-    repeated IMBaseMsg message = 2;
+    IMBaseMsg message = 2;
   }
   repeated TimelineEntry entry_set = 3; // 如果拉取到的结果为空，说明同步完成
 }

@@ -30,3 +30,20 @@ func TestMessageSyncUseCase_WriteMsg(t *testing.T) {
 	time.Sleep(time.Second * 5)
 	require.NoError(t, err)
 }
+
+func TestMessageSyncUseCase_GetSyncMessage(t *testing.T) {
+	bc, _ := setupBiz(t)
+	producer := mq.NewMsgProducer(bc.Data.Kafka)
+	consumer := mq.NewChatConsumerGroup(bc.Data.Kafka)
+
+	biz := NewMessageSyncUseCase(bc, log.L, producer, consumer)
+	time.Sleep(time.Second)
+
+	reply, err := biz.GetSyncMessage(context.Background(), &pb.SyncMessageRequest{
+		Member:   "22",
+		LastRead: 0,
+		Count:    10,
+	})
+	require.NoError(t, err)
+	t.Log(reply)
+}

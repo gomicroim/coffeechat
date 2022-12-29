@@ -20,6 +20,8 @@ import (
 type MessageSyncUseCase interface {
 	// WriteMsg 使用mq异步扩散写存储到mongo db
 	WriteMsg(ctx context.Context, msg *pb.IMBaseMsg) error
+	// GetSyncMessage 同步消息
+	GetSyncMessage(ctx context.Context, in *pb.SyncMessageRequest) (*pb.SyncMessageReply, error)
 }
 
 type messageSyncUseCase struct {
@@ -114,4 +116,36 @@ func (m messageSyncUseCase) onHandleOutboxWriteMsg(ctx context.Context, req *pb.
 			m.logger.Error("SendDeadMsg error", zap.Error(err))
 		}
 	}
+}
+
+func (m messageSyncUseCase) GetSyncMessage(ctx context.Context, in *pb.SyncMessageRequest) (*pb.SyncMessageReply, error) {
+	out, err := m.timeline.GetSyncMessage(ctx, &v1.SyncMessageRequest{
+		Member:   in.Member,
+		LastRead: in.LastRead,
+		Count:    in.Count,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	reply := &pb.SyncMessageReply{
+		LatestSeq:       out.LatestSeq,
+		EntrySetLastSeq: out.EntrySetLastSeq,
+		EntrySet:        make([]*pb.SyncMessageReply_TimelineEntry, 0),
+	}
+	for _, v := range out.EntrySet {
+		msg := &pb.IMBaseMsg{}
+		err = protojson.Unmarshal([]byte(v.Message), msg)
+		if err != nil {
+			m.logger.Warn("protojson Unmarshal error", zap.Error(err))
+			continue
+		}
+		entry := &pb.SyncMessageReply_TimelineEntry{
+			Sequence: v.Sequence,
+			Message:  msg,
+		}
+		reply.EntrySet = append(reply.EntrySet, entry)
+	}
+
+	return reply, err
 }
