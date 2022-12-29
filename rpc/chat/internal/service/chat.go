@@ -79,6 +79,6 @@ func (s ChatService) toPbMessage(msg *data.Message) *pb.IMBaseMsg {
 }
 
 // SyncMessage timeline 同步消息
-func (s *ChatService) SyncMessage(context.Context, *pb.SyncMessageRequest) (*pb.SyncMessageReply, error) {
-	return nil, nil
+func (s *ChatService) SyncMessage(ctx context.Context, req *pb.SyncMessageRequest) (*pb.SyncMessageReply, error) {
+	return s.msgWriterBiz.GetSyncMessage(ctx, req)
 }

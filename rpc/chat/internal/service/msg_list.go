@@ -12,10 +12,10 @@ import (
 type MsgListService struct {
 	pb.UnimplementedMsgListServer
 
-	msgList *biz.MessageUseCase
+	msgList biz.MessageHistoryUseCase
 }
 
-func NewMsgListService(msgList *biz.MessageUseCase) *MsgListService {
+func NewMsgListService(msgList biz.MessageHistoryUseCase) *MsgListService {
 	return &MsgListService{msgList: msgList}
 }
 
