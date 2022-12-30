@@ -2,9 +2,9 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.21.5
-// source: rpc/chat/api/chat.proto
+// source: protos/api/api_chat.proto
 
-package chat
+package api
 
 import (
 	context "context"
@@ -23,8 +23,8 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ChatClient interface {
 	// 发消息
-	SendMsg(ctx context.Context, in *SendMsgRequest, opts ...grpc.CallOption) (*SendMsgReply, error)
-	// timeline 同步消息
+	Send(ctx context.Context, in *SendMsgRequest, opts ...grpc.CallOption) (*SendMsgReply, error)
+	// timeline 同步消息（适合有本地存储能力的客户端，如APP）
 	SyncMessage(ctx context.Context, in *SyncMessageRequest, opts ...grpc.CallOption) (*SyncMessageReply, error)
 }
 
@@ -36,9 +36,9 @@ func NewChatClient(cc grpc.ClientConnInterface) ChatClient {
 	return &chatClient{cc}
 }
 
-func (c *chatClient) SendMsg(ctx context.Context, in *SendMsgRequest, opts ...grpc.CallOption) (*SendMsgReply, error) {
+func (c *chatClient) Send(ctx context.Context, in *SendMsgRequest, opts ...grpc.CallOption) (*SendMsgReply, error) {
 	out := new(SendMsgReply)
-	err := c.cc.Invoke(ctx, "/chat.Chat/SendMsg", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.Chat/Send", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -47,7 +47,7 @@ func (c *chatClient) SendMsg(ctx context.Context, in *SendMsgRequest, opts ...gr
 
 func (c *chatClient) SyncMessage(ctx context.Context, in *SyncMessageRequest, opts ...grpc.CallOption) (*SyncMessageReply, error) {
 	out := new(SyncMessageReply)
-	err := c.cc.Invoke(ctx, "/chat.Chat/SyncMessage", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.Chat/SyncMessage", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -59,8 +59,8 @@ func (c *chatClient) SyncMessage(ctx context.Context, in *SyncMessageRequest, op
 // for forward compatibility
 type ChatServer interface {
 	// 发消息
-	SendMsg(context.Context, *SendMsgRequest) (*SendMsgReply, error)
-	// timeline 同步消息
+	Send(context.Context, *SendMsgRequest) (*SendMsgReply, error)
+	// timeline 同步消息（适合有本地存储能力的客户端，如APP）
 	SyncMessage(context.Context, *SyncMessageRequest) (*SyncMessageReply, error)
 	mustEmbedUnimplementedChatServer()
 }
@@ -69,8 +69,8 @@ type ChatServer interface {
 type UnimplementedChatServer struct {
 }
 
-func (UnimplementedChatServer) SendMsg(context.Context, *SendMsgRequest) (*SendMsgReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SendMsg not implemented")
+func (UnimplementedChatServer) Send(context.Context, *SendMsgRequest) (*SendMsgReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Send not implemented")
 }
 func (UnimplementedChatServer) SyncMessage(context.Context, *SyncMessageRequest) (*SyncMessageReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SyncMessage not implemented")
@@ -88,20 +88,20 @@ func RegisterChatServer(s grpc.ServiceRegistrar, srv ChatServer) {
 	s.RegisterService(&Chat_ServiceDesc, srv)
 }
 
-func _Chat_SendMsg_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Chat_Send_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(SendMsgRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ChatServer).SendMsg(ctx, in)
+		return srv.(ChatServer).Send(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/chat.Chat/SendMsg",
+		FullMethod: "/api.Chat/Send",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChatServer).SendMsg(ctx, req.(*SendMsgRequest))
+		return srv.(ChatServer).Send(ctx, req.(*SendMsgRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -116,7 +116,7 @@ func _Chat_SyncMessage_Handler(srv interface{}, ctx context.Context, dec func(in
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/chat.Chat/SyncMessage",
+		FullMethod: "/api.Chat/SyncMessage",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ChatServer).SyncMessage(ctx, req.(*SyncMessageRequest))
@@ -128,12 +128,12 @@ func _Chat_SyncMessage_Handler(srv interface{}, ctx context.Context, dec func(in
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Chat_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "chat.Chat",
+	ServiceName: "api.Chat",
 	HandlerType: (*ChatServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "SendMsg",
-			Handler:    _Chat_SendMsg_Handler,
+			MethodName: "Send",
+			Handler:    _Chat_Send_Handler,
 		},
 		{
 			MethodName: "SyncMessage",
@@ -141,7 +141,7 @@ var Chat_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "rpc/chat/api/chat.proto",
+	Metadata: "protos/api/api_chat.proto",
 }
 
 // SessionClient is the client API for Session service.
@@ -149,7 +149,7 @@ var Chat_ServiceDesc = grpc.ServiceDesc{
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type SessionClient interface {
 	// 查询会话列表
-	GetSession(ctx context.Context, in *GetSessionRequest, opts ...grpc.CallOption) (*GetRecentSessionReply, error)
+	GetSession(ctx context.Context, in *GetRecentSessionRequest, opts ...grpc.CallOption) (*GetRecentSessionReply, error)
 	// 已读消息回执
 	ReadMsgNotify(ctx context.Context, in *MsgReadAckRequest, opts ...grpc.CallOption) (*MsgReadAckReply, error)
 }
@@ -162,9 +162,9 @@ func NewSessionClient(cc grpc.ClientConnInterface) SessionClient {
 	return &sessionClient{cc}
 }
 
-func (c *sessionClient) GetSession(ctx context.Context, in *GetSessionRequest, opts ...grpc.CallOption) (*GetRecentSessionReply, error) {
+func (c *sessionClient) GetSession(ctx context.Context, in *GetRecentSessionRequest, opts ...grpc.CallOption) (*GetRecentSessionReply, error) {
 	out := new(GetRecentSessionReply)
-	err := c.cc.Invoke(ctx, "/chat.Session/GetSession", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.Session/GetSession", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -173,7 +173,7 @@ func (c *sessionClient) GetSession(ctx context.Context, in *GetSessionRequest, o
 
 func (c *sessionClient) ReadMsgNotify(ctx context.Context, in *MsgReadAckRequest, opts ...grpc.CallOption) (*MsgReadAckReply, error) {
 	out := new(MsgReadAckReply)
-	err := c.cc.Invoke(ctx, "/chat.Session/ReadMsgNotify", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.Session/ReadMsgNotify", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -185,7 +185,7 @@ func (c *sessionClient) ReadMsgNotify(ctx context.Context, in *MsgReadAckRequest
 // for forward compatibility
 type SessionServer interface {
 	// 查询会话列表
-	GetSession(context.Context, *GetSessionRequest) (*GetRecentSessionReply, error)
+	GetSession(context.Context, *GetRecentSessionRequest) (*GetRecentSessionReply, error)
 	// 已读消息回执
 	ReadMsgNotify(context.Context, *MsgReadAckRequest) (*MsgReadAckReply, error)
 	mustEmbedUnimplementedSessionServer()
@@ -195,7 +195,7 @@ type SessionServer interface {
 type UnimplementedSessionServer struct {
 }
 
-func (UnimplementedSessionServer) GetSession(context.Context, *GetSessionRequest) (*GetRecentSessionReply, error) {
+func (UnimplementedSessionServer) GetSession(context.Context, *GetRecentSessionRequest) (*GetRecentSessionReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetSession not implemented")
 }
 func (UnimplementedSessionServer) ReadMsgNotify(context.Context, *MsgReadAckRequest) (*MsgReadAckReply, error) {
@@ -215,7 +215,7 @@ func RegisterSessionServer(s grpc.ServiceRegistrar, srv SessionServer) {
 }
 
 func _Session_GetSession_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetSessionRequest)
+	in := new(GetRecentSessionRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -224,10 +224,10 @@ func _Session_GetSession_Handler(srv interface{}, ctx context.Context, dec func(
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/chat.Session/GetSession",
+		FullMethod: "/api.Session/GetSession",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SessionServer).GetSession(ctx, req.(*GetSessionRequest))
+		return srv.(SessionServer).GetSession(ctx, req.(*GetRecentSessionRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -242,7 +242,7 @@ func _Session_ReadMsgNotify_Handler(srv interface{}, ctx context.Context, dec fu
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/chat.Session/ReadMsgNotify",
+		FullMethod: "/api.Session/ReadMsgNotify",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(SessionServer).ReadMsgNotify(ctx, req.(*MsgReadAckRequest))
@@ -254,7 +254,7 @@ func _Session_ReadMsgNotify_Handler(srv interface{}, ctx context.Context, dec fu
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Session_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "chat.Session",
+	ServiceName: "api.Session",
 	HandlerType: (*SessionServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -267,7 +267,7 @@ var Session_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "rpc/chat/api/chat.proto",
+	Metadata: "protos/api/api_chat.proto",
 }
 
 // MsgListClient is the client API for MsgList service.
@@ -288,7 +288,7 @@ func NewMsgListClient(cc grpc.ClientConnInterface) MsgListClient {
 
 func (c *msgListClient) GetMsgList(ctx context.Context, in *GetMsgListRequest, opts ...grpc.CallOption) (*GetMsgListReply, error) {
 	out := new(GetMsgListReply)
-	err := c.cc.Invoke(ctx, "/chat.MsgList/GetMsgList", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.MsgList/GetMsgList", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -334,7 +334,7 @@ func _MsgList_GetMsgList_Handler(srv interface{}, ctx context.Context, dec func(
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/chat.MsgList/GetMsgList",
+		FullMethod: "/api.MsgList/GetMsgList",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MsgListServer).GetMsgList(ctx, req.(*GetMsgListRequest))
@@ -346,7 +346,7 @@ func _MsgList_GetMsgList_Handler(srv interface{}, ctx context.Context, dec func(
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var MsgList_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "chat.MsgList",
+	ServiceName: "api.MsgList",
 	HandlerType: (*MsgListServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -355,5 +355,5 @@ var MsgList_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "rpc/chat/api/chat.proto",
+	Metadata: "protos/api/api_chat.proto",
 }

@@ -22,7 +22,9 @@ import (
 func wireApp(confServer *conf.Server, discover *conf.Discover, logger log.Logger, logLogger *log2.Logger, discovery registry.Discovery) (*kratos.App, func(), error) {
 	authClient := service.NewAuthClient(discover, discovery)
 	apiUserService := service.NewApiUserService(authClient)
-	httpServer := server.NewHTTPServer(confServer, apiUserService, logger)
+	chatClient := service.NewChatClient(discover, discovery)
+	apiChatService := service.NewApiChatService(chatClient)
+	httpServer := server.NewHTTPServer(confServer, apiUserService, apiChatService, logger)
 	app := newApp(logLogger, httpServer)
 	return app, func() {
 	}, nil

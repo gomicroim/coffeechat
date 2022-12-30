@@ -2,9 +2,9 @@
 // versions:
 // - protoc-gen-go-http v2.5.3
 // - protoc             v3.21.5
-// source: rpc/chat/api/chat.proto
+// source: protos/api/api_chat.proto
 
-package chat
+package api
 
 import (
 	context "context"
@@ -19,29 +19,29 @@ var _ = binding.EncodeURL
 
 const _ = http.SupportPackageIsVersion1
 
-const OperationChatSendMsg = "/chat.Chat/SendMsg"
-const OperationChatSyncMessage = "/chat.Chat/SyncMessage"
+const OperationChatSend = "/api.Chat/Send"
+const OperationChatSyncMessage = "/api.Chat/SyncMessage"
 
 type ChatHTTPServer interface {
-	SendMsg(context.Context, *SendMsgRequest) (*SendMsgReply, error)
+	Send(context.Context, *SendMsgRequest) (*SendMsgReply, error)
 	SyncMessage(context.Context, *SyncMessageRequest) (*SyncMessageReply, error)
 }
 
 func RegisterChatHTTPServer(s *http.Server, srv ChatHTTPServer) {
 	r := s.Route("/")
-	r.POST("/chat/msg/send", _Chat_SendMsg0_HTTP_Handler(srv))
+	r.POST("/chat/msg/send", _Chat_Send0_HTTP_Handler(srv))
 	r.GET("/chat/msg/sync", _Chat_SyncMessage0_HTTP_Handler(srv))
 }
 
-func _Chat_SendMsg0_HTTP_Handler(srv ChatHTTPServer) func(ctx http.Context) error {
+func _Chat_Send0_HTTP_Handler(srv ChatHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in SendMsgRequest
 		if err := ctx.Bind(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, OperationChatSendMsg)
+		http.SetOperation(ctx, OperationChatSend)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
-			return srv.SendMsg(ctx, req.(*SendMsgRequest))
+			return srv.Send(ctx, req.(*SendMsgRequest))
 		})
 		out, err := h(ctx, &in)
 		if err != nil {
@@ -72,7 +72,7 @@ func _Chat_SyncMessage0_HTTP_Handler(srv ChatHTTPServer) func(ctx http.Context) 
 }
 
 type ChatHTTPClient interface {
-	SendMsg(ctx context.Context, req *SendMsgRequest, opts ...http.CallOption) (rsp *SendMsgReply, err error)
+	Send(ctx context.Context, req *SendMsgRequest, opts ...http.CallOption) (rsp *SendMsgReply, err error)
 	SyncMessage(ctx context.Context, req *SyncMessageRequest, opts ...http.CallOption) (rsp *SyncMessageReply, err error)
 }
 
@@ -84,11 +84,11 @@ func NewChatHTTPClient(client *http.Client) ChatHTTPClient {
 	return &ChatHTTPClientImpl{client}
 }
 
-func (c *ChatHTTPClientImpl) SendMsg(ctx context.Context, in *SendMsgRequest, opts ...http.CallOption) (*SendMsgReply, error) {
+func (c *ChatHTTPClientImpl) Send(ctx context.Context, in *SendMsgRequest, opts ...http.CallOption) (*SendMsgReply, error) {
 	var out SendMsgReply
 	pattern := "/chat/msg/send"
 	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation(OperationChatSendMsg))
+	opts = append(opts, http.Operation(OperationChatSend))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {
@@ -110,29 +110,29 @@ func (c *ChatHTTPClientImpl) SyncMessage(ctx context.Context, in *SyncMessageReq
 	return &out, err
 }
 
-const OperationSessionGetSession = "/chat.Session/GetSession"
-const OperationSessionReadMsgNotify = "/chat.Session/ReadMsgNotify"
+const OperationSessionGetSession = "/api.Session/GetSession"
+const OperationSessionReadMsgNotify = "/api.Session/ReadMsgNotify"
 
 type SessionHTTPServer interface {
-	GetSession(context.Context, *GetSessionRequest) (*GetRecentSessionReply, error)
+	GetSession(context.Context, *GetRecentSessionRequest) (*GetRecentSessionReply, error)
 	ReadMsgNotify(context.Context, *MsgReadAckRequest) (*MsgReadAckReply, error)
 }
 
 func RegisterSessionHTTPServer(s *http.Server, srv SessionHTTPServer) {
 	r := s.Route("/")
-	r.POST("/chat/session/list", _Session_GetSession0_HTTP_Handler(srv))
+	r.GET("/chat/session/list", _Session_GetSession0_HTTP_Handler(srv))
 	r.POST("/chat/msg/read", _Session_ReadMsgNotify0_HTTP_Handler(srv))
 }
 
 func _Session_GetSession0_HTTP_Handler(srv SessionHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
-		var in GetSessionRequest
-		if err := ctx.Bind(&in); err != nil {
+		var in GetRecentSessionRequest
+		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
 		http.SetOperation(ctx, OperationSessionGetSession)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
-			return srv.GetSession(ctx, req.(*GetSessionRequest))
+			return srv.GetSession(ctx, req.(*GetRecentSessionRequest))
 		})
 		out, err := h(ctx, &in)
 		if err != nil {
@@ -163,7 +163,7 @@ func _Session_ReadMsgNotify0_HTTP_Handler(srv SessionHTTPServer) func(ctx http.C
 }
 
 type SessionHTTPClient interface {
-	GetSession(ctx context.Context, req *GetSessionRequest, opts ...http.CallOption) (rsp *GetRecentSessionReply, err error)
+	GetSession(ctx context.Context, req *GetRecentSessionRequest, opts ...http.CallOption) (rsp *GetRecentSessionReply, err error)
 	ReadMsgNotify(ctx context.Context, req *MsgReadAckRequest, opts ...http.CallOption) (rsp *MsgReadAckReply, err error)
 }
 
@@ -175,13 +175,13 @@ func NewSessionHTTPClient(client *http.Client) SessionHTTPClient {
 	return &SessionHTTPClientImpl{client}
 }
 
-func (c *SessionHTTPClientImpl) GetSession(ctx context.Context, in *GetSessionRequest, opts ...http.CallOption) (*GetRecentSessionReply, error) {
+func (c *SessionHTTPClientImpl) GetSession(ctx context.Context, in *GetRecentSessionRequest, opts ...http.CallOption) (*GetRecentSessionReply, error) {
 	var out GetRecentSessionReply
 	pattern := "/chat/session/list"
-	path := binding.EncodeURL(pattern, in, false)
+	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationSessionGetSession))
 	opts = append(opts, http.PathTemplate(pattern))
-	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -201,7 +201,7 @@ func (c *SessionHTTPClientImpl) ReadMsgNotify(ctx context.Context, in *MsgReadAc
 	return &out, err
 }
 
-const OperationMsgListGetMsgList = "/chat.MsgList/GetMsgList"
+const OperationMsgListGetMsgList = "/api.MsgList/GetMsgList"
 
 type MsgListHTTPServer interface {
 	GetMsgList(context.Context, *GetMsgListRequest) (*GetMsgListReply, error)

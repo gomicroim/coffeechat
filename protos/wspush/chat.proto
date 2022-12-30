@@ -1,13 +1,11 @@
 syntax = "proto3";
 
-package chat;
-option go_package = "github.com/gomicroim/gomicroim/protos/chat;chat";
-option java_package = "com.gomicroim.lib.protos.chat";
-option java_outer_classname = "ChatConstant";
+package wspush;
+option go_package = "github.com/gomicroim/gomicroim/protos/wspush;wspush";
+option java_package = "com.gomicroim.lib.protos.wspush";
+option java_outer_classname = "WSPushChat";
 
-import "third_party/google/protobuf/any.proto";
-import "protos/chat/constant.proto";
-import "protos/chat/error_reason.proto";
+import "protos/wspush/constant.proto";
 
 // 消息信息
 message IMMsg {
@@ -17,7 +15,7 @@ message IMMsg {
     string nick_name = 2;
   }
   message Peer{
-    chat.IMSessionType session_type = 1; // 会话类型
+    IMSessionType session_type = 1; // 会话类型
     string peer_id = 2;                  // 目标会话ID
     optional string peer_name = 3;       // 目标名称，发消息时无需指定
   }
@@ -25,7 +23,7 @@ message IMMsg {
   Peer peer = 2;                // 目标群组或个人信息
 
   // 消息内容
-  chat.IMMsgType msg_type = 3;  // 消息类型
+  IMMsgType msg_type = 3;  // 消息类型
   message MsgDataMix{
     MsgText text = 1;
     repeated MsgImg img_url = 2;
@@ -45,30 +43,30 @@ message IMMsg {
   message MsgFile{}
   message MsgLocal{}
   message MsgTips{}
-  google.protobuf.Any msg_data = 4; // 消息内容，根据 msg_type 动态变化
+  string msg_data = 4;          // 消息内容，根据 msg_type 动态变化
 
   // 高级
   string msg_id = 10;                 // 消息唯一ID（UUID，由客户端产生）
   int64 msg_seq = 11;                 // 消息序号，在同一个会话中唯一且连续递增
-  chat.IMResCode msg_res_code = 12;   // 消息错误码
-  chat.IMMsgFeature msg_feature = 13; // 消息属性
-  chat.IMMsgStatus msg_status = 14;   // 消息状态（预留）
+  IMResCode msg_res_code = 12;   // 消息错误码
+  IMMsgFeature msg_feature = 13; // 消息属性
+  IMMsgStatus msg_status = 14;   // 消息状态（预留）
   int64 create_time = 15;             // 消息创建时间戳（毫秒）
 }
 
 // 会话信息
 message IMSession {
   int64 session_id = 1;                         // 会话id
-  chat.IMSessionType session_type = 2;          // 会话类型
+  IMSessionType session_type = 2;          // 会话类型
   int32 unread_cnt = 4;                         // 该会话未读消息数量
   int32 updated_time = 5;                       // 更新时间
   string msg_uuid = 6;                          // 最新一条消息的id（UUID）
   int64 msg_seq = 7;                    // 最新一条消息服务端的id（顺序递增）
   int32 msg_time_stamp = 8;             // 最新一条消息时间戳（毫秒）
   bytes msg_data = 9;                   // 最新一条消息的内容
-  chat.IMMsgType msg_type = 10;         // 最新一条消息的类型
+  IMMsgType msg_type = 10;         // 最新一条消息的类型
   int64 msg_from_user_id = 11;          // 最新一条消息的发送者
-  chat.IMMsgStatus msg_status = 12;     // 最新一条消息的状态（预留）
+  IMMsgStatus msg_status = 12;     // 最新一条消息的状态（预留）
   optional string msg_attach = 13;      // 最新一条消息的附件（预留）
   optional string extend_data = 14;     // 本地扩展字段（限制4096）
 }

@@ -14,7 +14,7 @@ import (
 )
 
 var (
-	Name             = "apiuser"
+	Name             = "apigw"
 	Version          string
 	flagConf         string
 	EtcdApiNameSpace = "/api"

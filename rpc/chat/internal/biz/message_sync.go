@@ -7,7 +7,6 @@ import (
 	"context"
 	v1 "github.com/gomicroim/go-timeline/api/v1"
 	"github.com/gomicroim/gomicroim/pkg/log"
-	"github.com/gomicroim/gomicroim/protos/chat"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -77,7 +76,7 @@ func (m messageSyncUseCase) onHandleOutboxWriteMsg(ctx context.Context, req *pb.
 	)
 
 	switch req.SessionType {
-	case chat.IMSessionType_SessionTypeSingle:
+	case wspush.IMSessionType_SessionTypeSingle:
 		buffer, err = protojson.Marshal(req)
 		if err != nil {
 			m.logger.Warn("protojson marshal error", zap.Error(err))

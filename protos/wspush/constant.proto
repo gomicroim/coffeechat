@@ -1,9 +1,9 @@
 syntax = "proto3";
 
-package chat;
-option go_package = "github.com/gomicroim/gomicroim/protos/chat;chat";
-option java_package = "com.gomicroim.lib.protos.chat";
-option java_outer_classname = "ChatConstant";
+package wspush;
+option go_package = "github.com/gomicroim/gomicroim/protos/wspush;wspush";
+option java_package = "com.gomicroim.lib.protos.wspush";
+option java_outer_classname = "WSPushConstant";
 
 // 客户端类型
 enum IMClientType {

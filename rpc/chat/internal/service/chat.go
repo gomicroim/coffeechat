@@ -7,7 +7,6 @@ import (
 	"chat/internal/mq"
 	"context"
 	"github.com/gomicroim/gomicroim/pkg/log"
-	"github.com/gomicroim/gomicroim/protos/chat"
 	"go.uber.org/zap"
 )
 
@@ -57,7 +56,7 @@ func (s *ChatService) SendMsg(ctx context.Context, req *pb.SendMsgRequest) (*pb.
 
 	return &pb.SendMsgReply{
 		MsgSeq:  msg.ServerMsgSeq,
-		ResCode: chat.IMResCode(msg.MsgResCode),
+		ResCode: wspush.IMResCode(msg.MsgResCode),
 		MsgInfo: pbMsgInfo,
 	}, nil
 }
@@ -66,14 +65,14 @@ func (s ChatService) toPbMessage(msg *data.Message) *pb.IMBaseMsg {
 	return &pb.IMBaseMsg{
 		FromUserId:   msg.From,
 		To:           msg.To,
-		SessionType:  chat.IMSessionType(msg.SessionType),
+		SessionType:  wspush.IMSessionType(msg.SessionType),
 		ClientMsgId:  msg.ClientMsgID,
 		ServerMsgSeq: msg.ServerMsgSeq,
-		MsgType:      chat.IMMsgType(msg.MsgType),
+		MsgType:      wspush.IMMsgType(msg.MsgType),
 		MsgData:      msg.MsgData,
-		MsgResCode:   chat.IMResCode(msg.MsgResCode),
-		MsgFeature:   chat.IMMsgFeature(msg.MsgFeature),
-		MsgStatus:    chat.IMMsgStatus(msg.MsgStatus),
+		MsgResCode:   wspush.IMResCode(msg.MsgResCode),
+		MsgFeature:   wspush.IMMsgFeature(msg.MsgFeature),
+		MsgStatus:    wspush.IMMsgStatus(msg.MsgStatus),
 		CreateTime:   msg.Created.Unix(),
 	}
 }

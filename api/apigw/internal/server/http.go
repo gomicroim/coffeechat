@@ -12,7 +12,7 @@ import (
 )
 
 // NewHTTPServer new a HTTP server.
-func NewHTTPServer(c *conf.Server, greeter *service.ApiUserService, logger log.Logger) *http.Server {
+func NewHTTPServer(c *conf.Server, user *service.ApiUserService, chat *service.ApiChatService, logger log.Logger) *http.Server {
 	var opts = []http.ServerOption{
 		http.Middleware(
 			recovery.Recovery(),
@@ -29,7 +29,8 @@ func NewHTTPServer(c *conf.Server, greeter *service.ApiUserService, logger log.L
 		opts = append(opts, http.Timeout(c.Http.Timeout.AsDuration()))
 	}
 	srv := http.NewServer(opts...)
-	v1.RegisterApiUserHTTPServer(srv, greeter)
+	v1.RegisterApiUserHTTPServer(srv, user)
+	v1.RegisterChatHTTPServer(srv, chat)
 
 	// swagger-ui
 	openApiHandler := openapiv2.NewHandler()

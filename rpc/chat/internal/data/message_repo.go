@@ -6,7 +6,6 @@ import (
 	"context"
 	"fmt"
 	"github.com/gomicroim/gomicroim/pkg/log"
-	"github.com/gomicroim/gomicroim/protos/chat"
 	"strconv"
 	"time"
 )
@@ -35,7 +34,7 @@ func (m Message) String() string {
 
 type MessageRepo interface {
 	// GetSessionKey 根据 from&to 生产一个唯一key，以方便查询历史聊天消息
-	GetSessionKey(from int64, to string, sessionType chat.IMSessionType) string
+	GetSessionKey(from int64, to string, sessionType wspush.IMSessionType) string
 	Create(context.Context, *Message) (*Message, error)
 	FindByClientMsgId(ctx context.Context, clientMsgId string) (*Message, error)
 	ListByStartMsgSeq(ctx context.Context, sessionKey string, startMsgSeq int64, limit int) ([]*Message, error)
@@ -125,8 +124,8 @@ func (m *messageRepo) ListByEndMsgSeq(ctx context.Context, sessionKey string, en
 	return messages, nil
 }
 
-func (m *messageRepo) GetSessionKey(from int64, to string, sessionType chat.IMSessionType) string {
-	if sessionType == chat.IMSessionType_SessionTypeSingle {
+func (m *messageRepo) GetSessionKey(from int64, to string, sessionType wspush.IMSessionType) string {
+	if sessionType == wspush.IMSessionType_SessionTypeSingle {
 		fromStr := strconv.FormatInt(from, 10)
 		small, big := fromStr, to
 		if fromStr > to {

@@ -16,6 +16,7 @@ message Discover {
   }
   message ServiceEndpoint{
       string rpc_user = 1;
+      string rpc_chat = 2;
   }
   ETCD etcd = 1;
   ServiceEndpoint service_endpoint = 2;

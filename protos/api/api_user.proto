@@ -3,7 +3,7 @@ syntax = "proto3";
 package api;
 option go_package = "github.com/gomicroim/gomicroim/protos/api;api";
 option java_package = "com.gomicroim.lib.protos.api";
-option java_outer_classname = "Api";
+option java_outer_classname = "ApiUser";
 
 import "google/api/annotations.proto";
 
