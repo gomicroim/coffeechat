@@ -6,6 +6,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/gomicroim/gomicroim/pkg/log"
+	"github.com/gomicroim/gomicroim/protos/wspush"
 	"strconv"
 	"time"
 )

@@ -7,6 +7,7 @@ import (
 	"context"
 	v1 "github.com/gomicroim/go-timeline/api/v1"
 	"github.com/gomicroim/gomicroim/pkg/log"
+	"github.com/gomicroim/gomicroim/protos/wspush"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"

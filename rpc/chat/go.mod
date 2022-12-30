@@ -20,10 +20,11 @@ require (
 	github.com/gomicroim/gomicroim/pkg v0.0.0-00010101000000-000000000000
 	github.com/gomicroim/gomicroim/protos v0.0.0-00010101000000-000000000000
 	github.com/google/wire v0.5.0
+	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.8.1
 	go.etcd.io/etcd/client/v3 v3.5.5
 	go.uber.org/zap v1.23.0
-	google.golang.org/genproto v0.0.0-20221207170731-23e4bf6bdc37
+	google.golang.org/genproto v0.0.0-20221227171554-f9683d7f8bef
 	google.golang.org/grpc v1.51.0
 	google.golang.org/protobuf v1.28.1
 )
@@ -64,7 +65,6 @@ require (
 	github.com/klauspost/compress v1.15.9 // indirect
 	github.com/mitchellh/go-wordwrap v0.0.0-20150314170334-ad45545899c7 // indirect
 	github.com/pierrec/lz4/v4 v4.1.15 // indirect
-	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rcrowley/go-metrics v0.0.0-20201227073835-cf1acfcdf475 // indirect
 	github.com/zclconf/go-cty v1.8.0 // indirect

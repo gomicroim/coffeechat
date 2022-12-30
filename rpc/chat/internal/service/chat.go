@@ -7,6 +7,7 @@ import (
 	"chat/internal/mq"
 	"context"
 	"github.com/gomicroim/gomicroim/pkg/log"
+	"github.com/gomicroim/gomicroim/protos/wspush"
 	"go.uber.org/zap"
 )
 
