@@ -2,7 +2,6 @@ syntax = "proto3";
 
 package user;
 
-import "rpc/user/api/user/error_reason.proto";
 option go_package = "user/api/user;user";
 
 service Auth {
