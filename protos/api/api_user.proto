@@ -1,10 +1,35 @@
 syntax = "proto3";
 
-package user.v1;
+package api;
+option go_package = "github.com/gomicroim/gomicroim/protos/api;api";
+option java_package = "com.gomicroim.lib.protos.api";
+option java_outer_classname = "Api";
 
-option go_package = "apiuser/api/user/v1;v1";
-option java_package = "com.gomicroim.lib.protos.user";
-option java_outer_classname = "User";
+import "google/api/annotations.proto";
+
+// The greeting service definition.
+service ApiUser {
+  rpc Register (RegisterRequest) returns (RegisterReply){
+    option (google.api.http) = {
+      post: "/auth/device/register"
+      body: "*"
+    };
+  }
+
+  rpc Auth (AuthRequest) returns (AuthReply){
+    option (google.api.http) = {
+      post: "/auth/login"
+      body: "*"
+    };
+  };
+
+  rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenReply){
+    option (google.api.http) = {
+      post: "/auth/token/refresh"
+      body: "*"
+    };
+  }
+}
 
 message RegisterRequest {
   string device_id = 1;

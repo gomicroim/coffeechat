@@ -2,9 +2,9 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.21.5
-// source: api/apiuser/api/user/v1/api_user.proto
+// source: protos/api/api_user.proto
 
-package v1
+package api
 
 import (
 	context "context"
@@ -37,7 +37,7 @@ func NewApiUserClient(cc grpc.ClientConnInterface) ApiUserClient {
 
 func (c *apiUserClient) Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterReply, error) {
 	out := new(RegisterReply)
-	err := c.cc.Invoke(ctx, "/user.v1.ApiUser/Register", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.ApiUser/Register", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +46,7 @@ func (c *apiUserClient) Register(ctx context.Context, in *RegisterRequest, opts 
 
 func (c *apiUserClient) Auth(ctx context.Context, in *AuthRequest, opts ...grpc.CallOption) (*AuthReply, error) {
 	out := new(AuthReply)
-	err := c.cc.Invoke(ctx, "/user.v1.ApiUser/Auth", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.ApiUser/Auth", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -55,7 +55,7 @@ func (c *apiUserClient) Auth(ctx context.Context, in *AuthRequest, opts ...grpc.
 
 func (c *apiUserClient) RefreshToken(ctx context.Context, in *RefreshTokenRequest, opts ...grpc.CallOption) (*RefreshTokenReply, error) {
 	out := new(RefreshTokenReply)
-	err := c.cc.Invoke(ctx, "/user.v1.ApiUser/RefreshToken", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.ApiUser/RefreshToken", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -108,7 +108,7 @@ func _ApiUser_Register_Handler(srv interface{}, ctx context.Context, dec func(in
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/user.v1.ApiUser/Register",
+		FullMethod: "/api.ApiUser/Register",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ApiUserServer).Register(ctx, req.(*RegisterRequest))
@@ -126,7 +126,7 @@ func _ApiUser_Auth_Handler(srv interface{}, ctx context.Context, dec func(interf
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/user.v1.ApiUser/Auth",
+		FullMethod: "/api.ApiUser/Auth",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ApiUserServer).Auth(ctx, req.(*AuthRequest))
@@ -144,7 +144,7 @@ func _ApiUser_RefreshToken_Handler(srv interface{}, ctx context.Context, dec fun
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/user.v1.ApiUser/RefreshToken",
+		FullMethod: "/api.ApiUser/RefreshToken",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ApiUserServer).RefreshToken(ctx, req.(*RefreshTokenRequest))
@@ -156,7 +156,7 @@ func _ApiUser_RefreshToken_Handler(srv interface{}, ctx context.Context, dec fun
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var ApiUser_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "user.v1.ApiUser",
+	ServiceName: "api.ApiUser",
 	HandlerType: (*ApiUserServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -173,5 +173,5 @@ var ApiUser_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "api/apiuser/api/user/v1/api_user.proto",
+	Metadata: "protos/api/api_user.proto",
 }

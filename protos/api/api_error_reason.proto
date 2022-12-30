@@ -1,12 +1,11 @@
 syntax = "proto3";
 
-package user.v1;
-
-option go_package = "apiuser/api/user/v1;v1";
-option java_package = "com.gomicroim.lib.protos.user";
+package api;
+option go_package = "github.com/gomicroim/gomicroim/protos/api;api";
+option java_package = "com.gomicroim.lib.protos.api";
 option java_outer_classname = "ErrorReasonProto";
 
-enum ErrorReason {
+enum ApiErrorReason {
   USER_UNSPECIFIED = 0;
   USER_NOT_FOUND = 1;
 

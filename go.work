@@ -1,8 +1,7 @@
 go 1.18
 
 use (
-	./api/apichat
-	./api/apiuser
+	./api/apigw
 	./api/wspush
 	./pkg
 	./protos

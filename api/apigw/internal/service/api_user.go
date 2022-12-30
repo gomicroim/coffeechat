@@ -7,7 +7,7 @@ import (
 	"strings"
 	"user/api/user"
 
-	pb "apiuser/api/user/v1"
+	pb "github.com/gomicroim/gomicroim/protos/api"
 )
 
 type ApiUserService struct {
@@ -43,10 +43,10 @@ func (s *ApiUserService) Auth(ctx context.Context, req *pb.AuthRequest) (*pb.Aut
 	}
 
 	if req.LoginType != pb.AuthRequest_loginTypeMobile {
-		return nil, errors.BadRequest(pb.ErrorReason_AUTH_NOT_SUPPORT_LOGIN_TYPE.String(), "not support login type")
+		return nil, errors.BadRequest(pb.ApiErrorReason_AUTH_NOT_SUPPORT_LOGIN_TYPE.String(), "not support login type")
 	}
 	if req.ByMobile == nil || req.ByMobile.Phone == "" || req.ByMobile.Code == "" {
-		return nil, errors.BadRequest(pb.ErrorReason_AUTH_LOGIN_MISS_PHONE_OR_CODE.String(), "miss phone or code")
+		return nil, errors.BadRequest(pb.ApiErrorReason_AUTH_LOGIN_MISS_PHONE_OR_CODE.String(), "miss phone or code")
 	}
 
 	result, err := s.client.Auth(ctx, &user.AuthRequest{
@@ -94,12 +94,12 @@ func (s *ApiUserService) RefreshToken(ctx context.Context, req *pb.RefreshTokenR
 func extractToken(ctx http.Context) (string, error) {
 	token := ctx.Header().Get("Authorization")
 	if token == "" {
-		return "", errors.BadRequest(pb.ErrorReason_TOKEN_MISS.String(), "miss token")
+		return "", errors.BadRequest(pb.ApiErrorReason_TOKEN_MISS.String(), "miss token")
 	}
 
 	arr := strings.Split(token, " ")
 	if len(arr) != 2 {
-		return "", errors.BadRequest(pb.ErrorReason_TOKEN_INVALID.String(), "miss token")
+		return "", errors.BadRequest(pb.ApiErrorReason_TOKEN_INVALID.String(), "miss token")
 	} else {
 		return arr[1], nil
 	}

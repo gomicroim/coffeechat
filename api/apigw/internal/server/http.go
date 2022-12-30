@@ -1,7 +1,6 @@
 package server
 
 import (
-	v1 "apiuser/api/user/v1"
 	"apiuser/internal/conf"
 	"apiuser/internal/service"
 	"github.com/go-kratos/kratos/v2/log"
@@ -9,6 +8,7 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/transport/http"
 	"github.com/go-kratos/swagger-api/openapiv2"
+	v1 "github.com/gomicroim/gomicroim/protos/api"
 )
 
 // NewHTTPServer new a HTTP server.
