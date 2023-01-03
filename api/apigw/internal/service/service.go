@@ -16,9 +16,10 @@ import (
 var ProviderSet = wire.NewSet(NewApiUserService, NewApiChatService, NewAuthClient, NewChatClient)
 
 func NewAuthClient(config *conf.Discover, discovery registry.Discovery) user.AuthClient {
-	rpcUserEndpoint := "discovery:///" + config.ServiceEndpoint.RpcUser
+	endpoint := "discovery:///" + config.ServiceEndpoint.RpcUser
+	log.L.Info("NewAuthClient", zap.String("endpoint", endpoint))
 	conn, err := grpc.DialInsecure(context.Background(),
-		grpc.WithEndpoint(rpcUserEndpoint),
+		grpc.WithEndpoint(endpoint),
 		grpc.WithDiscovery(discovery),
 	)
 	if err != nil {
@@ -28,10 +29,10 @@ func NewAuthClient(config *conf.Discover, discovery registry.Discovery) user.Aut
 }
 
 func NewChatClient(config *conf.Discover, discovery registry.Discovery) chat.ChatClient {
-	rpcUserEndpoint := "discovery:///" + config.ServiceEndpoint.RpcChat
-	log.L.Info("NewChatClient", zap.String("rpcChatEndpoint", rpcUserEndpoint))
+	endpoint := "discovery:///" + config.ServiceEndpoint.RpcChat
+	log.L.Info("NewChatClient", zap.String("endpoint", endpoint))
 	conn, err := grpc.DialInsecure(context.Background(),
-		grpc.WithEndpoint(rpcUserEndpoint),
+		grpc.WithEndpoint(endpoint),
 		grpc.WithDiscovery(discovery),
 	)
 	if err != nil {

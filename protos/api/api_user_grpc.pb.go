@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.21.5
-// source: protos/api/api_user.proto
+// source: api_user.proto
 
 package api
 
@@ -22,7 +22,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ApiUserClient interface {
-	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterReply, error)
+	DeviceRegister(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterReply, error)
 	Auth(ctx context.Context, in *AuthRequest, opts ...grpc.CallOption) (*AuthReply, error)
 	RefreshToken(ctx context.Context, in *RefreshTokenRequest, opts ...grpc.CallOption) (*RefreshTokenReply, error)
 }
@@ -35,9 +35,9 @@ func NewApiUserClient(cc grpc.ClientConnInterface) ApiUserClient {
 	return &apiUserClient{cc}
 }
 
-func (c *apiUserClient) Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterReply, error) {
+func (c *apiUserClient) DeviceRegister(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterReply, error) {
 	out := new(RegisterReply)
-	err := c.cc.Invoke(ctx, "/api.ApiUser/Register", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/api.ApiUser/DeviceRegister", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -66,7 +66,7 @@ func (c *apiUserClient) RefreshToken(ctx context.Context, in *RefreshTokenReques
 // All implementations must embed UnimplementedApiUserServer
 // for forward compatibility
 type ApiUserServer interface {
-	Register(context.Context, *RegisterRequest) (*RegisterReply, error)
+	DeviceRegister(context.Context, *RegisterRequest) (*RegisterReply, error)
 	Auth(context.Context, *AuthRequest) (*AuthReply, error)
 	RefreshToken(context.Context, *RefreshTokenRequest) (*RefreshTokenReply, error)
 	mustEmbedUnimplementedApiUserServer()
@@ -76,8 +76,8 @@ type ApiUserServer interface {
 type UnimplementedApiUserServer struct {
 }
 
-func (UnimplementedApiUserServer) Register(context.Context, *RegisterRequest) (*RegisterReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
+func (UnimplementedApiUserServer) DeviceRegister(context.Context, *RegisterRequest) (*RegisterReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeviceRegister not implemented")
 }
 func (UnimplementedApiUserServer) Auth(context.Context, *AuthRequest) (*AuthReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Auth not implemented")
@@ -98,20 +98,20 @@ func RegisterApiUserServer(s grpc.ServiceRegistrar, srv ApiUserServer) {
 	s.RegisterService(&ApiUser_ServiceDesc, srv)
 }
 
-func _ApiUser_Register_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ApiUser_DeviceRegister_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(RegisterRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ApiUserServer).Register(ctx, in)
+		return srv.(ApiUserServer).DeviceRegister(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/api.ApiUser/Register",
+		FullMethod: "/api.ApiUser/DeviceRegister",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ApiUserServer).Register(ctx, req.(*RegisterRequest))
+		return srv.(ApiUserServer).DeviceRegister(ctx, req.(*RegisterRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -160,8 +160,8 @@ var ApiUser_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*ApiUserServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Register",
-			Handler:    _ApiUser_Register_Handler,
+			MethodName: "DeviceRegister",
+			Handler:    _ApiUser_DeviceRegister_Handler,
 		},
 		{
 			MethodName: "Auth",
@@ -173,5 +173,5 @@ var ApiUser_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "protos/api/api_user.proto",
+	Metadata: "api_user.proto",
 }

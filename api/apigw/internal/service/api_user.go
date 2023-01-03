@@ -20,7 +20,7 @@ func NewApiUserService(client user.AuthClient) *ApiUserService {
 	return &ApiUserService{client: client}
 }
 
-func (s *ApiUserService) Register(ctx context.Context, req *pb.RegisterRequest) (*pb.RegisterReply, error) {
+func (s *ApiUserService) DeviceRegister(ctx context.Context, req *pb.RegisterRequest) (*pb.RegisterReply, error) {
 	result, err := s.client.Register(ctx, &user.RegisterRequest{
 		DeviceId:   req.DeviceId,
 		AppVersion: req.AppVersion,

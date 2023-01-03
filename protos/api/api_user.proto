@@ -9,7 +9,7 @@ import "google/api/annotations.proto";
 
 // The greeting service definition.
 service ApiUser {
-  rpc Register (RegisterRequest) returns (RegisterReply){
+  rpc DeviceRegister (RegisterRequest) returns (RegisterReply){
     option (google.api.http) = {
       post: "/auth/device/register"
       body: "*"

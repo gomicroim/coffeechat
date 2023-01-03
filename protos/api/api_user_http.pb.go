@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-http v2.5.3
 // - protoc             v3.21.5
-// source: protos/api/api_user.proto
+// source: api_user.proto
 
 package api
 
@@ -20,31 +20,31 @@ var _ = binding.EncodeURL
 const _ = http.SupportPackageIsVersion1
 
 const OperationApiUserAuth = "/api.ApiUser/Auth"
+const OperationApiUserDeviceRegister = "/api.ApiUser/DeviceRegister"
 const OperationApiUserRefreshToken = "/api.ApiUser/RefreshToken"
-const OperationApiUserRegister = "/api.ApiUser/Register"
 
 type ApiUserHTTPServer interface {
 	Auth(context.Context, *AuthRequest) (*AuthReply, error)
+	DeviceRegister(context.Context, *RegisterRequest) (*RegisterReply, error)
 	RefreshToken(context.Context, *RefreshTokenRequest) (*RefreshTokenReply, error)
-	Register(context.Context, *RegisterRequest) (*RegisterReply, error)
 }
 
 func RegisterApiUserHTTPServer(s *http.Server, srv ApiUserHTTPServer) {
 	r := s.Route("/")
-	r.POST("/auth/device/register", _ApiUser_Register0_HTTP_Handler(srv))
+	r.POST("/auth/device/register", _ApiUser_DeviceRegister0_HTTP_Handler(srv))
 	r.POST("/auth/login", _ApiUser_Auth0_HTTP_Handler(srv))
 	r.POST("/auth/token/refresh", _ApiUser_RefreshToken0_HTTP_Handler(srv))
 }
 
-func _ApiUser_Register0_HTTP_Handler(srv ApiUserHTTPServer) func(ctx http.Context) error {
+func _ApiUser_DeviceRegister0_HTTP_Handler(srv ApiUserHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in RegisterRequest
 		if err := ctx.Bind(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, OperationApiUserRegister)
+		http.SetOperation(ctx, OperationApiUserDeviceRegister)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
-			return srv.Register(ctx, req.(*RegisterRequest))
+			return srv.DeviceRegister(ctx, req.(*RegisterRequest))
 		})
 		out, err := h(ctx, &in)
 		if err != nil {
@@ -95,8 +95,8 @@ func _ApiUser_RefreshToken0_HTTP_Handler(srv ApiUserHTTPServer) func(ctx http.Co
 
 type ApiUserHTTPClient interface {
 	Auth(ctx context.Context, req *AuthRequest, opts ...http.CallOption) (rsp *AuthReply, err error)
+	DeviceRegister(ctx context.Context, req *RegisterRequest, opts ...http.CallOption) (rsp *RegisterReply, err error)
 	RefreshToken(ctx context.Context, req *RefreshTokenRequest, opts ...http.CallOption) (rsp *RefreshTokenReply, err error)
-	Register(ctx context.Context, req *RegisterRequest, opts ...http.CallOption) (rsp *RegisterReply, err error)
 }
 
 type ApiUserHTTPClientImpl struct {
@@ -120,11 +120,11 @@ func (c *ApiUserHTTPClientImpl) Auth(ctx context.Context, in *AuthRequest, opts 
 	return &out, err
 }
 
-func (c *ApiUserHTTPClientImpl) RefreshToken(ctx context.Context, in *RefreshTokenRequest, opts ...http.CallOption) (*RefreshTokenReply, error) {
-	var out RefreshTokenReply
-	pattern := "/auth/token/refresh"
+func (c *ApiUserHTTPClientImpl) DeviceRegister(ctx context.Context, in *RegisterRequest, opts ...http.CallOption) (*RegisterReply, error) {
+	var out RegisterReply
+	pattern := "/auth/device/register"
 	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation(OperationApiUserRefreshToken))
+	opts = append(opts, http.Operation(OperationApiUserDeviceRegister))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {
@@ -133,11 +133,11 @@ func (c *ApiUserHTTPClientImpl) RefreshToken(ctx context.Context, in *RefreshTok
 	return &out, err
 }
 
-func (c *ApiUserHTTPClientImpl) Register(ctx context.Context, in *RegisterRequest, opts ...http.CallOption) (*RegisterReply, error) {
-	var out RegisterReply
-	pattern := "/auth/device/register"
+func (c *ApiUserHTTPClientImpl) RefreshToken(ctx context.Context, in *RefreshTokenRequest, opts ...http.CallOption) (*RefreshTokenReply, error) {
+	var out RefreshTokenReply
+	pattern := "/auth/token/refresh"
 	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation(OperationApiUserRegister))
+	opts = append(opts, http.Operation(OperationApiUserRefreshToken))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {
