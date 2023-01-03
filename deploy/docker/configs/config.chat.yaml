@@ -13,6 +13,17 @@ data:
     read_timeout: 0.4s
     write_timeout: 0.6s
     dial_timeout: 1s
+  kafka:
+    brokers:
+      - kafka:9092
+    consumer_group: rpc-chat
+    consumer_topics:
+      outbox_write: msg_write_outbox
+    producer_topics:
+      outbox_write: msg_write_outbox
+      dead: msg_write_failed
+  timeline:
+    grpc_addr: "timeline:9321"
 registry:
   etcd:
     endpoints: [ etcd:2379 ]
