@@ -19,11 +19,11 @@ func newZapLogger(serviceId, serviceName, serviceVersion string, development boo
 	l, err := config.Build(
 		//zap.AddCaller(),
 		zap.AddCallerSkip(callerSkip), //解决kratos 使用zap后 堆栈不正确的问题
-		zap.Fields(
-			zap.String("service.id", serviceId),
-			zap.String("service.name", serviceName),
-			zap.String("service.version", serviceVersion),
-		),
+		//zap.Fields(
+		//	zap.String("service.id", serviceId),
+		//	zap.String("service.name", serviceName),
+		//	zap.String("service.version", serviceVersion),
+		//),
 	)
 
 	return l, err

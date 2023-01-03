@@ -5,7 +5,7 @@ import (
 	"chat/internal/data"
 	"chat/internal/data/cache"
 	"context"
-	pb "github.com/gomicroim/gomicroim/protos/chat"
+	pb "github.com/gomicroim/gomicroim/protos/wspush"
 	"github.com/stretchr/testify/require"
 	"math"
 	"testing"

@@ -1,12 +1,11 @@
 package service
 
 import (
+	pb "chat/api"
 	"chat/internal/biz"
 	"context"
 	"errors"
-	"github.com/gomicroim/gomicroim/protos/chat"
-
-	pb "chat/api"
+	"github.com/gomicroim/gomicroim/protos/wspush"
 )
 
 type MsgListService struct {
@@ -39,14 +38,14 @@ func (s *MsgListService) GetMsgList(ctx context.Context, req *pb.GetMsgListReque
 			out.MsgList[k] = &pb.IMBaseMsg{
 				FromUserId:   v.From,
 				To:           v.To,
-				SessionType:  chat.IMSessionType(v.SessionType),
+				SessionType:  wspush.IMSessionType(v.SessionType),
 				ClientMsgId:  v.ClientMsgID,
 				ServerMsgSeq: v.ServerMsgSeq,
-				MsgType:      chat.IMMsgType(v.MsgType),
+				MsgType:      wspush.IMMsgType(v.MsgType),
 				MsgData:      v.MsgData,
-				MsgResCode:   chat.IMResCode(v.MsgResCode),
-				MsgFeature:   chat.IMMsgFeature(v.MsgFeature),
-				MsgStatus:    chat.IMMsgStatus(v.MsgStatus),
+				MsgResCode:   wspush.IMResCode(v.MsgResCode),
+				MsgFeature:   wspush.IMMsgFeature(v.MsgFeature),
+				MsgStatus:    wspush.IMMsgStatus(v.MsgStatus),
 				CreateTime:   v.Created.Unix(),
 			}
 		}

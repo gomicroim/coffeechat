@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package api;
+option go_package = "github.com/gomicroim/gomicroim/protos/api;api";
+option java_package = "com.gomicroim.lib.protos.api";
+option java_outer_classname = "ErrorReasonProto";
+
+enum ApiErrorReason {
+  USER_UNSPECIFIED = 0;
+  USER_NOT_FOUND = 1;
+
+  TOKEN_MISS = 100;
+  TOKEN_INVALID = 101;
+
+  AUTH_NOT_SUPPORT_LOGIN_TYPE = 200;
+  AUTH_LOGIN_MISS_PHONE_OR_CODE = 201;
+}

@@ -1,9 +1,9 @@
 package biz
 
 import (
-	"chat/api/chat"
 	"context"
 	"fmt"
+	pb "github.com/gomicroim/gomicroim/protos/wspush"
 	"go.uber.org/atomic"
 	"sync"
 	"wspush/api/wspush"
@@ -12,7 +12,7 @@ import (
 type ClientInfo struct {
 	UserId     int64
 	DeviceId   string
-	ClientType chat.IMClientType
+	ClientType pb.IMClientType
 	Domain     string
 	AppVersion int32
 }
