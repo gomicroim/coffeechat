@@ -40,5 +40,5 @@ static_resources:
         - endpoint:
             address:
               socket_address:
-                address: 192.168.1.43
+                address: 192.168.1.8
                 port_value: 8100
