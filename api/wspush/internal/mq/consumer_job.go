@@ -61,7 +61,7 @@ func (j *jobImpl) StartConsume(ctx context.Context) {
 	// create kafka consumer go routine
 	go rescue.WithRecover(func() {
 		for {
-			err := kafka.Consume(ctx, j.consumer, j.config.SendMsgTopic, handle)
+			err := kafka.ConsumeAllPartitions(ctx, j.consumer, j.config.SendMsgTopic, handle)
 			log.L.Error("dp kafka stop to consume, after 10s retry", zap.Error(err))
 			time.Sleep(10 * time.Second)
 		}

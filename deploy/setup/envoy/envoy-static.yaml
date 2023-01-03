@@ -17,41 +17,28 @@ static_resources:
           route_config:
             name: api_route
             virtual_hosts:
-            - name: user_service
+            - name: api_service
               domains: ["*"]
               routes:
               - match: { prefix: "/auth" }
-                route: { cluster: api_user }
+                route: { cluster: api_gw }
               - match: { prefix: "/chat" }
-                route: { cluster: api_chat }
+                route: { cluster: api_gw }
           http_filters:
           - name: envoy.filters.http.router
             typed_config:
               "@type": type.googleapis.com/envoy.extensions.filters.http.router.v3.Router
   clusters:
-  - name: api_user
+  - name: api_gw
     connect_timeout: 0.25s
     type: STATIC
     lb_policy: ROUND_ROBIN
     load_assignment:
-      cluster_name: api_user
+      cluster_name: api_gw
       endpoints:
       - lb_endpoints:
         - endpoint:
             address:
               socket_address:
-                address: 192.168.200.197
+                address: 192.168.1.43
                 port_value: 8100
-  - name: api_chat
-    connect_timeout: 0.25s
-    type: STATIC
-    lb_policy: ROUND_ROBIN
-    load_assignment:
-      cluster_name: api_chat
-      endpoints:
-      - lb_endpoints:
-        - endpoint:
-            address:
-              socket_address:
-                address: 192.168.200.197
-                port_value: 8101

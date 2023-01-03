@@ -1,12 +1,12 @@
 package service
 
 import (
-	"chat/api/chat"
 	"context"
 	"encoding/json"
 	khttp "github.com/go-kratos/kratos/v2/transport/http"
 	"github.com/gomicroim/gomicroim/pkg/log"
 	"github.com/gomicroim/gomicroim/pkg/rescue"
+	pb "github.com/gomicroim/gomicroim/protos/wspush"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
 	"go.uber.org/zap"
@@ -130,15 +130,15 @@ func (w *WsServer) onWsHandler(res http.ResponseWriter, req *http.Request) {
 	})
 }
 
-func parseClientType(clientType string) chat.IMClientType {
+func parseClientType(clientType string) pb.IMClientType {
 	if strings.ToLower(clientType) == "android" {
-		return chat.IMClientType_kCIM_CLIENT_TYPE_ANDROID
+		return pb.IMClientType_ClientTypeAndroid
 	} else if strings.ToLower(clientType) == "ios" {
-		return chat.IMClientType_kCIM_CLIENT_TYPE_IOS
+		return pb.IMClientType_ClientTypeIos
 	} else if strings.ToLower(clientType) == "web" {
-		return chat.IMClientType_kCIM_CLIENT_TYPE_WEB
+		return pb.IMClientType_ClientTypeWeb
 	}
-	return chat.IMClientType_kCIM_CLIENT_TYPE_DEFAULT
+	return pb.IMClientType_ClientTypeDefault
 }
 
 func responseError(res http.ResponseWriter, code int, msg string) {
